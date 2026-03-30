@@ -511,10 +511,10 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
                 } else {
                     StreamEffect.builder(cx, cy, cz)
                             .to(ax, ay, az)
-                            .color(color).scale(0.2f).speed(2.5f).gravity(0.05f)
-                            .approachHeight(0.5f)
-                            .spiralInto(false).wobble(0.005f)
-                            .alphaStart(1.0f).alphaEnd(1.0f)
+                            .color(color).scale(0.08f).speed(2.5f)
+                            .alphaStart(0.5f).alphaEnd(1.0f).glow(true)
+                            .blockyMode(com.breakinblocks.neovitae.api.stream.BlockyMode.BLOCKY_BEAM)
+                            .drainSpeed(1.5f)
                             .build().sendToNearby(serverLevel, worldPosition, 128);
                 }
             }
@@ -537,15 +537,13 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
         }
 
         if (phase == ORBIT_TICKS) {
-            float scale = 0.12f + (float) (Math.sin(tick * 0.1) * 0.05);
             float speed = 1.8f + (float) (Math.sin(tick * 0.07) * 0.5);
             StreamEffect.builder(cx, cy, cz)
                     .to(ax, ay, az)
-                    .color(color).scale(scale).speed(speed).gravity(0.08f)
-                    .approachHeight(0.3f)
-                    .spiralInto(true).spiralRadius(0.15f).spiralSpeed(0.2f)
-                    .wobble(0.01f)
-                    .alphaStart(0.5f).alphaEnd(0.85f)
+                    .color(color).scale(0.06f).speed(speed)
+                    .alphaStart(0.5f).alphaEnd(0.85f).glow(true)
+                    .blockyMode(com.breakinblocks.neovitae.api.stream.BlockyMode.BLOCKY_BEAM)
+                    .drainSpeed(1.2f)
                     .build().sendToNearby(serverLevel, worldPosition, 128);
         }
     }

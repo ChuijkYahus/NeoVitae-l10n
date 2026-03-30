@@ -66,17 +66,13 @@ public final class StreamPresets {
 
     private static StreamEffect.Builder applyBloodTendril(StreamEffect.Builder b) {
         return b.color(0x990011)
-                .scale(0.1f)
+                .scale(0.06f)
                 .speed(2.0f)
-                .gravity(0.25f)
-                .wobble(0.03f)
-                .wobbleFrequency(0.8f)
-                .spiralInto(true)
-                .spiralRadius(0.35f)
-                .spiralSpeed(0.35f)
-                .approachHeight(1.0f)
-                .alphaStart(0.08f)
-                .alphaEnd(0.95f);
+                .alphaStart(0.3f)
+                .alphaEnd(0.95f)
+                .glow(true)
+                .blockyMode(BlockyMode.BLOCKY_BEAM)
+                .drainSpeed(1.5f);
     }
 
     /**
@@ -94,18 +90,13 @@ public final class StreamPresets {
 
     private static StreamEffect.Builder applySoulSiphon(StreamEffect.Builder b) {
         return b.color(0x22AADD)
-                .scale(0.14f)
-                .speed(2.2f)
-                .gravity(0.03f)
-                .wobble(0.04f)
-                .wobbleFrequency(1.2f)
-                .spiralInto(true)
-                .spiralRadius(0.25f)
-                .spiralSpeed(0.5f)
-                .approachHeight(0.8f)
-                .alphaStart(0.15f)
+                .scale(0.04f)
+                .speed(2.5f)
+                .alphaStart(0.2f)
                 .alphaEnd(0.8f)
-                .glow(true);
+                .glow(true)
+                .blockyMode(BlockyMode.BLOCKY_BEAM)
+                .drainSpeed(2.0f);
     }
 
     /**
@@ -124,17 +115,13 @@ public final class StreamPresets {
 
     private static StreamEffect.Builder applyVoidTendril(StreamEffect.Builder b) {
         return b.color(0x1A0028)
-                .scale(0.18f)
+                .scale(0.1f)
                 .speed(1.0f)
-                .gravity(0.15f)
-                .wobble(0.005f)
-                .wobbleFrequency(0.3f)
-                .spiralInto(false)
-                .approachHeight(0.3f)
                 .alphaStart(0.5f)
                 .alphaEnd(1.0f)
-                .drainSpeed(1.0f)
-                .tubeSegments(12);
+                .glow(true)
+                .blockyMode(BlockyMode.BLOCKY_BEAM)
+                .drainSpeed(1.0f);
     }
 
     /**
@@ -152,18 +139,12 @@ public final class StreamPresets {
 
     private static StreamEffect.Builder applyLifePulse(StreamEffect.Builder b) {
         return b.color(0xAA0011)
-                .scale(0.08f)
-                .speed(2.0f)
-                .gravity(0.0f)
-                .wobble(0.02f)
-                .wobbleFrequency(1.2f)
-                .spiralInto(true)
-                .spiralRadius(0.5f)
-                .spiralSpeed(0.45f)
-                .approachHeight(1.5f)
-                .alphaStart(0.15f)
+                .scale(0.05f)
+                .speed(2.5f)
+                .alphaStart(0.3f)
                 .alphaEnd(1.0f)
                 .glow(true)
+                .blockyMode(BlockyMode.BLOCKY_BEAM)
                 .drainSpeed(1.5f);
     }
 
@@ -182,18 +163,13 @@ public final class StreamPresets {
 
     private static StreamEffect.Builder applyDemonTether(StreamEffect.Builder b) {
         return b.color(0x180028)
-                .scale(0.12f)
-                .speed(1.3f)
-                .gravity(-0.08f)
-                .wobble(0.06f)
-                .wobbleFrequency(1.6f)
-                .spiralInto(true)
-                .spiralRadius(0.3f)
-                .spiralSpeed(0.6f)
-                .approachHeight(1.2f)
-                .alphaStart(0.2f)
+                .scale(0.07f)
+                .speed(1.5f)
+                .alphaStart(0.3f)
                 .alphaEnd(1.0f)
-                .glow(true);
+                .glow(true)
+                .blockyMode(BlockyMode.BLOCKY_BEAM)
+                .drainSpeed(1.2f);
     }
 
     /**
@@ -212,19 +188,13 @@ public final class StreamPresets {
 
     private static StreamEffect.Builder applyCorruptionSeep(StreamEffect.Builder b) {
         return b.color(0x44BB22)
-                .scale(0.15f)
+                .scale(0.08f)
                 .speed(1.2f)
-                .gravity(0.3f)
-                .wobble(0.05f)
-                .wobbleFrequency(0.5f)
-                .spiralInto(true)
-                .spiralRadius(0.25f)
-                .spiralSpeed(0.3f)
-                .approachHeight(0.5f)
                 .alphaStart(0.4f)
                 .alphaEnd(0.85f)
-                .drainSpeed(1.2f)
-                .tubeSegments(10);
+                .glow(true)
+                .blockyMode(BlockyMode.BLOCKY_BEAM)
+                .drainSpeed(1.2f);
     }
 
     /**
@@ -242,16 +212,12 @@ public final class StreamPresets {
 
     private static StreamEffect.Builder applyArcaneBolt(StreamEffect.Builder b) {
         return b.color(0x4422CC)
-                .scale(0.04f)
+                .scale(0.03f)
                 .speed(5.0f)
-                .gravity(0.0f)
-                .wobble(0.0f)
-                .wobbleFrequency(0.0f)
-                .spiralInto(false)
-                .approachHeight(0.0f)
                 .alphaStart(0.8f)
                 .alphaEnd(1.0f)
                 .glow(true)
+                .blockyMode(BlockyMode.BLOCKY_BEAM)
                 .drainSpeed(4.0f);
     }
 
@@ -280,22 +246,7 @@ public final class StreamPresets {
     }
 
     private static StreamEffect.Builder applyBlockBolt(StreamEffect.Builder b) {
-        return b.color(0x880011)
-                .scale(0.12f)
-                .speed(2.0f)
-                .gravity(0.02f)
-                .wobble(0.0f)
-                .wobbleFrequency(0.0f)
-                .spiralInto(true)
-                .spiralRadius(0.2f)
-                .spiralSpeed(0.3f)
-                .approachHeight(0.8f)
-                .alphaStart(0.3f)
-                .alphaEnd(1.0f)
-                .glow(true)
-                .tubeSegments(4)
-                .blockyMode(BlockyMode.BLOCKY)
-                .drainSpeed(1.5f);
+        return applyBlockBoltBase(b, BlockyMode.BLOCKY_BEAM, 0.12f);
     }
 
     public static StreamEffect.Builder blockBolt2(Entity source, BlockPos target) {

@@ -73,10 +73,10 @@ public class BloodSiphonHandler {
         attacker.level().playSound(null, attacker.blockPosition(), NVSounds.BLOOD_SIPHON.get(), SoundSource.PLAYERS, 0.3f, 1.0f);
         if (attacker.level() instanceof ServerLevel serverLevel) {
             StreamEffect.builder(event.getEntity()).toTracked(attacker)
-                    .color(0x990011).scale(0.05f).speed(2.0f).gravity(0.25f)
-                    .wobble(0.03f).wobbleFrequency(0.8f)
-                    .spiralInto(true).spiralRadius(0.35f).spiralSpeed(0.35f)
-                    .approachHeight(1.0f).alphaStart(0.08f).alphaEnd(0.95f)
+                    .color(0x990011).scale(0.05f).speed(2.0f)
+                    .alphaStart(0.3f).alphaEnd(0.95f).glow(true)
+                    .blockyMode(com.breakinblocks.neovitae.api.stream.BlockyMode.BLOCKY_BEAM)
+                    .drainSpeed(1.5f)
                     .build().sendToNearby(serverLevel, attacker.blockPosition(), 128);
         }
     }
@@ -154,10 +154,10 @@ public class BloodSiphonHandler {
 
             StreamEffect.builder(victim)
                     .toTracked(player)
-                    .color(0x990011).scale(0.06f).speed(2.5f).gravity(0.15f)
-                    .wobble(0.02f).wobbleFrequency(0.8f)
-                    .spiralInto(true).spiralRadius(0.25f).spiralSpeed(0.3f)
-                    .approachHeight(0.8f).alphaStart(0.1f).alphaEnd(0.9f)
+                    .color(0x990011).scale(0.05f).speed(2.5f)
+                    .alphaStart(0.3f).alphaEnd(0.9f).glow(true)
+                    .blockyMode(com.breakinblocks.neovitae.api.stream.BlockyMode.BLOCKY_BEAM)
+                    .drainSpeed(1.5f)
                     .build().sendToNearby(serverLevel, player.blockPosition(), 64);
 
             serverLevel.sendParticles(new ColoredParticleOptions(NVParticles.BLOOD_GLOW.get(), 0xAA0000),
