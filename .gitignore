@@ -16,37 +16,17 @@ src/generated/resources/.cache
 # Visual Studio Code
 .vscode/
 .eclipse/
-docs/
 # Local History for Visual Studio Code
 .history/
 
 # Built Visual Studio Code Extensions
 *.vsix
 
-# Ignore markdown files in root except README and CONTRIBUTING
-/*.md
-!/[Rr][Ee][Aa][Dd][Mm][Ee].[Mm][Dd]
-!/[Cc][Oo][Nn][Tt][Rr][Ii][Bb][Uu][Tt][Ii][Nn][Gg].[Mm][Dd]
-!README.md
-
-# Ignore Python files as they are generally untility scripts unrelated to the project
-*.py
-
 *.csv
-
-# Ignore everything in tools/ except wiki sync scripts
-tools/*
-!tools/sync-wiki.sh
-!tools/git-hooks/
-!tools/git-hooks/*
-!tools/port-lang.py
-!tools/lang-key-map.json
 
 gradlew
 
-gradlew.bat
 run-gametest/
-metadata/dungeon_mobs.md
 
 altar.bbmodel
 
@@ -60,12 +40,6 @@ gt.log
 
 run-client.log
 
-metadata/cf.md
-
-metadata/ROADMAP.md
-
-metadata/showcase.md
-
 # Translation glossary is source, not generated data
 !translations/glossary.csv
 
@@ -76,3 +50,20 @@ metadata/showcase.md
 *.token
 *.pem
 secrets.txt
+
+# Markdown: ignored by default. Tracked: root README, LICENSE and CHANGELOG,
+# release changelogs, docs and wiki pages, and markdown inside mod sources
+*.md
+!/README.md
+!/LICENSE.md
+!/CHANGELOG.md
+!/metadata/changelogs/**/*.md
+!/docs/**/*.md
+!/wiki/**/*.md
+!**/src/**/*.md
+
+# Batch files: only the Gradle wrapper
+*.bat
+!gradlew.bat
+
+/tools/

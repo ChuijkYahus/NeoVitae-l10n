@@ -179,7 +179,8 @@ public class NVTabs {
     }
 
     private static void addBloodTankVariants(Consumer<ItemStack> tab) {
-        for (int tier = 1; tier <= 16; tier++) {
+        // Tier 1 is the default stack, already added with NVBlocks.BLOCK_ITEMS.
+        for (int tier = 2; tier <= 16; tier++) {
             ItemStack stack = new ItemStack(NVBlocks.BLOOD_TANK.block().get());
             stack.set(NVDataComponents.CONTAINER_TIER, tier);
             tab.accept(stack);
