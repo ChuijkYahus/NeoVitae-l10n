@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,6 +33,8 @@ public final class BloodLanternSpawnHandler {
 
     @SubscribeEvent
     public static void onFinalizeSpawn(FinalizeSpawnEvent event) {
+        if (event.getSpawnType() == MobSpawnType.CHUNK_GENERATION) return;
+
         MobCategory category = event.getEntity().getType().getCategory();
         if (category == MobCategory.MONSTER) return;
 
