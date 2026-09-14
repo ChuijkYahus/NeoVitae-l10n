@@ -17,8 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.items.IItemHandler;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.api.ritual.AreaDescriptor;
 import com.breakinblocks.neovitae.api.stream.StreamPresets;
@@ -68,7 +67,7 @@ public class RitualFelling extends Ritual {
         RitualHelper.ChestOutput chest = RitualHelper.resolveChestOutput(ctx, this, CHEST_RANGE);
         BlockEntity inv = chest.tile();
         boolean hasInv = chest.hasFreeSlot();
-        ResourceHandler<ItemResource> chestInventory = inv != null ? Utils.getInventory(inv, Direction.DOWN) : null;
+        IItemHandler chestInventory = inv != null ? Utils.getInventory(inv, Direction.DOWN) : null;
 
         List<ItemStack> allDrops = new ArrayList<>();
         List<BlockPos> replantSpots = new ArrayList<>();
@@ -154,15 +153,15 @@ public class RitualFelling extends Ritual {
     }
 
     private boolean tryReplantFromInventory(ServerLevel level, BlockPos pos,
-                                            ResourceHandler<ItemResource> inventory) {
+                                            IItemHandler inventory) {
         if (!level.getBlockState(pos).isAir()) return false;
-        for (int slot = 0; slot < inventory.size(); slot++) {
-            ItemStack available = Utils.stackAt(inventory, slot);
+        for (int slot = 0; slot < inventory.getSlots(); slot++) {
+            ItemStack available = inventory.getStackInSlot(slot);
             if (available.isEmpty() || !available.is(ItemTags.SAPLINGS)
                     || !(available.getItem() instanceof BlockItem blockItem)) continue;
             BlockState plant = blockItem.getBlock().defaultBlockState();
             if (!plant.canSurvive(level, pos)) continue;
-            ItemStack extracted = Utils.extractItem(inventory, slot, 1, false);
+            ItemStack extracted = inventory.extractItem(slot, 1, false);
             if (extracted.isEmpty()) continue;
             level.setBlock(pos, plant, Block.UPDATE_ALL);
             return true;
