@@ -33,7 +33,7 @@ Demonic Spiritus can also exist in a diffused state throughout the very air. By 
 
 Feed the Spiritus Crucible a charged Spiritus Gem, loose Spiritus, or Spiritus Crystals of any Aspect. Crystals are consumed once the chunk's Spiritus dips below 50; loose Spiritus and gem contents are consumed gradually as needed.
 
-Apply a redstone signal and the Vas reverses direction: a Spiritus Gem placed inside is **filled** from the chunk's Aura instead of drained. The same vessel serves as both deposit and withdrawal point.
+Apply a redstone signal and the Spiritus Crucible reverses direction: a Spiritus Gem placed inside is **filled** from the chunk's Aura instead of drained. The same vessel serves as both deposit and withdrawal point.
 
 The Aura is **chunk-based**. Spiritus burned in one chunk fills only that chunk, up to a cap of **100 per aspect**. Measure local concentration with a **Spiritus Aura Gauge** (see below). To move Spiritus across distances, place a **Spiritus Conduit**: each tick it probes a position **16 blocks away** in each of the four cardinal directions, and if the probed position holds more Spiritus than the pylon's own chunk, the pylon pulls a small fraction of the difference. The flow equilibrates rather than draining the source dry, so chain pylons from a saturated chunk toward your worksite to ferry Aura over long distances.
 
@@ -93,7 +93,7 @@ Each Aspect also transforms the behavior of **Sentient Tools** and the **Sentien
 | Invictus | Moderate damage increase, and slaying a foe grants you a protective shield of Absorption. |
 | Nihilum | The greatest raw damage of any Aspect, at the cost of reduced attack speed. |
 
-To fill a gem with a specific Aspect, feed a Spiritus Crucible Spiritus Crystals of that Aspect until the chunk's Aura is saturated, then place the empty gem in that same Vas and apply a redstone signal.
+To fill a gem with a specific Aspect, feed a Spiritus Crucible Spiritus Crystals of that Aspect until the chunk's Aura is saturated, then place the empty gem in that same Spiritus Crucible and apply a redstone signal.
 
 A gem holds only one Aspect at a time, and an empty gem takes whichever Aspect the Aura offers first. Where several are present they are taken in a fixed precedence: Raw first, then Ruina, Nihilum, Invictus, and Vindicta last. Any trace of Raw in the chunk will therefore claim an empty gem before any other Aspect is considered, so dedicate a separate chunk to each Aspect you intend to bottle.
 

@@ -28,7 +28,7 @@ That covers the distances a Spiritus Conduit chain used to handle, and it holds 
 
 ## Running multiple Aspects
 
-The Aura is **chunk-based** and caps at **100 per Aspect**, and a chunk grows clusters of its **dominant** Aspect best (off-Aspect clusters cost more and grow slower). So farm each Aspect in its own chunk: keep that chunk biased to the Aspect (burn its shards there), run a Crystallarium + Vas + a Crystallum Fractura tuned to it, and ferry the finished Aura out with Spiritus Conduit or a Spirit Accumulator feeding the routing network. Repeat per Aspect (Raw, Ruina, Nihilum, Vindicta, Invictus) for a full will supply.
+The Aura is **chunk-based** and caps at **100 per Aspect**, and a chunk grows clusters of its **dominant** Aspect best (off-Aspect clusters cost more and grow slower). So farm each Aspect in its own chunk: keep that chunk biased to the Aspect (burn its shards there), run a Crystallarium + Spiritus Crucible + a Crystallum Fractura tuned to it, and ferry the finished Aura out with Spiritus Conduit or a Spirit Accumulator feeding the routing network. Repeat per Aspect (Raw, Ruina, Nihilum, Vindicta, Invictus) for a full will supply.
 
 Because an Accumulator is locked to one Aspect at a time, run one per farmed Aspect. They can all share a single network; each Output Node names the Aspect it wants and draws only from the matching Accumulators.
 
