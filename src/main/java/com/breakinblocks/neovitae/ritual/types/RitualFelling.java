@@ -17,12 +17,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.api.ritual.AreaDescriptor;
 import com.breakinblocks.neovitae.api.stream.StreamPresets;
 import com.breakinblocks.neovitae.ritual.*;
 import com.breakinblocks.neovitae.ritual.RitualHelper.RitualContext;
 import com.breakinblocks.neovitae.util.helper.BlockProtectionHelper;
+import com.breakinblocks.neovitae.util.Utils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -39,9 +42,10 @@ public class RitualFelling extends Ritual {
 
     public RitualFelling() {
         super("felling", 0, 2000, "ritual." + NeoVitae.MODID + ".felling");
-        addBlockRange(FELL_RANGE, new AreaDescriptor.Rectangle(new BlockPos(-10, 0, -10), 21, 30, 21));
+        // Tall 2x2 spruce trees can exceed thirty blocks from the planting level.
+        addBlockRange(FELL_RANGE, new AreaDescriptor.Rectangle(new BlockPos(-10, 0, -10), 21, 40, 21));
         addBlockRange(CHEST_RANGE, new AreaDescriptor.Rectangle(new BlockPos(0, 1, 0), 1, 1, 1));
-        setMaximumVolumeAndDistanceOfRange(FELL_RANGE, 15000, 15, 40);
+        setMaximumVolumeAndDistanceOfRange(FELL_RANGE, 20000, 15, 40);
         setMaximumVolumeAndDistanceOfRange(CHEST_RANGE, 1, 5, 5);
     }
 
@@ -64,12 +68,12 @@ public class RitualFelling extends Ritual {
         RitualHelper.ChestOutput chest = RitualHelper.resolveChestOutput(ctx, this, CHEST_RANGE);
         BlockEntity inv = chest.tile();
         boolean hasInv = chest.hasFreeSlot();
+        ResourceHandler<ItemResource> chestInventory = inv != null ? Utils.getInventory(inv, Direction.DOWN) : null;
 
         List<ItemStack> allDrops = new ArrayList<>();
         List<BlockPos> replantSpots = new ArrayList<>();
 
         BlockPos masterPos = ctx.masterPos();
-        // Find and break logs first, then leaves
         for (BlockPos pos : positions) {
             if (blocksBroken >= maxBlocks) break;
 
@@ -105,7 +109,9 @@ public class RitualFelling extends Ritual {
         }
 
         for (BlockPos spot : replantSpots) {
-            tryReplant(serverLevel, spot, allDrops);
+            if (!tryReplant(serverLevel, spot, allDrops) && chestInventory != null) {
+                tryReplantFromInventory(serverLevel, spot, chestInventory);
+            }
         }
 
         RitualHelper.distributeDrops(allDrops, hasInv ? inv : null,
@@ -147,7 +153,22 @@ public class RitualFelling extends Ritual {
         return false;
     }
 
-
+    private boolean tryReplantFromInventory(ServerLevel level, BlockPos pos,
+                                            ResourceHandler<ItemResource> inventory) {
+        if (!level.getBlockState(pos).isAir()) return false;
+        for (int slot = 0; slot < inventory.size(); slot++) {
+            ItemStack available = Utils.stackAt(inventory, slot);
+            if (available.isEmpty() || !available.is(ItemTags.SAPLINGS)
+                    || !(available.getItem() instanceof BlockItem blockItem)) continue;
+            BlockState plant = blockItem.getBlock().defaultBlockState();
+            if (!plant.canSurvive(level, pos)) continue;
+            ItemStack extracted = Utils.extractItem(inventory, slot, 1, false);
+            if (extracted.isEmpty()) continue;
+            level.setBlock(pos, plant, Block.UPDATE_ALL);
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void gatherComponents(Consumer<RitualComponent> components) {
