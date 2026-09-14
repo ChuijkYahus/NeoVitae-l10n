@@ -29,18 +29,9 @@ docs/
 !/[Cc][Oo][Nn][Tt][Rr][Ii][Bb][Uu][Tt][Ii][Nn][Gg].[Mm][Dd]
 !README.md
 
-# Ignore Python files as they are generally untility scripts unrelated to the project
-*.py
-
 *.csv
 
-# Ignore everything in tools/ except wiki sync scripts
-tools/*
-!tools/sync-wiki.sh
-!tools/git-hooks/
-!tools/git-hooks/*
-!tools/port-lang.py
-!tools/lang-key-map.json
+/tools/
 
 gradlew
 

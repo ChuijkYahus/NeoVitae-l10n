@@ -7,14 +7,15 @@ package com.breakinblocks.neovitae.ritual.types;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
@@ -23,22 +24,26 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import com.breakinblocks.neovitae.NeoVitae;
+import net.neoforged.neoforge.network.PacketDistributor;
+import com.breakinblocks.neovitae.common.block.BlockMasterRitualStone;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.block.BlockInversionPillarEnd;
-import com.breakinblocks.neovitae.common.block.dungeon.DungeonBlocks;
 import com.breakinblocks.neovitae.common.block.type.PillarCapType;
 import com.breakinblocks.neovitae.common.blockentity.InversionPillarBlockEntity;
 import com.breakinblocks.neovitae.common.dataattachment.NVDataAttachments;
 import com.breakinblocks.neovitae.common.dataattachment.DungeonExitData;
 import com.breakinblocks.neovitae.common.dimension.DungeonDimensionHelper;
+import com.breakinblocks.neovitae.common.network.RitualObstructionsPayload;
 import com.breakinblocks.neovitae.ritual.*;
 import com.breakinblocks.neovitae.util.helper.AnimaHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -55,16 +60,42 @@ public abstract class DungeonRitualBase extends Ritual {
 
     @Override
     public boolean canActivate(IMasterRitualStone masterRitualStone, Player player) {
+        return getActivationError(masterRitualStone, player) == null;
+    }
+
+    @Nullable
+    @Override
+    public Component getActivationError(IMasterRitualStone masterRitualStone, Player player) {
         if (masterRitualStone.getWorldObj() instanceof ServerLevel level) {
             BoundingBox box = getStructureBounds(masterRitualStone, level);
-            if (box != null && !hasEnoughSpace(level, box)) {
-                player.displayClientMessage(Component.translatable(
-                        "ritual.neovitae.dungeon.no_space",
-                        box.getXSpan(), box.getYSpan(), box.getZSpan()), true);
-                return false;
+            showObstructions(player, List.of());
+            if (box == null) {
+                return Component.translatable("ritual.neovitae.dungeon.missing_structure");
+            }
+            if (box.minY() < level.getMinBuildHeight() || box.maxY() >= level.getMaxBuildHeight()) {
+                return Component.translatable("ritual.neovitae.dungeon.build_height");
+            }
+            if (!level.getWorldBorder().isWithinBounds(new BlockPos(box.minX(), box.minY(), box.minZ()))
+                    || !level.getWorldBorder().isWithinBounds(new BlockPos(box.maxX(), box.maxY(), box.maxZ()))) {
+                return Component.translatable("ritual.neovitae.dungeon.world_border");
+            }
+            List<BlockPos> obstructions = findObstructions(masterRitualStone, level, box);
+            if (!obstructions.isEmpty()) {
+                showObstructions(player, obstructions.subList(0,
+                        Math.min(obstructions.size(), RitualObstructionsPayload.MAX_POSITIONS)));
+                BlockPos first = obstructions.getFirst();
+                return Component.translatable("ritual.neovitae.dungeon.obstructed", obstructions.size(),
+                        first.getX(), first.getY(), first.getZ());
             }
         }
-        return true;
+        return null;
+    }
+
+    private static void showObstructions(Player player, List<BlockPos> positions) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer,
+                    new RitualObstructionsPayload(player.level().dimension().location(), positions));
+        }
     }
 
     @Override
@@ -79,28 +110,67 @@ public abstract class DungeonRitualBase extends Ritual {
         if (templateOpt.isEmpty()) {
             return null;
         }
-        StructurePlaceSettings settings = new StructurePlaceSettings()
-                .setRotation(directionToRotation(masterRitualStone.getDirection()))
-                .setMirror(Mirror.NONE)
-                .setIgnoreEntities(true)
-                .setRotationPivot(ALTERNATOR_LOCAL);
+        StructurePlaceSettings settings = structureSettings(masterRitualStone);
         BlockPos placeOrigin = masterRitualStone.getMasterBlockPos().subtract(ALTERNATOR_LOCAL);
         return templateOpt.get().getBoundingBox(settings, placeOrigin);
     }
 
-    protected boolean hasEnoughSpace(ServerLevel level, BoundingBox box) {
+    protected List<BlockPos> findObstructions(IMasterRitualStone masterRitualStone, ServerLevel level, BoundingBox box) {
+        Set<BlockPos> ritualPositions = ritualPositions(masterRitualStone);
+        List<BlockPos> obstructions = new ArrayList<>();
         for (BlockPos pos : BlockPos.betweenClosed(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ())) {
             BlockState state = level.getBlockState(pos);
-            if (state.isAir() || state.canBeReplaced()) {
+            if (state.isAir() || state.canBeReplaced() || isRitualStone(level, pos, ritualPositions)) {
                 continue;
             }
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
-            if (id.getNamespace().equals(NeoVitae.MODID)) {
+            // The master stone may be embedded in a floor. Only ordinary full blocks
+            // can become the portal's foundation; inventories and bedrock remain protected.
+            if (pos.getY() == masterRitualStone.getMasterBlockPos().getY()
+                    && !state.hasBlockEntity() && state.isCollisionShapeFullBlock(level, pos)
+                    && state.getDestroySpeed(level, pos) >= 0) {
                 continue;
             }
-            return false;
+            obstructions.add(pos.immutable());
         }
-        return true;
+        return obstructions;
+    }
+
+    private Set<BlockPos> ritualPositions(IMasterRitualStone masterRitualStone) {
+        Set<BlockPos> positions = new HashSet<>();
+        positions.add(masterRitualStone.getMasterBlockPos());
+        for (RitualComponent component : RitualLayouts.get(masterRitualStone.getWorldObj(), this)) {
+            positions.add(masterRitualStone.getMasterBlockPos().offset(
+                    rotateOffset(component.offset(), masterRitualStone.getDirection())));
+        }
+        return positions;
+    }
+
+    private static boolean isRitualStone(LevelReader level, BlockPos pos, Set<BlockPos> ritualPositions) {
+        Block block = level.getBlockState(pos).getBlock();
+        return ritualPositions.contains(pos) && (block instanceof IRitualStone || block instanceof BlockMasterRitualStone);
+    }
+
+    private StructurePlaceSettings structureSettings(IMasterRitualStone masterRitualStone) {
+        Set<BlockPos> ritualPositions = ritualPositions(masterRitualStone);
+        return new StructurePlaceSettings()
+                .setRotation(directionToRotation(masterRitualStone.getDirection()))
+                .setMirror(Mirror.NONE)
+                .setIgnoreEntities(true)
+                .setRotationPivot(ALTERNATOR_LOCAL)
+                .addProcessor(new BlockIgnoreProcessor(List.of(Blocks.AIR)) {
+                    @Nullable
+                    @Override
+                    public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin,
+                            BlockPos pivot, StructureTemplate.StructureBlockInfo original,
+                            StructureTemplate.StructureBlockInfo current, StructurePlaceSettings settings) {
+                        // Preserve the floor in template air cells, but still consume the ritual's runes.
+                        if (current.pos().getY() == masterRitualStone.getMasterBlockPos().getY()
+                                && !isRitualStone(level, current.pos(), ritualPositions)) {
+                            return super.processBlock(level, origin, pivot, original, current, settings);
+                        }
+                        return current;
+                    }
+                });
     }
 
     protected void storePlayerExitLocation(Player player) {
@@ -123,22 +193,19 @@ public abstract class DungeonRitualBase extends Ritual {
 
     protected boolean applyRitualStructure(IMasterRitualStone masterRitualStone, ServerLevel level) {
         BlockPos masterPos = masterRitualStone.getMasterBlockPos();
-        Rotation rotation = directionToRotation(masterRitualStone.getDirection());
 
         Optional<StructureTemplate> templateOpt = level.getStructureManager().get(getStructureId());
         if (templateOpt.isEmpty()) {
             return false;
         }
 
-        StructurePlaceSettings settings = new StructurePlaceSettings()
-                .setRotation(rotation)
-                .setMirror(Mirror.NONE)
-                .setIgnoreEntities(true)
-                .setRotationPivot(ALTERNATOR_LOCAL);
+        StructurePlaceSettings settings = structureSettings(masterRitualStone);
 
         BlockPos placeOrigin = masterPos.subtract(ALTERNATOR_LOCAL);
-        templateOpt.get().placeInWorld(level, placeOrigin, ALTERNATOR_LOCAL, settings, level.random,
-                Block.UPDATE_CLIENTS);
+        if (!templateOpt.get().placeInWorld(level, placeOrigin, ALTERNATOR_LOCAL, settings, level.random,
+                Block.UPDATE_CLIENTS)) {
+            return false;
+        }
 
         spawnLightningEffect(level, masterPos);
         AnimaHelper.incrementDungeonCounter();

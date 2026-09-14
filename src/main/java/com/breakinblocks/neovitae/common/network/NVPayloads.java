@@ -14,6 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.breakinblocks.neovitae.client.ClientAnimaCache;
 import com.breakinblocks.neovitae.client.ClientSpiritusCache;
 import com.breakinblocks.neovitae.client.ClipboardClientHelper;
+import com.breakinblocks.neovitae.client.event.RitualObstructionHandler;
 import com.breakinblocks.neovitae.client.render.stream.StreamManager;
 import com.breakinblocks.neovitae.common.blockentity.routing.FilteredRoutingNodeBlockEntity;
 import com.breakinblocks.neovitae.common.blockentity.routing.OutputRoutingNodeBlockEntity;
@@ -138,6 +139,12 @@ public class NVPayloads {
                 RitualCodePayload.TYPE,
                 RitualCodePayload.STREAM_CODEC,
                 NVPayloads::handleRitualCode
+        );
+
+        registrar.playToClient(
+                RitualObstructionsPayload.TYPE,
+                RitualObstructionsPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> RitualObstructionHandler.show(payload))
         );
 
         registrar.playToServer(

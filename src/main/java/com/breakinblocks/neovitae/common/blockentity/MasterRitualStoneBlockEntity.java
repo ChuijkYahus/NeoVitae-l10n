@@ -234,10 +234,12 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
             return false;
         }
 
-        if (player != null && !ritual.canActivate(this, player)) {
-            player.displayClientMessage(
-                    Component.translatable("ritual.neovitae.activation.blocked"), true);
-            return false;
+        if (player != null) {
+            Component activationError = ritual.getActivationError(this, player);
+            if (activationError != null) {
+                player.displayClientMessage(activationError, true);
+                return false;
+            }
         }
 
         Anima network = AnimaHelper.getAnima(player.getUUID());

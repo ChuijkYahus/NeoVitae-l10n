@@ -84,6 +84,13 @@ public abstract class Ritual {
         return true;
     }
 
+    /** Returns the reason activation failed, or null when activation is allowed. */
+    @Nullable
+    public Component getActivationError(IMasterRitualStone masterRitualStone, Player player) {
+        return canActivate(masterRitualStone, player) ? null
+                : Component.translatable("ritual.neovitae.activation.blocked");
+    }
+
     public boolean activateRitual(IMasterRitualStone masterRitualStone, Player player, UUID owner) {
         return true;
     }
