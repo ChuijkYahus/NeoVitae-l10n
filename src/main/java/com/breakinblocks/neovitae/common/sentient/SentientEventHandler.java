@@ -34,6 +34,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.event.LexVitaeAoeHandler;
+import com.breakinblocks.neovitae.common.item.ExperienceTomeItem;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.common.item.NVMaterialsAndTiers;
 import com.breakinblocks.neovitae.common.tag.NVTags;
@@ -121,6 +122,20 @@ public class SentientEventHandler {
     public static void onExpPickup(PlayerXpEvent.PickupXp event) {
         if (event.getEntity().level().isClientSide()) {
             return;
+        }
+
+        if (CuriosCompat.isCuriosLoaded()) {
+            int incoming = event.getOrb().getValue();
+            for (ItemStack curio : CuriosCompat.getCuriosInventory(event.getEntity())) {
+                if (!(curio.getItem() instanceof ExperienceTomeItem)) continue;
+                int stored = ExperienceTomeItem.getStoredXp(curio);
+                int accepted = Math.min(incoming, Integer.MAX_VALUE - stored);
+                if (accepted <= 0) continue;
+                ExperienceTomeItem.addXpToTome(curio, accepted);
+                incoming -= accepted;
+                event.getOrb().setValue(incoming);
+                if (incoming == 0) break;
+            }
         }
 
         if (SentientHelper.hasFullSet(event.getEntity())) {

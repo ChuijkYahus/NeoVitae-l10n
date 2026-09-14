@@ -56,7 +56,7 @@ public class AspectedSpiritusEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageText("To fill a [#](8B0000)Spiritus Gem[#]() with a specific Aspect, feed a [#](8B0000)Spiritus Crucible[#]() "
                 + "Spiritus Crystals of that Aspect until the chunk's Aura runs thick with it. Then set the "
-                + "empty gem in that same Vas and [#](2E8B57)apply a redstone signal[#](); the vessel reverses its "
+                + "empty gem in that same Spiritus Crucible and [#](2E8B57)apply a redstone signal[#](); the vessel reverses its "
                 + "flow, and the gem drinks deeply from the Aura.\\\n\\\n"
                 + "[#](2E8B57)Right-click while holding a Sentient Tool to recalibrate it to the dominant Aspect "
                 + "in your inventory.[#]()");

@@ -35,7 +35,7 @@ public class AuraEntry extends EntryProvider {
         this.pageText("Feed it a charged [#](8B0000)Spiritus Gem[#](), loose [#](8B0000)Spiritus[#](), or [#](8B0000)Spiritus Crystals[#]() "
                 + "of any Aspect. Crystals are consumed once the chunk's Spiritus dips below 50; Spiritus in item "
                 + "form or from a gem is consumed gradually as needed.\\\n\\\n"
-                + "[#](2E8B57)Apply a redstone signal[#]() and the Vas reverses: a Spiritus Gem placed inside is now "
+                + "[#](2E8B57)Apply a redstone signal[#]() and the Spiritus Crucible reverses: a Spiritus Gem placed inside is now "
                 + "[#](2E8B57)filled[#]() from the chunk's Aura instead of drained. The same vessel serves as both "
                 + "deposit and withdrawal point.");
 
