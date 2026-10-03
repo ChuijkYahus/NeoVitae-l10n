@@ -41,6 +41,8 @@ The Ara Vitae also forges **Tabula**, the inscribed stone tablets that serve as 
 | Tabula Spiritus  | Tier 3     | 15,000 EV  | Dark veins thread the tablet like frozen lightning. |
 | Tabula Aetherea  | Tier 4     | 30,000 EV  | Almost translucent, hovering at the edge of the beyond. |
 
+Short of Deepslate? Lay **Cobblestone** on a Tier 0 altar and, for 50 EV, it becomes **Cobbled Deepslate**; smelt that into Deepslate. A [Vitae Link](Automating-the-Ara-Vitae) crafts its whole input stack at once, so it converts 64 cobblestone in a single craft.
+
 Two specialized variants exist for the alchemical bench: the **Tabula Vial** (a glass vessel reinforced with powdered Tabula, used to hold anointments) and the **Tabula Ampoule** (a small reservoir for crystallised EV, produced by certain throwing daggers and crushable for raw EV). Both are forged in the **[Tabula Vitae](Tabula-Vitae-Flasks-and-Anointments)** brewing rig.
 
 ## Rune Families

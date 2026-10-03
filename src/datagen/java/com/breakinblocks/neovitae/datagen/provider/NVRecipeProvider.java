@@ -751,6 +751,15 @@ public class NVRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_altar", has(NVBlocks.ARA_VITAE.block().get()))
                 .save(output, NeoVitae.rl("tabula_rasa"));
 
+        AltarRecipeBuilder.build(Items.COBBLED_DEEPSLATE)
+                .from(Tags.Items.COBBLESTONES_NORMAL)
+                .minTier(0)
+                .bloodNeeded(50)
+                .consumption(5)
+                .drain(0)
+                .unlockedBy("has_altar", has(NVBlocks.ARA_VITAE.block().get()))
+                .save(output, NeoVitae.rl("cobbled_deepslate"));
+
         AltarRecipeBuilder.build(NVItems.TABULA_ROBUR.get())
                 .from(NVItems.TABULA_RASA.get())
                 .minTier(1)
