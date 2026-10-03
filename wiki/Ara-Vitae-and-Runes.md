@@ -27,7 +27,7 @@ To ascend to greater tiers, you must lay **Blank Runes** in concentric **circula
 | 4    | 100         | Adds a ring of 48 runes, lower again at radius 8. **Hellforged Block** caps mark the four cardinal points. |
 | 5    | 172         | Adds the widest ring of 72 runes at radius 11. Tall pillars rise at the four cardinal sides, crowned with **Crystal Clusters** (or Crystal Cluster Bricks). |
 
-Crystal Clusters are forged in the **[Hellfire Forge](Hellfire-Forge-and-Sentient-Equipment)** from Sculk, a Tabula Aetherea, a Weak Blood Shard, and a Nether Star.
+Crystal Clusters are forged in the **[Hellfire Forge](Hellfire-Forge-and-Sentient-Equipment)** from Sculk, a Tabula Aetherea, a Weak Blood Shard, and a Nether Star. A Crystal Cluster or Crystal Cluster Brick placed by an Enchanting Table counts as **15 bookshelves**, so one is enough to reach the table's maximum.
 
 ## Tabula
 
