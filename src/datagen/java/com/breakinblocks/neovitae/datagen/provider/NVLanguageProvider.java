@@ -1423,7 +1423,7 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         addRitual("downgrade", "Sentient Extraction", "Throw a piece of Sentient Armor onto the small zone above the master stone; the ritual extracts every upgrade as a separate Upgrade Tome.");
         addRitual("penance", "Ritual of Sentient Penance", "Stand on the master stone in Sentient Armor and throw a downgrade catalyst onto the small zone above it; the ritual inscribes one level of the matching downgrade, freeing Upgrade Points to spend elsewhere.");
         addRitual("meteor", "Ritual of Meteo", "Consumes a catalyst item dropped within the area and crashes a corresponding meteor from above. Catalysts are defined by meteor recipes.");
-        addRitual("forsaken_soul", "The Ritual of Lost Souls", "Watches the 21x21x21 area for non-player mob deaths and drops a charged Raw Spiritus item at each death position.");
+        addRitual("forsaken_soul", "The Ritual of Lost Souls", "Watches the 21x21x21 area for non-player mob deaths and drops Spiritus Essence at each death position, which a Spiritus Gem in your inventory absorbs on pickup.");
         addRitual("full_stomach", "Ritual of the Satiated Stomach", "Feeds every practitioner in range from food stored in an adjacent chest.");
 
         // Tenebrae Tier Rituals

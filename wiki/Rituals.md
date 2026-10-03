@@ -57,7 +57,7 @@ Some rituals can be expanded far beyond their default range, but EV cost scales 
 | Well of Suffering (*The Crimson Tithe*) | Harvests Essentia Vitae from the suffering of nearby creatures. |
 | Ritual of the Willing Sacrifice (*Blood Freely Given*) | Converts the practitioner's own vitality into EV. |
 | The Torment Nexus (*Why It Exists*) | Server-friendly endgame EV. Reads the configurations of nearby vanilla **and** Trial Spawners, simulates the kills they would produce, and feeds the resulting EV directly to your altar; no entities are spawned, no chunks load up with corpses. |
-| The Ritual of Lost Souls | Watches a 21×21×21 area around the Master Ritual Stone for the moment of any non-player creature's death and drops a charged **Raw Spiritus** item at the death position. The richer the kill (Wither, Ender Dragon, Warden), the more Spiritus per drop. EV cost scales with the number of deaths processed each tick. |
+| The Ritual of Lost Souls | Watches a 21×21×21 area around the Master Ritual Stone for the moment of any non-player creature's death and drops **Spiritus Essence** at the death position, which a Spiritus Gem in your inventory absorbs on pickup. The richer the kill (Wither, Ender Dragon, Warden), the more Spiritus per drop. EV cost scales with the number of deaths processed each tick. |
 | Ritual of Containment (*The Invisible Cage*) | Imprisons creatures within an invisible barrier. |
 | Ritual of Expulsion (*The Warding Gale*) | Drives all creatures from your sanctum. |
 

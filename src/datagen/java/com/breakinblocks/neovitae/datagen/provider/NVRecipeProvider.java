@@ -3419,6 +3419,16 @@ public class NVRecipeProvider extends RecipeProvider {
                 .ticks(100)
                 .minimumTier(2)
                 .save(output, "weak_filling");
+
+        TabulaVitaeRecipeBuilder.build(NVItems.STANDARD_FILLING_AGENT.get())
+                .input(NVItems.WEAK_FILLING_AGENT.get())
+                .input(NVItems.STRENGTHENED_CATALYST.get())
+                .input(Ingredient.of(Tags.Items.DUSTS_GLOWSTONE))
+                .input(Items.CHORUS_FRUIT)
+                .syphon(4000)
+                .ticks(200)
+                .minimumTier(3)
+                .save(output, "standard_filling");
         // Tabula Vitae recipe (crafting recipe for the table itself)
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, NVBlocks.TABULA_VITAE.block().get())
                 .pattern("sss")
