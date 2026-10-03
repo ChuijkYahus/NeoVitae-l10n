@@ -28,6 +28,8 @@ import com.breakinblocks.neovitae.common.recipe.alchemyarray.AlchemyArrayRecipe;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 
+import java.util.List;
+
 public class AlchemyArrayBlockEntity extends BaseBlockEntity {
     public boolean isActive = false;
     public int activeCounter = 0;
@@ -40,6 +42,7 @@ public class AlchemyArrayBlockEntity extends BaseBlockEntity {
     private Binding ownerBinding = Binding.EMPTY;
     private DyeColor arrayColor = null;
     private CompoundTag pendingEffectNbt = null;
+    private List<ItemStack> pendingEffectItems = null;
 
     public final ItemStackHandler inv = new ItemStackHandler(2) {
         @Override
@@ -86,14 +89,23 @@ public class AlchemyArrayBlockEntity extends BaseBlockEntity {
         } else {
             this.arrayColor = null;
         }
-        if (tag.contains("effectState")) {
-            pendingEffectNbt = tag.getCompound("effectState");
-            if (arrayEffect != null) {
-                arrayEffect.readFromNBT(pendingEffectNbt);
-                pendingEffectNbt = null;
-            }
-        } else {
+        pendingEffectNbt = tag.contains("effectState") ? tag.getCompound("effectState") : null;
+        pendingEffectItems = tag.contains("effectItems")
+                ? ItemStack.OPTIONAL_CODEC.listOf().parse(registries.createSerializationContext(NbtOps.INSTANCE), tag.get("effectItems")).result().orElse(null)
+                : null;
+        if (arrayEffect != null) {
+            applyPendingEffectState();
+        }
+    }
+
+    private void applyPendingEffectState() {
+        if (pendingEffectNbt != null) {
+            arrayEffect.readFromNBT(pendingEffectNbt);
             pendingEffectNbt = null;
+        }
+        if (pendingEffectItems != null) {
+            arrayEffect.loadItems(pendingEffectItems);
+            pendingEffectItems = null;
         }
     }
 
@@ -120,6 +132,11 @@ public class AlchemyArrayBlockEntity extends BaseBlockEntity {
             arrayEffect.writeToNBT(effectTag);
             if (!effectTag.isEmpty()) {
                 tag.put("effectState", effectTag);
+            }
+            List<ItemStack> effectItems = arrayEffect.saveItems();
+            if (!effectItems.isEmpty()) {
+                ItemStack.OPTIONAL_CODEC.listOf().encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), effectItems)
+                        .result().ifPresent(nbt -> tag.put("effectItems", nbt));
             }
         }
     }
@@ -157,10 +174,7 @@ public class AlchemyArrayBlockEntity extends BaseBlockEntity {
                 return false;
             } else {
                 arrayEffect = effect;
-                if (pendingEffectNbt != null) {
-                    arrayEffect.readFromNBT(pendingEffectNbt);
-                    pendingEffectNbt = null;
-                }
+                applyPendingEffectState();
                 if (level != null && !level.isClientSide) {
                     level.playSound(null, worldPosition, NVSounds.ALCHEMY_ARRAY_ACTIVATE.get(), SoundSource.BLOCKS, 0.5f, 1.0f);
                     for (int i = 0; i < 6; i++) {

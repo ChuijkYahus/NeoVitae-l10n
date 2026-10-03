@@ -3,11 +3,8 @@ package com.breakinblocks.neovitae.common.alchemyarray;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
@@ -45,15 +42,9 @@ public class AlchemyArrayEffectMiner extends AlchemyArrayEffect {
     private int cooldown;
     private int failDelay;
 
-    private HolderLookup.Provider registries;
-    private Tag rawTool;
-    private ListTag rawPending;
-
     @Override
     public boolean update(AlchemyArrayBlockEntity tile, int activeCounter) {
         if (!(tile.getLevel() instanceof ServerLevel level)) return false;
-        registries = level.registryAccess();
-        decodeStoredItems();
 
         if (cooldown > 0) {
             cooldown--;
@@ -229,31 +220,11 @@ public class AlchemyArrayEffectMiner extends AlchemyArrayEffect {
         pending.clear();
     }
 
-    private void decodeStoredItems() {
-        if (registries == null) return;
-        if (rawTool != null) {
-            tool = ItemStack.parse(registries, rawTool).orElse(ItemStack.EMPTY);
-            rawTool = null;
-        }
-        if (rawPending != null) {
-            pending.clear();
-            for (int i = 0; i < rawPending.size(); i++) {
-                ItemStack.parse(registries, rawPending.getCompound(i)).ifPresent(pending::add);
-            }
-            rawPending = null;
-        }
-    }
-
     @Override
     public void readFromNBT(CompoundTag tag) {
         progress = tag.getDouble("progress");
         cooldown = tag.getInt("cooldown");
         failDelay = tag.getInt("failDelay");
-        rawTool = tag.contains("tool") ? tag.get("tool") : null;
-        tool = ItemStack.EMPTY;
-        rawPending = tag.contains("pending") ? tag.getList("pending", Tag.TAG_COMPOUND) : null;
-        pending.clear();
-        decodeStoredItems();
     }
 
     @Override
@@ -261,19 +232,23 @@ public class AlchemyArrayEffectMiner extends AlchemyArrayEffect {
         tag.putDouble("progress", progress);
         tag.putInt("cooldown", cooldown);
         tag.putInt("failDelay", failDelay);
-        if (rawTool != null) {
-            tag.put("tool", rawTool);
-        } else if (!tool.isEmpty() && registries != null) {
-            tag.put("tool", tool.save(registries));
-        }
-        if (rawPending != null) {
-            tag.put("pending", rawPending);
-        } else if (!pending.isEmpty() && registries != null) {
-            ListTag list = new ListTag();
-            for (ItemStack stack : pending) {
-                list.add(stack.save(registries));
-            }
-            tag.put("pending", list);
+    }
+
+    @Override
+    public List<ItemStack> saveItems() {
+        if (tool.isEmpty() && pending.isEmpty()) return List.of();
+        List<ItemStack> items = new ArrayList<>();
+        items.add(tool);
+        items.addAll(pending);
+        return items;
+    }
+
+    @Override
+    public void loadItems(List<ItemStack> items) {
+        pending.clear();
+        tool = items.isEmpty() ? ItemStack.EMPTY : items.get(0);
+        for (int i = 1; i < items.size(); i++) {
+            if (!items.get(i).isEmpty()) pending.add(items.get(i));
         }
     }
 
