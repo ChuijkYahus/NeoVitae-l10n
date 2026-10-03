@@ -7,6 +7,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookMultiblockPageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.condition.BookModLoadedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
@@ -65,6 +66,18 @@ public class RitualTormentNexusEntry extends EntryProvider {
                 + " creature and the array is spent.\\\n\\\n"
                 + "Stock a ring of spawners around the Nexus this way to farm exactly the drops you need without a"
                 + " single mob ever drawing breath.");
+
+        this.page("ars_jars", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+                .withCondition(BookModLoadedConditionModel.create().withModId("ars_nouveau")));
+        this.pageTitle("Bottled Quarry");
+        this.pageText("An Ars Nouveau [#](8B0000)Containment Jar[#]() holding a creature serves the Nexus as well as any"
+                + " spawner. The Nexus treats each occupied jar in its working area as an ordinary [#](8B0000)mob"
+                + " spawner[#]() set to the creature inside: four of its kind every [#](8B0000)25 seconds[#]() on"
+                + " average, paid and rewarded the same way.\\\n\\\n"
+                + "The creature in the jar is never harmed. Empty the jar, or swap in another creature, and the Nexus"
+                + " follows suit.");
 
         this.page("ethics", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())

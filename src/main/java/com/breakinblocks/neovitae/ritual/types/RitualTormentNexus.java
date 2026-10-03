@@ -7,6 +7,7 @@ import com.breakinblocks.neovitae.common.blockentity.MasterRitualStoneBlockEntit
 import com.breakinblocks.neovitae.common.damagesource.NVDamageSources;
 import com.breakinblocks.neovitae.common.datamap.EntitySacrificeHelper;
 import com.breakinblocks.neovitae.common.item.ExperienceTomeItem;
+import com.breakinblocks.neovitae.compat.arsnouveau.ArsNouveauCompat;
 import com.breakinblocks.neovitae.compat.enderio.EnderIOCompat;
 import com.breakinblocks.neovitae.ritual.EnumRuneType;
 import com.breakinblocks.neovitae.ritual.IMasterRitualStone;
@@ -86,11 +87,14 @@ public class RitualTormentNexus extends Ritual {
     private static volatile boolean LISTENER_REGISTERED = false;
 
     private static final int RESCAN_INTERVAL_REFRESHES = 10;
+    private static final int JAR_SPAWN_COUNT = 4;
+    private static final double JAR_AVERAGE_DELAY = 500.0;
 
     private final Map<BlockPos, Double> vanillaSpawnerAccumulators = new LinkedHashMap<>();
     private final Map<BlockPos, Double> trialSpawnerAccumulators = new LinkedHashMap<>();
     private final Map<BlockPos, Double> trialRewardAccumulators = new LinkedHashMap<>();
     private final Set<BlockPos> harvestedSpawners = new LinkedHashSet<>();
+    private final Map<BlockPos, Double> jarAccumulators = new LinkedHashMap<>();
     private BlockPos altarOffsetPos = null;
     private int refreshesSinceScan = 0;
 
@@ -216,6 +220,7 @@ public class RitualTormentNexus extends Ritual {
         trialSpawnerAccumulators.clear();
         trialRewardAccumulators.clear();
         harvestedSpawners.clear();
+        jarAccumulators.clear();
     }
 
     private void clearHarvestTracking(IMasterRitualStone master) {
@@ -256,6 +261,7 @@ public class RitualTormentNexus extends Ritual {
         Map<BlockPos, Double> nextVanilla = new LinkedHashMap<>();
         Map<BlockPos, Double> nextTrial = new LinkedHashMap<>();
         Set<BlockPos> nextHarvested = new LinkedHashSet<>();
+        Map<BlockPos, Double> nextJars = new LinkedHashMap<>();
         for (BlockPos pos : range.getContainedPositions(masterPos)) {
             BlockEntity be = level.getBlockEntity(pos);
             BlockPos imm = pos.immutable();
@@ -265,6 +271,8 @@ public class RitualTormentNexus extends Ritual {
                 nextTrial.put(imm, trialSpawnerAccumulators.getOrDefault(imm, 0.0));
             } else if (be != null && EnderIOCompat.isPoweredSpawner(be)) {
                 nextHarvested.add(imm);
+            } else if (ArsNouveauCompat.getJarEntityType(be) != null) {
+                nextJars.put(imm, jarAccumulators.getOrDefault(imm, 0.0));
             }
         }
 
@@ -285,6 +293,8 @@ public class RitualTormentNexus extends Ritual {
         trialRewardAccumulators.keySet().retainAll(nextTrial.keySet());
         harvestedSpawners.clear();
         harvestedSpawners.addAll(nextHarvested);
+        jarAccumulators.clear();
+        jarAccumulators.putAll(nextJars);
 
         GlobalPos masterGlobal = GlobalPos.of(dim, masterPos);
         for (BlockPos p : vanillaSpawnerAccumulators.keySet()) SpawnerSuppression.add(level, p, masterPos);
@@ -299,7 +309,8 @@ public class RitualTormentNexus extends Ritual {
         ServerLevel level = ctx.serverLevel();
         BlockPos masterPos = ctx.masterPos();
 
-        if (vanillaSpawnerAccumulators.isEmpty() && trialSpawnerAccumulators.isEmpty() && harvestedSpawners.isEmpty()) {
+        if (vanillaSpawnerAccumulators.isEmpty() && trialSpawnerAccumulators.isEmpty() && harvestedSpawners.isEmpty()
+                && jarAccumulators.isEmpty()) {
             scanArea(level, master);
             refreshesSinceScan = 0;
         } else if (++refreshesSinceScan >= RESCAN_INTERVAL_REFRESHES) {
@@ -347,6 +358,27 @@ public class RitualTormentNexus extends Ritual {
             totalKills += br.performed();
             if (br.ranOutOfEv()) { ranOutOfEv = true; break; }
             level.sendParticles(ParticleTypes.SOUL, pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, 6, 0.3, 0.3, 0.3, 0.02);
+        }
+
+        if (!ranOutOfEv) {
+            for (BlockPos pos : new ArrayList<>(jarAccumulators.keySet())) {
+                EntityType<?> jarType = ArsNouveauCompat.getJarEntityType(level.getBlockEntity(pos));
+                if (jarType == null) {
+                    jarAccumulators.remove(pos);
+                    continue;
+                }
+                double cycles = jarAccumulators.getOrDefault(pos, 0.0) + refreshTicks / JAR_AVERAGE_DELAY;
+                int wholeCycles = (int) cycles;
+                jarAccumulators.put(pos, cycles - wholeCycles);
+                if (wholeCycles <= 0) continue;
+                BatchResult br = simulateKillBatch(ctx, level, pos, jarType, (long) wholeCycles * JAR_SPAWN_COUNT, fakePlayer,
+                        evPerKill, evModPercent, maxEvPerOperation, evCharged, altar, chestInv);
+                evCharged += br.charged();
+                pendingXp += br.xp();
+                totalKills += br.performed();
+                if (br.ranOutOfEv()) { ranOutOfEv = true; break; }
+                level.sendParticles(ParticleTypes.SOUL, pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, 6, 0.3, 0.3, 0.3, 0.02);
+            }
         }
 
         if (!ranOutOfEv) {
@@ -412,6 +444,7 @@ public class RitualTormentNexus extends Ritual {
                 tit.remove();
             }
         }
+        jarAccumulators.keySet().removeIf(p -> ArsNouveauCompat.getJarEntityType(level.getBlockEntity(p)) == null);
         var pit = harvestedSpawners.iterator();
         while (pit.hasNext()) {
             BlockPos p = pit.next();
@@ -714,6 +747,13 @@ public class RitualTormentNexus extends Ritual {
             BlockPos p = NbtUtils.readBlockPos(e, "pos").orElse(null);
             if (p != null) harvestedSpawners.add(p);
         }
+        jarAccumulators.clear();
+        ListTag jlist = tag.getList("MobJars", Tag.TAG_COMPOUND);
+        for (int i = 0; i < jlist.size(); i++) {
+            CompoundTag e = jlist.getCompound(i);
+            BlockPos p = NbtUtils.readBlockPos(e, "pos").orElse(null);
+            if (p != null) jarAccumulators.put(p, e.getDouble("acc"));
+        }
     }
 
     @Override
@@ -751,6 +791,14 @@ public class RitualTormentNexus extends Ritual {
             plist.add(t);
         }
         tag.put("PoweredSpawners", plist);
+        ListTag jlist = new ListTag();
+        for (var e : jarAccumulators.entrySet()) {
+            CompoundTag t = new CompoundTag();
+            t.put("pos", NbtUtils.writeBlockPos(e.getKey()));
+            t.putDouble("acc", e.getValue());
+            jlist.add(t);
+        }
+        tag.put("MobJars", jlist);
     }
 
     @Override

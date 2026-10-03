@@ -70,6 +70,18 @@
       "type": "modonomicon:text",
       "anchor": "",
       "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "ars_nouveau"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.rituals.ritual_torment_nexus.ars_jars.text",
+      "title": "book.neovitae.guide.rituals.ritual_torment_nexus.ars_jars.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
