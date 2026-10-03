@@ -48,6 +48,12 @@ Rituals that draw from or deposit into a container expose their chest, tank, or 
 
 Some rituals can be expanded far beyond their default range, but EV cost scales to match. Tread carefully with your reserves.
 
+## Ritual Ledger
+
+A circle left running in a forgotten corner keeps drawing on your Anima. The **Ritual Ledger** lists every ritual you have active: press Use and it prints each ritual's name, the position and dimension of its Master Ritual Stone, and the EV it draws each cycle. Click a position to copy it. Rituals paused by redstone or sitting in unloaded chunks are marked, since neither draws EV while it stays that way. Craft it from a book, two blank Ritual Stones, a gold ingot and a Tabula Robur.
+
+Server operators can see any player's active rituals with `/neovitae ritual active <player>`.
+
 ## Ritual Catalog
 
 ### Combat and Soul Harvest

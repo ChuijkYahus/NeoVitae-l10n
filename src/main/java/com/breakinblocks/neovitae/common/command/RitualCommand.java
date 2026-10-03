@@ -1,5 +1,6 @@
 package com.breakinblocks.neovitae.common.command;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -10,7 +11,9 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
@@ -19,8 +22,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import com.breakinblocks.neovitae.common.blockentity.MasterRitualStoneBlockEntity;
+import com.breakinblocks.neovitae.common.world.ActiveRituals;
 import com.breakinblocks.neovitae.ritual.Ritual;
 import com.breakinblocks.neovitae.ritual.RitualRegistry;
+
+import java.util.Collection;
 
 /**
  * Admin command for managing rituals.
@@ -76,6 +82,13 @@ public class RitualCommand {
                 .then(
                         Commands.literal("list")
                                 .executes(RitualCommand::listRituals)
+                )
+                .then(
+                        Commands.literal("active")
+                                .then(
+                                        Commands.argument("player", GameProfileArgument.gameProfile())
+                                                .executes(RitualCommand::listActive)
+                                )
                 );
     }
 
@@ -185,5 +198,17 @@ public class RitualCommand {
         }
 
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static int listActive(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        Collection<GameProfile> profiles = GameProfileArgument.getGameProfiles(context, "player");
+        for (GameProfile profile : profiles) {
+            source.sendSuccess(() -> Component.literal(profile.getName()).withStyle(ChatFormatting.YELLOW), false);
+            for (Component line : ActiveRituals.report(source.getServer(), profile.getId())) {
+                source.sendSuccess(() -> line, false);
+            }
+        }
+        return profiles.size();
     }
 }

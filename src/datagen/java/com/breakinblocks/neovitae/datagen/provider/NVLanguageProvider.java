@@ -734,6 +734,14 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
 
         // Ritual Reader
         add(NVItems.RITUAL_READER.get(), "Ritual Configurator");
+        add(NVItems.RITUAL_LEDGER.get(), "Ritual Ledger");
+        add("tooltip.neovitae.ritual_ledger", "Use to list your active rituals and where their Master Ritual Stones are.");
+        add("chat.neovitae.ritual_ledger.header", "Your active rituals (%s):");
+        add("chat.neovitae.ritual_ledger.none", "You have no active rituals.");
+        add("chat.neovitae.ritual_ledger.cost", "(%s EV every %ss)");
+        add("chat.neovitae.ritual_ledger.paused", "[paused by redstone]");
+        add("chat.neovitae.ritual_ledger.unloaded", "[not loaded]");
+        add("chat.neovitae.ritual_ledger.copy", "Click to copy coordinates");
         add(NVItems.RITUAL_DESIGNER.get(), "Ritual Designer");
         addTooltip("reader.desc", "Used to configure ritual areas.");
         addTooltip("reader.currentState", "Mode: %s");

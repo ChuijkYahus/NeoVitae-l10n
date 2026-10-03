@@ -23,6 +23,7 @@ import com.breakinblocks.neovitae.common.datamap.NVDataMaps;
 import com.breakinblocks.neovitae.common.datamap.RitualStats;
 import com.breakinblocks.neovitae.api.ritual.AreaDescriptor;
 import com.breakinblocks.neovitae.common.event.RitualEvent;
+import com.breakinblocks.neovitae.common.world.ActiveRituals;
 import com.breakinblocks.neovitae.compat.apotheosis.ApotheosisCompat;
 import com.breakinblocks.neovitae.ritual.*;
 import com.breakinblocks.neovitae.util.helper.AnimaHelper;
@@ -108,6 +109,10 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
                 tile.performRitual();
             }
         }
+    }
+
+    public boolean isSuspended() {
+        return level != null && isRedstoneSuspended(level, worldPosition, this);
     }
 
     private static boolean isRedstoneSuspended(Level level, BlockPos pos, MasterRitualStoneBlockEntity tile) {
@@ -289,6 +294,7 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
             NVCriteriaTriggers.RITUAL_ACTIVATED.get().trigger(serverPlayer, currentRitualId.toString());
         }
 
+        ActiveRituals.track((ServerLevel) level, worldPosition, owner, currentRitualId);
         setChanged();
         return true;
     }
@@ -324,6 +330,7 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
             }
         }
 
+        ActiveRituals.track((ServerLevel) level, worldPosition, owner, currentRitualId);
         setChanged();
     }
 
@@ -368,6 +375,9 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
         active = false;
         runningTime = 0;
         blockRanges.clear();
+        if (level instanceof ServerLevel serverLevel) {
+            ActiveRituals.untrack(serverLevel, worldPosition);
+        }
         setChanged();
     }
 
@@ -668,8 +678,9 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
     @Override
     public void onLoad() {
         super.onLoad();
-        if (level != null && !level.isClientSide() && active && currentRitual != null) {
+        if (level instanceof ServerLevel serverLevel && active && currentRitual != null) {
             currentRitual.onLoad(this);
+            ActiveRituals.track(serverLevel, worldPosition, owner, currentRitualId);
         }
     }
 

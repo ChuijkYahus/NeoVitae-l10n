@@ -518,6 +518,17 @@ public class NVRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_demonic_slate", has(NVItems.TABULA_SPIRITUS.get()))
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NVItems.RITUAL_LEDGER.get())
+                .pattern(" g ")
+                .pattern("sbs")
+                .pattern(" t ")
+                .define('g', Tags.Items.INGOTS_GOLD)
+                .define('s', NVBlocks.BLANK_RITUAL_STONE.block().get())
+                .define('b', Items.BOOK)
+                .define('t', NVItems.TABULA_ROBUR.get())
+                .unlockedBy("has_master_ritual_stone", has(NVBlocks.MASTER_RITUAL_STONE.block().get()))
+                .save(output);
+
         // Ritual Diviner (base) - diamonds, inscription tools, stick
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NVItems.RITUAL_DIVINER.get())
                 .pattern("dfd")
