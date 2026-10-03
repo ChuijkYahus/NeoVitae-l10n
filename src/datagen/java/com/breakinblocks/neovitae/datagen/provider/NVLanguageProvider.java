@@ -1377,6 +1377,12 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add(NVItems.ARRAY_VORTEX.get(), "Vortex Array");
         add(NVItems.ARRAY_LIQUIFIED_EXPERIENCE.get(), "Array of Liquified Experience");
         add(NVItems.ARRAY_IMPRISONMENT.get(), "Array of Imprisonment");
+        add(NVItems.ARRAY_MINER.get(), "Miner Array");
+        addTooltip("array_effect.miner", "Mines the block beneath it into a chest beside or above it. Mines at iron level; use a pickaxe on it to mine with that pickaxe instead.");
+        addJei("effect.miner.name", "Miner Array");
+        addJei("effect.miner.desc", "Mines the block beneath the array and stores the drops in an adjacent or overhead container");
+        add("chat.neovitae.miner_array.inserted", "The array now mines with %s.");
+        add("chat.neovitae.miner_array.removed", "Took back %s.");
         addTooltip("array_effect.bounce", "Bounces entities high into the air. Crouch to disable.");
         addTooltip("array_effect.spike", "Damages any entity that steps on the array.");
         addTooltip("array_effect.updraft", "Launches entities upward with a gust of wind.");

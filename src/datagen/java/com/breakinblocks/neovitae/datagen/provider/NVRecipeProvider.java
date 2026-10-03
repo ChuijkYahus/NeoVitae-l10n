@@ -2181,6 +2181,12 @@ public class NVRecipeProvider extends RecipeProvider {
                 .texture("textures/models/alchemyarrays/collectionarray.png")
                 .save(output, "collection");
 
+        AlchemyArrayEffectRecipeBuilder.effect(AlchemyArrayEffectType.MINER)
+                .base(Items.IRON_PICKAXE)
+                .added(Ingredient.of(Tags.Items.DUSTS_REDSTONE))
+                .texture("textures/models/alchemyarrays/minerarray.png")
+                .save(output, "miner");
+
         // Light Array - glowstone dust + gold ingot
         AlchemyArrayEffectRecipeBuilder.effect(AlchemyArrayEffectType.LIGHT)
                 .base(Ingredient.of(Tags.Items.DUSTS_GLOWSTONE))

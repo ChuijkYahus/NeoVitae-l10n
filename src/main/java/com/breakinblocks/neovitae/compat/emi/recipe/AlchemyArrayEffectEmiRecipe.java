@@ -74,6 +74,7 @@ public class AlchemyArrayEffectEmiRecipe extends BasicEmiRecipe {
             case LOYAL_FRIENDS -> new ItemStack(NVItems.ARRAY_LOYAL_FRIENDS.get());
             case VORTEX -> new ItemStack(NVItems.ARRAY_VORTEX.get());
             case IMPRISONMENT -> new ItemStack(NVItems.ARRAY_IMPRISONMENT.get());
+            case MINER -> new ItemStack(NVItems.ARRAY_MINER.get());
             default -> ItemStack.EMPTY;
         };
     }

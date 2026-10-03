@@ -479,6 +479,7 @@ public class NVItems {
     public static final DeferredHolder<Item, ArrayEffectItem> ARRAY_VORTEX = ARRAY_ITEMS.register("array_vortex", () -> new ArrayEffectItem(AlchemyArrayEffectType.VORTEX));
     public static final DeferredHolder<Item, ArrayEffectItem> ARRAY_IMPRISONMENT = ARRAY_ITEMS.register("array_imprisonment", () -> new ArrayEffectItem(AlchemyArrayEffectType.IMPRISONMENT));
     public static final DeferredHolder<Item, ArrayEffectItem> ARRAY_LIQUIFIED_EXPERIENCE = ARRAY_ITEMS.register("array_liquified_experience", () -> new ArrayEffectItem(AlchemyArrayEffectType.LIQUIFIED_EXPERIENCE));
+    public static final DeferredHolder<Item, ArrayEffectItem> ARRAY_MINER = ARRAY_ITEMS.register("array_miner", () -> new ArrayEffectItem(AlchemyArrayEffectType.MINER));
 
     public static void register(IEventBus modBus) {
         BASIC_ITEMS.register(modBus);

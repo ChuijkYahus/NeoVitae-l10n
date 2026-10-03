@@ -267,6 +267,9 @@ public class AlchemyArrayBlockEntity extends BaseBlockEntity {
         if (arrayEffect instanceof AlchemyArrayEffectLight lightEffect && level != null && !level.isClientSide) {
             lightEffect.removeLights(level);
         }
+        if (arrayEffect != null && level != null && !level.isClientSide) {
+            arrayEffect.onRemoved(this);
+        }
     }
 
     public int getRedstoneSignal() {
