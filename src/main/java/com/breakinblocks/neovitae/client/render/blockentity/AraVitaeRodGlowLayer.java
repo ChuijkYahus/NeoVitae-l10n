@@ -9,6 +9,7 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 import com.breakinblocks.neovitae.NeoVitae;
+import com.breakinblocks.neovitae.client.render.NVRenderTypes;
 import com.breakinblocks.neovitae.common.blockentity.AraVitaeTile;
 
 import java.util.Set;
@@ -29,7 +30,7 @@ public class AraVitaeRodGlowLayer extends GeoRenderLayer<AraVitaeTile> {
         if (!animatable.isVisuallyActive()) return;
         if (!ROD_BONES.contains(bone.getName())) return;
 
-        VertexConsumer glowBuf = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(GLOW_TEXTURE));
+        VertexConsumer glowBuf = bufferSource.getBuffer(NVRenderTypes.emissiveOverlay(GLOW_TEXTURE));
         getRenderer().renderCubesOfBone(poseStack, bone, glowBuf, packedLight, packedOverlay, -1);
     }
 }
