@@ -29,6 +29,11 @@ public class ItemAlchemyFlaskLingering extends ItemAlchemyFlaskThrowable {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        InteractionResultHolder<ItemStack> rinsed = rinseInWater(level, player, hand);
+        if (rinsed.getResult().consumesAction()) {
+            return rinsed;
+        }
+
         ItemStack stack = player.getItemInHand(hand);
 
         if (getRemainingUses(stack) <= 0) {

@@ -347,6 +347,13 @@ public class NeoVitaeJEIPlugin implements IModPlugin {
         registration.addIngredientInfo(List.of(new ItemStack(NVItems.SANGUINE_REVERTER.get())), VanillaTypes.ITEM_STACK,
                 Component.translatable("jei.neovitae.disenchant.info"));
 
+        List<ItemStack> flaskStacks = List.of(
+                new ItemStack(NVItems.ALCHEMY_FLASK.get()),
+                new ItemStack(NVItems.ALCHEMY_FLASK_THROWABLE.get()),
+                new ItemStack(NVItems.ALCHEMY_FLASK_LINGERING.get()));
+        registration.addIngredientInfo(flaskStacks, VanillaTypes.ITEM_STACK,
+                Component.translatable("jei.neovitae.flask.rinse.info"));
+
         List<ItemStack> allEnchantedBooks = new ArrayList<>();
         world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).listElements().forEach(holder -> {
             Enchantment ench = holder.value();

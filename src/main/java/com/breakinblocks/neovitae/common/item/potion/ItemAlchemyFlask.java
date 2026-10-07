@@ -7,19 +7,37 @@ package com.breakinblocks.neovitae.common.item.potion;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import com.breakinblocks.neovitae.client.particle.ColoredParticleOptions;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.EffectHolder;
@@ -40,6 +58,7 @@ import java.util.Optional;
 public class ItemAlchemyFlask extends Item {
 
     public static final int MAX_USES = 8;
+    public static final int RINSE_AMOUNT = 250;
 
     public ItemAlchemyFlask() {
         super(new Item.Properties().stacksTo(1).durability(MAX_USES));
@@ -82,6 +101,11 @@ public class ItemAlchemyFlask extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        InteractionResultHolder<ItemStack> rinsed = rinseInWater(level, player, hand);
+        if (rinsed.getResult().consumesAction()) {
+            return rinsed;
+        }
+
         ItemStack heldStack = player.getItemInHand(hand);
 
         if (getRemainingUses(heldStack) <= 0) {
@@ -156,6 +180,89 @@ public class ItemAlchemyFlask extends Item {
         return stack;
     }
 
+
+    @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Player player = context.getPlayer();
+        if (player == null || !wantsRinse(player, stack)) {
+            return InteractionResult.PASS;
+        }
+
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction face = context.getClickedFace();
+        if (!level.mayInteract(player, pos) || !drawRinseWater(level, pos, face, false)) {
+            return InteractionResult.PASS;
+        }
+
+        if (!level.isClientSide()) {
+            drawRinseWater(level, pos, face, true);
+            rinse(stack);
+            level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    protected InteractionResultHolder<ItemStack> rinseInWater(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!wantsRinse(player, stack)) {
+            return InteractionResultHolder.pass(stack);
+        }
+
+        BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+        if (hit.getType() != HitResult.Type.BLOCK) {
+            return InteractionResultHolder.pass(stack);
+        }
+
+        BlockPos pos = hit.getBlockPos();
+        if (!level.mayInteract(player, pos) || !level.getFluidState(pos).is(FluidTags.WATER)) {
+            return InteractionResultHolder.pass(stack);
+        }
+
+        rinse(stack);
+        level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
+        level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+    }
+
+    protected boolean wantsRinse(Player player, ItemStack stack) {
+        boolean hasContents = hasFlaskEffects(stack) || hasEffects(stack);
+        if (!hasContents && !stack.isDamaged()) {
+            return false;
+        }
+        return player.isSecondaryUseActive() || !hasContents || getRemainingUses(stack) <= 0;
+    }
+
+    private static boolean drawRinseWater(Level level, BlockPos pos, Direction face, boolean execute) {
+        BlockState state = level.getBlockState(pos);
+        if (state.is(Blocks.WATER_CAULDRON)) {
+            if (execute) {
+                LayeredCauldronBlock.lowerFillLevel(state, level, pos);
+            }
+            return true;
+        }
+
+        IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, face);
+        if (handler == null) {
+            return false;
+        }
+
+        FluidStack request = new FluidStack(Fluids.WATER, RINSE_AMOUNT);
+        if (handler.drain(request, IFluidHandler.FluidAction.SIMULATE).getAmount() < RINSE_AMOUNT) {
+            return false;
+        }
+        if (execute) {
+            handler.drain(request, IFluidHandler.FluidAction.EXECUTE);
+        }
+        return true;
+    }
+
+    public static void rinse(ItemStack stack) {
+        stack.remove(NVDataComponents.FLASK_EFFECTS.get());
+        stack.remove(DataComponents.POTION_CONTENTS);
+        stack.setDamageValue(0);
+    }
 
     public static FlaskEffects getFlaskEffects(ItemStack stack) {
         return stack.getOrDefault(NVDataComponents.FLASK_EFFECTS.get(), FlaskEffects.EMPTY);
