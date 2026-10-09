@@ -32,6 +32,8 @@ public class NVGameTestRegistration {
         event.register(EssentiaVitaeFluidTests.class);
         event.register(BoundTreasuresTests.class);
         event.register(QuarryBackfillTests.class);
+        event.register(QuarryThroughputTests.class);
+        event.register(MeteorLandingTests.class);
 
         event.register(BloodOrbTests.class);
         event.register(SpiritAccumulatorTests.class);

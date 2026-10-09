@@ -170,6 +170,8 @@ public class NVTags {
 
         public static final TagKey<Block> GENERATIVE_ORES = tag(bm("generative_ores"));
 
+        public static final TagKey<Block> QUARRY_FILLER = tag(bm("quarry_filler"));
+
         private static TagKey<Block> tag(ResourceLocation id) {
             return TagKey.create(Registries.BLOCK, id);
         }
