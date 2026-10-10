@@ -1,0 +1,220 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "rituals",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "rituals/activation_crystals"
+  },
+  "description": "book.neovitae.guide.rituals.deus_rituals.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "neovitae:deus_ritual_stone"
+  },
+  "name": "book.neovitae.guide.rituals.deus_rituals.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.intro.text",
+      "title": "book.neovitae.guide.rituals.deus_rituals.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_well_of_suffering",
+      "multiblock_name": "Deus Well of Suffering",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_well_of_suffering.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 200,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n[#](8B0000)Upkeep:[#]() 4 EV/sec\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  8x Fire Ritual Stone\\\n  12x Tenebrae Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 36 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_torment_nexus",
+      "multiblock_name": "Deus Torment Nexus",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_torment_nexus.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 100,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  24x Tenebrae Ritual Stone\\\n  4x Earth Ritual Stone\\\n  4x Water Ritual Stone\\\n  4x Fire Ritual Stone\\\n  4x Air Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 56 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_magnetism",
+      "multiblock_name": "Deus Endless Quarry",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_magnetism.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 20,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n[#](8B0000)Upkeep:[#]() 50 EV every 40 ticks\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  8x Earth Ritual Stone\\\n  4x Air Ritual Stone\\\n  4x Fire Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 32 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_crystallum_fractura",
+      "multiblock_name": "Deus Crystallum Fractura",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_crystallum_fractura.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 400,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n[#](8B0000)Upkeep:[#]() 160 EV every 100 ticks\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  8x Earth Ritual Stone\\\n  4x Air Ritual Stone\\\n  8x Tenebrae Ritual Stone\\\n  4x Fire Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 40 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_green_grove",
+      "multiblock_name": "Deus Overgrowth",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_green_grove.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 4,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n[#](8B0000)Upkeep:[#]() 20 EV/sec\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  8x Earth Ritual Stone\\\n  4x Water Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 28 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_placer",
+      "multiblock_name": "Deus Mason",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_placer.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 20,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n[#](8B0000)Upkeep:[#]() 10 EV every 5 ticks\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  8x Earth Ritual Stone\\\n  4x Fire Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 28 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_felling",
+      "multiblock_name": "Deus Fallen Trees",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_felling.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 8,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n[#](8B0000)Upkeep:[#]() 10 EV/sec\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  12x Earth Ritual Stone\\\n  4x Fire Ritual Stone\\\n  4x Air Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 36 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_meteor",
+      "multiblock_name": "Deus Meteo",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_meteor.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 1,000,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  12x Fire Ritual Stone\\\n  16x Tenebrae Ritual Stone\\\n  8x Earth Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 52 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "ritual/deus_armour_evolve",
+      "multiblock_name": "Deus Sentient Evolution",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_armour_evolve.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 500,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n[#](8B0000)Cost:[#]() 250,000 EV per use\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  12x Tenebrae Ritual Stone\\\n  8x Fire Ritual Stone\\\n  4x Earth Ritual Stone\\\n  4x Air Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 44 runes",
+      "title": ""
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "rituals/activation_crystals",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 42,
+  "x": -7,
+  "y": 6
+}

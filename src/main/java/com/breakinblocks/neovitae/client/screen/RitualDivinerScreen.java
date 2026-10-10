@@ -223,7 +223,7 @@ public class RitualDivinerScreen extends AbstractContainerScreen<RitualDivinerMe
     private Component crystalName(int level) {
         return switch (level) {
             case 1 -> NVItems.ACTIVATION_CRYSTAL_AWAKENED.get().getDescription();
-            case 2 -> NVItems.ACTIVATION_CRYSTAL_CREATIVE.get().getDescription();
+            case 2 -> NVItems.ACTIVATION_CRYSTAL_DIVINUS.get().getDescription();
             default -> null;
         };
     }

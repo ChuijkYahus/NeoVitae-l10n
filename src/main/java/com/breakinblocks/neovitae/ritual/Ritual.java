@@ -68,6 +68,14 @@ public abstract class Ritual {
         return false;
     }
 
+    public boolean usesAspectSelection() {
+        return false;
+    }
+
+    public boolean usesMiningMode() {
+        return false;
+    }
+
     protected RitualStats getStats() {
         return RitualRegistry.getStats(this);
     }
@@ -301,6 +309,19 @@ public abstract class Ritual {
     protected static int scaleByRawSpiritus(com.breakinblocks.neovitae.api.spiritus.SpiritusState will,
                                         int baseTime, int minTime, double spiritusDivisor) {
         return will.hasRaw() ? scaleRefreshTime(will.getRaw(), baseTime, minTime, spiritusDivisor) : baseTime;
+    }
+
+    protected final void addDeusCrown(Consumer<RitualComponent> components, Consumer<Consumer<RitualComponent>> baseLayout) {
+        List<RitualComponent> base = new ArrayList<>();
+        baseLayout.accept(base::add);
+        base.forEach(components);
+        int reach = base.stream()
+                .mapToInt(c -> Math.max(Math.abs(c.getX()), Math.abs(c.getZ())))
+                .max()
+                .orElse(0) + 2;
+        addParallelRunes(components, reach, 0, EnumRuneType.DEUS);
+        addCornerRunes(components, reach, 0, EnumRuneType.DEUS);
+        addOffsetRunes(components, reach, reach / 2, 0, EnumRuneType.DEUS);
     }
 
     protected final void addParallelRunes(Consumer<RitualComponent> components, int offset, int y, EnumRuneType rune) {

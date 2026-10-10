@@ -37,6 +37,7 @@ import com.breakinblocks.neovitae.common.menu.AthanorMenu;
 import com.breakinblocks.neovitae.common.block.AthanorBlock;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
+import com.breakinblocks.neovitae.common.item.athanor.IAthanorTool;
 import com.breakinblocks.neovitae.common.fluid.NVFluids;
 import com.breakinblocks.neovitae.common.recipe.NVRecipes;
 import com.breakinblocks.neovitae.common.recipe.athanor.AthanorRecipe;
@@ -78,7 +79,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
     private boolean spiritusBlocked = false;
 
     public enum IdleReason {
-        NONE, OUTPUT_FULL, SPENT_TOOL, NOT_ENOUGH_SPIRITUS;
+        NONE, OUTPUT_FULL, SPENT_TOOL, NOT_ENOUGH_SPIRITUS, TOOL_UNBOUND, NOT_ENOUGH_EV;
 
         private static final IdleReason[] VALUES = values();
 
@@ -298,6 +299,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         double rawSpiritus = WorldSpiritusHandler.getCurrentSpiritus(level, blockPos, SpiritusType.RAW);
         double spiritusSpeedMod = 0.5 + 1.5 * Math.min(1.0, rawSpiritus / 100.0);
         boolean didProgress = false;
+        IAthanorTool.Readiness toolReadiness = IAthanorTool.readinessOf(toolStack);
         if (toolStack.is(NVTags.Items.ATHANOR_TOOL) || toolStack.isEmpty()) {
             if (toolStack.is(NVTags.Items.ATHANOR_FURNACE)) {
                 int furnaceSlot = -1;
@@ -319,7 +321,10 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
                         break;
                     }
                 }
-                if (furnaceSlot >= 0) {
+                if (furnaceSlot >= 0 && toolReadiness != IAthanorTool.Readiness.READY) {
+                    athanorTile.idleReason = idleReasonFor(toolReadiness);
+                } else if (furnaceSlot >= 0) {
+                    athanorTile.idleReason = IdleReason.NONE;
                     SingleRecipeInput input = new SingleRecipeInput(inputStacks[furnaceSlot]);
                     athanorTile.progress += DEFAULT_SPEED * ((double) furnaceRecipe.value().getCookingTime() / 200D) * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * spiritusSpeedMod;
                     didProgress = true;
@@ -333,6 +338,10 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
                 Optional<RecipeHolder<AthanorRecipe>> recipe = athanorTile.quickAthanor.getRecipeFor(input, level);
                 if (athanorTile.isToolSpent(toolStack)) {
                     athanorTile.idleReason = IdleReason.SPENT_TOOL;
+                } else if (recipe.isPresent() && toolReadiness != IAthanorTool.Readiness.READY) {
+                    athanorTile.currentRecipeSpiritusCost = Map.of();
+                    athanorTile.spiritusBlocked = false;
+                    athanorTile.idleReason = idleReasonFor(toolReadiness);
                 } else if (athanorTile.canCraft(recipe, itemOutputHandler)) {
                     AthanorRecipe athanorRecipe = recipe.get().value();
                     athanorTile.currentRecipeSpiritusCost = athanorRecipe.getSpiritusCosts();
@@ -363,7 +372,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
                         outputChanged = true;
                     }
                 } else if (toolStack.is(NVTags.Items.REVERTER)) {
-                    var dr = athanorTile.tryDisenchant(level, blockPos, inputStacks, itemOutputHandler, toolStack, spiritusSpeedMod);
+                    var dr = athanorTile.tryDisenchant(level, blockPos, inputStacks, itemOutputHandler, toolStack, toolReadiness, spiritusSpeedMod);
                     if (dr.progressed()) didProgress = true;
                     if (dr.crafted()) outputChanged = true;
                 } else {
@@ -412,6 +421,10 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         athanorTile.lastActive = active;
     }
 
+
+    private static IdleReason idleReasonFor(IAthanorTool.Readiness readiness) {
+        return readiness == IAthanorTool.Readiness.UNBOUND ? IdleReason.TOOL_UNBOUND : IdleReason.NOT_ENOUGH_EV;
+    }
 
     private boolean canCraftFurnace(Optional<? extends RecipeHolder<? extends AbstractCookingRecipe>> recipe, AthanorOutputHandler outputHandler) {
         if (recipe.isEmpty()) {
@@ -480,7 +493,9 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
 
     private void damageTool() {
         ItemStack toolStack = athanorInv.getStackInSlot(TOOL_SLOT);
-        if (!toolStack.has(DataComponents.UNBREAKABLE)) {
+        if (IAthanorTool.tryConsumeUse(toolStack)) {
+            athanorInv.setStackInSlot(TOOL_SLOT, toolStack);
+        } else if (!toolStack.has(DataComponents.UNBREAKABLE)) {
             if (toolStack.hasCraftingRemainingItem()) {
                 athanorInv.setStackInSlot(TOOL_SLOT, toolStack.getCraftingRemainingItem());
             } else if (toolStack.has(DataComponents.MAX_DAMAGE)) {
@@ -497,7 +512,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         }
     }
 
-    private DisenchantResult tryDisenchant(Level level, BlockPos pos, ItemStack[] inputStacks, AthanorOutputHandler outputHandler, ItemStack toolStack, double spiritusSpeedMod) {
+    private DisenchantResult tryDisenchant(Level level, BlockPos pos, ItemStack[] inputStacks, AthanorOutputHandler outputHandler, ItemStack toolStack, IAthanorTool.Readiness toolReadiness, double spiritusSpeedMod) {
         int bookSlot = -1;
         int itemSlot = -1;
         int disenchantableCount = 0;
@@ -570,6 +585,11 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         }
 
         spiritusBlocked = false;
+        if (toolReadiness != IAthanorTool.Readiness.READY) {
+            idleReason = idleReasonFor(toolReadiness);
+            return DisenchantResult.NONE;
+        }
+        idleReason = IdleReason.NONE;
         progress += DEFAULT_SPEED * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * spiritusSpeedMod;
         if (progress < 1) {
             return new DisenchantResult(true, false);
@@ -692,7 +712,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         }
 
         ItemStack toolStack = athanorInv.getStackInSlot(TOOL_SLOT).copy();
-        if (!toolStack.isEmpty() && toolStack.isDamageableItem() && toolStack.getDamageValue() >= toolStack.getMaxDamage()) {
+        if (isToolSpent(toolStack)) {
             tempBucketList.clear();
             toolStack.setDamageValue(toolStack.getMaxDamage());
             tempBucketList.add(toolStack);

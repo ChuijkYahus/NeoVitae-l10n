@@ -26,11 +26,12 @@ import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.Binding;
 import com.breakinblocks.neovitae.common.datacomponent.Anima;
 import com.breakinblocks.neovitae.api.soul.AnimaTicket;
+import com.breakinblocks.neovitae.common.item.athanor.IAthanorTool;
 import com.breakinblocks.neovitae.util.helper.AnimaHelper;
 
 import java.util.List;
 
-public class ItemLavaCrystal extends Item implements IBindable {
+public class ItemLavaCrystal extends Item implements IBindable, IAthanorTool {
 
     private static final int FIRE_COST = 100;
     private static final int FUEL_COST = 50;
@@ -40,6 +41,16 @@ public class ItemLavaCrystal extends Item implements IBindable {
         super(new Item.Properties()
                 .stacksTo(1)
                 .component(NVDataComponents.BINDING.get(), Binding.EMPTY));
+    }
+
+    @Override
+    public Readiness getReadiness(ItemStack stack) {
+        return IAthanorTool.networkReadiness(stack, FUEL_COST);
+    }
+
+    @Override
+    public boolean consumeUse(ItemStack stack) {
+        return IAthanorTool.syphonNetwork(stack, FUEL_COST);
     }
 
     @Override

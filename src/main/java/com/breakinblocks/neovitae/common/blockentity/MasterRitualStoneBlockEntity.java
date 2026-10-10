@@ -58,6 +58,7 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
     private int keepCount = 2;
     private String ownerWorldTier = "";
     private EnumFillMode fillMode = EnumFillMode.SOLID;
+    private EnumMiningMode miningMode = EnumMiningMode.SILK_TOUCH;
 
     private Map<String, AreaDescriptor> blockRanges = new HashMap<>();
     private ResourceLocation rangesConfiguredFor;
@@ -518,6 +519,16 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
     }
 
     @Override
+    public EnumMiningMode getMiningMode() {
+        return miningMode;
+    }
+
+    public void setMiningMode(EnumMiningMode mode) {
+        this.miningMode = mode;
+        setChanged();
+    }
+
+    @Override
     public void provideInformationOfRitualToPlayer(Player player) {
         if (currentRitual != null) {
             Component[] info = currentRitual.provideInformationOfRitualToPlayer(player);
@@ -575,6 +586,7 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
         }
         tag.putInt("keepCount", keepCount);
         tag.putString("fillMode", fillMode.getSerializedName());
+        tag.putString("miningMode", miningMode.getSerializedName());
 
         if (currentRitual != null && currentRitualId != null) {
             tag.putString("ritual", currentRitualId.toString());
@@ -620,6 +632,7 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
         keepCount = tag.contains("keepCount") ? tag.getInt("keepCount") : 2;
         ownerWorldTier = tag.contains("ownerWorldTier") ? tag.getString("ownerWorldTier") : "";
         fillMode = EnumFillMode.byName(tag.contains("fillMode") ? tag.getString("fillMode") : "solid", EnumFillMode.SOLID);
+        miningMode = EnumMiningMode.byName(tag.contains("miningMode") ? tag.getString("miningMode") : "silk_touch", EnumMiningMode.SILK_TOUCH);
 
         if (tag.contains("direction")) {
             direction = Direction.byName(tag.getString("direction"));

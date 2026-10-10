@@ -28,6 +28,7 @@ import com.breakinblocks.neovitae.common.datamap.NVDataMaps;
 import com.breakinblocks.neovitae.common.effect.NVMobEffects;
 import com.breakinblocks.neovitae.common.effect.SoulFrayEffect;
 import com.breakinblocks.neovitae.common.fluid.NVFluids;
+import com.breakinblocks.neovitae.common.item.athanor.IAthanorTool;
 import com.breakinblocks.neovitae.common.particle.NVParticles;
 import com.breakinblocks.neovitae.client.particle.ColoredParticleOptions;
 import com.breakinblocks.neovitae.incense.IncenseHelper;
@@ -38,7 +39,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BloodOrbItem extends Item implements IBindable {
+public class BloodOrbItem extends Item implements IBindable, IAthanorTool {
 
     private static final int ORB_ALTAR_RANGE = 5;
 
@@ -65,6 +66,11 @@ public class BloodOrbItem extends Item implements IBindable {
 
     public static void clearShieldActive(UUID id) {
         SHIELD_ACTIVE.remove(id);
+    }
+
+    @Override
+    public boolean consumeUse(ItemStack stack) {
+        return true;
     }
 
     @Override

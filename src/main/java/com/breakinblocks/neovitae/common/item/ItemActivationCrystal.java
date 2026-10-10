@@ -29,6 +29,11 @@ public class ItemActivationCrystal extends Item implements IBindable {
     }
 
     @Override
+    public boolean isFoil(ItemStack stack) {
+        return type == CrystalType.DIVINUS || super.isFoil(stack);
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
@@ -57,6 +62,7 @@ public class ItemActivationCrystal extends Item implements IBindable {
     public enum CrystalType {
         WEAK,
         AWAKENED,
+        DIVINUS,
         CREATIVE;
 
         public static ItemStack getStack(int level) {
@@ -66,6 +72,7 @@ public class ItemActivationCrystal extends Item implements IBindable {
             return switch (level) {
                 case 0 -> new ItemStack(NVItems.ACTIVATION_CRYSTAL_WEAK.get());
                 case 1 -> new ItemStack(NVItems.ACTIVATION_CRYSTAL_AWAKENED.get());
+                case 2 -> new ItemStack(NVItems.ACTIVATION_CRYSTAL_DIVINUS.get());
                 default -> new ItemStack(NVItems.ACTIVATION_CRYSTAL_CREATIVE.get());
             };
         }

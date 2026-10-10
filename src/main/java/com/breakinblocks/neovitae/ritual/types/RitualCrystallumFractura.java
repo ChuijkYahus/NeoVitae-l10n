@@ -69,13 +69,22 @@ public class RitualCrystallumFractura extends Ritual {
     private static final int BUDDING_ACCEL_TICKS = 4;
 
     public RitualCrystallumFractura() {
-        super(NAME, 1, 100000, "ritual." + NeoVitae.MODID + "." + NAME);
+        this(NAME, 1, 100000);
+    }
+
+    protected RitualCrystallumFractura(String name, int crystalLevel, int activationCost) {
+        super(name, crystalLevel, activationCost, "ritual." + NeoVitae.MODID + "." + name);
         addBlockRange(HARVEST_RANGE, new AreaDescriptor.Rectangle(new BlockPos(-7, -5, -7), 15, 11, 15));
         addBlockRange(AURA_RANGE, new AreaDescriptor.Rectangle(new BlockPos(-7, -5, -7), 15, 11, 15));
         addBlockRange(CHEST_RANGE, new AreaDescriptor.Rectangle(new BlockPos(0, 1, 0), 1, 1, 1));
         setMaximumVolumeAndDistanceOfRange(HARVEST_RANGE, 4000, 16, 16);
         setMaximumVolumeAndDistanceOfRange(AURA_RANGE, 4000, 16, 16);
         setMaximumVolumeAndDistanceOfRange(CHEST_RANGE, 1, 5, 5);
+    }
+
+    @Override
+    public boolean usesAspectSelection() {
+        return true;
     }
 
     @Override
@@ -141,7 +150,7 @@ public class RitualCrystallumFractura extends Ritual {
             }
             totalCost += getRefreshCost();
 
-            if (fortuneLevel > 0) {
+            if (fortuneLevel > 0 && fortuneConsumesSpiritus()) {
                 consumeForFortune(serverLevel, harvestPos, fortuneType);
             }
 
@@ -202,7 +211,15 @@ public class RitualCrystallumFractura extends Ritual {
         }
     }
 
-    private int computeFortuneLevel(ServerLevel level, BlockPos pos, SpiritusType type) {
+    protected double getGrowthMultiplier() {
+        return GROWTH_MULTIPLIER;
+    }
+
+    protected boolean fortuneConsumesSpiritus() {
+        return true;
+    }
+
+    protected int computeFortuneLevel(ServerLevel level, BlockPos pos, SpiritusType type) {
         SpiritusChunk chunk = WorldSpiritusHandler.getSpiritusChunk(level, pos);
         double amount = chunk.getSpiritus(type);
         if (amount < FORTUNE_FLOOR) return 0;
@@ -244,7 +261,7 @@ public class RitualCrystallumFractura extends Ritual {
             if (!seen.add(cp)) continue;
 
             SpiritusChunk chunk = WorldSpiritusHandler.getSpiritusChunk(level, pos);
-            chunk.setGrowthMultiplier(GROWTH_MULTIPLIER, BUFF_DURATION_TICKS, gameTime);
+            chunk.setGrowthMultiplier(getGrowthMultiplier(), BUFF_DURATION_TICKS, gameTime);
             chunk.setInjectionMultiplier(INJECTION_MULTIPLIER, bias, BUFF_DURATION_TICKS, gameTime);
         }
     }

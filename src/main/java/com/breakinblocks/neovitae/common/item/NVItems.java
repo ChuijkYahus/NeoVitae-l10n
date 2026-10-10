@@ -1,5 +1,6 @@
 package com.breakinblocks.neovitae.common.item;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffects;
@@ -19,6 +20,7 @@ import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.common.entity.NVEntities;
 import com.breakinblocks.neovitae.common.item.athanor.ItemAthanorToolBase;
+import com.breakinblocks.neovitae.common.item.athanor.ItemDeusAthanorTool;
 import com.breakinblocks.neovitae.common.item.dungeon.ItemDungeonKey;
 import com.breakinblocks.neovitae.common.item.dungeon.ItemDungeonTester;
 import com.breakinblocks.neovitae.common.item.potion.ItemAlchemyFlask;
@@ -93,6 +95,7 @@ public class NVItems {
     public static final DeferredHolder<Item, Item> TABULA_ANIMATA = plainItem("tabula_animata");
     public static final DeferredHolder<Item, Item> TABULA_SPIRITUS = plainItem("tabula_spiritus");
     public static final DeferredHolder<Item, Item> TABULA_AETHEREA = plainItem("tabula_aetherea");
+    public static final DeferredHolder<Item, Item> PRISMATIC_SPIRITUS_GEM = BASIC_ITEMS.register("prismatic_spiritus_gem", () -> new Item(new Item.Properties().rarity(Rarity.EPIC).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
 
     public static final DeferredHolder<Item, SigilItem> SIGIL_DIVINATION = BASIC_ITEMS.register("sigil_divination", () -> new SigilItem(SigilTypeRegistry.key("divination")));
     public static final DeferredHolder<Item, SigilItem> SIGIL_SEER = BASIC_ITEMS.register("sigil_seer", () -> new SigilItem(SigilTypeRegistry.key("seer")));
@@ -181,9 +184,15 @@ public class NVItems {
     public static final DeferredHolder<Item, ItemAthanorToolBase> PRIMITIVE_CRYSTALLINE_RESONATOR = BASIC_ITEMS.register("primitive_crystalline_resonator", () -> new ItemAthanorToolBase(256, 1.5, SpiritusType.VINDICTA));
     public static final DeferredHolder<Item, ItemAthanorToolBase> HELLFORGED_EXPLOSIVE_CELL = BASIC_ITEMS.register("hellforged_explosive_cell", () -> new ItemAthanorToolBase(1024, 2, SpiritusType.NIHILUM));
     public static final DeferredHolder<Item, ItemAthanorToolBase> HELLFORGED_RESONATOR = BASIC_ITEMS.register("hellforged_resonator", () -> new ItemAthanorToolBase(1024, 2, 2, SpiritusType.VINDICTA));
+    public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_CUTTING_FLUID = BASIC_ITEMS.register("deus_cutting_fluid", () -> new ItemDeusAthanorTool(2, 2, SpiritusType.RUINA));
+    public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_EXPLOSIVE_CELL = BASIC_ITEMS.register("deus_explosive_cell", () -> new ItemDeusAthanorTool(2, 1, SpiritusType.NIHILUM));
+    public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_RESONATOR = BASIC_ITEMS.register("deus_resonator", () -> new ItemDeusAthanorTool(2, 2, SpiritusType.VINDICTA));
+    public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_HYDRATION_CELL = BASIC_ITEMS.register("deus_hydration_cell", () -> new ItemDeusAthanorTool(1.5, 1, SpiritusType.RAW));
+    public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_REVERTER = BASIC_ITEMS.register("deus_reverter", () -> new ItemDeusAthanorTool(2, 1, SpiritusType.INVICTUS));
 
     public static final DeferredHolder<Item, ItemActivationCrystal> ACTIVATION_CRYSTAL_WEAK = BASIC_ITEMS.register("activation_crystal_weak", () -> new ItemActivationCrystal(ItemActivationCrystal.CrystalType.WEAK));
     public static final DeferredHolder<Item, ItemActivationCrystal> ACTIVATION_CRYSTAL_AWAKENED = BASIC_ITEMS.register("activation_crystal_awakened", () -> new ItemActivationCrystal(ItemActivationCrystal.CrystalType.AWAKENED));
+    public static final DeferredHolder<Item, ItemActivationCrystal> ACTIVATION_CRYSTAL_DIVINUS = BASIC_ITEMS.register("activation_crystal_divinus", () -> new ItemActivationCrystal(ItemActivationCrystal.CrystalType.DIVINUS));
     public static final DeferredHolder<Item, ItemActivationCrystal> ACTIVATION_CRYSTAL_CREATIVE = BASIC_ITEMS.register("activation_crystal_creative", () -> new ItemActivationCrystal(ItemActivationCrystal.CrystalType.CREATIVE));
 
     public static final DeferredHolder<Item, ItemInscriptionTool> INSCRIPTION_TOOL_AIR = BASIC_ITEMS.register("air_scribe_tool", () -> new ItemInscriptionTool(EnumRuneType.AIR));
@@ -191,9 +200,11 @@ public class NVItems {
     public static final DeferredHolder<Item, ItemInscriptionTool> INSCRIPTION_TOOL_WATER = BASIC_ITEMS.register("water_scribe_tool", () -> new ItemInscriptionTool(EnumRuneType.WATER));
     public static final DeferredHolder<Item, ItemInscriptionTool> INSCRIPTION_TOOL_EARTH = BASIC_ITEMS.register("earth_scribe_tool", () -> new ItemInscriptionTool(EnumRuneType.EARTH));
     public static final DeferredHolder<Item, ItemInscriptionTool> INSCRIPTION_TOOL_TENEBRAE = BASIC_ITEMS.register("tenebrae_scribe_tool", () -> new ItemInscriptionTool(EnumRuneType.TENEBRAE));
+    public static final DeferredHolder<Item, ItemInscriptionTool> INSCRIPTION_TOOL_DEUS = BASIC_ITEMS.register("deus_scribe_tool", () -> new ItemInscriptionTool(EnumRuneType.DEUS));
 
     public static final DeferredHolder<Item, ItemRitualDiviner> RITUAL_DIVINER = BASIC_ITEMS.register("ritual_diviner", () -> new ItemRitualDiviner(0));
     public static final DeferredHolder<Item, ItemRitualDiviner> RITUAL_DIVINER_TENEBRAE = BASIC_ITEMS.register("ritual_diviner_tenebrae", () -> new ItemRitualDiviner(1));
+    public static final DeferredHolder<Item, ItemRitualDiviner> RITUAL_DIVINER_DEUS = BASIC_ITEMS.register("ritual_diviner_deus", () -> new ItemRitualDiviner(2));
     public static final DeferredHolder<Item, ItemRitualReader> RITUAL_READER = BASIC_ITEMS.register("ritual_reader", ItemRitualReader::new);
     public static final DeferredHolder<Item, ItemRitualLedger> RITUAL_LEDGER = BASIC_ITEMS.register("ritual_ledger", ItemRitualLedger::new);
     public static final DeferredHolder<Item, ItemRitualDesigner> RITUAL_DESIGNER = BASIC_ITEMS.register("ritual_designer", () -> new ItemRitualDesigner(new Item.Properties()));

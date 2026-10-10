@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import com.breakinblocks.neovitae.common.blockentity.MasterRitualStoneBlockEntity;
 import com.breakinblocks.neovitae.ritual.EnumFillMode;
+import com.breakinblocks.neovitae.ritual.EnumMiningMode;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.common.item.ItemRitualReader;
 import com.breakinblocks.neovitae.ritual.EnumRitualReaderState;
@@ -25,6 +26,7 @@ public class RitualConfiguratorMenu extends AbstractContainerMenu {
     public static final int KEEP_MINUS_BUTTON = 300;
     public static final int KEEP_PLUS_BUTTON = 301;
     public static final int FILL_MODE_BUTTON_BASE = 400;
+    public static final int MINING_MODE_BUTTON_BASE = 500;
     private static final double MAX_REACH_SQR = 64.0;
 
     public record RangeInfo(String key, int sizeX, int sizeY, int sizeZ,
@@ -35,10 +37,13 @@ public class RitualConfiguratorMenu extends AbstractContainerMenu {
     private final String ritualKey;
     private final List<RangeInfo> ranges;
     private final int initialAspect;
+    private final boolean usesAspect;
     private final boolean ritualActive;
     private final boolean usesKeepCount;
     private final boolean usesFillMode;
     private final EnumFillMode initialFillMode;
+    private final boolean usesMiningMode;
+    private final EnumMiningMode initialMiningMode;
     private final int initialKeepCount;
 
     public RitualConfiguratorMenu(int containerId, Inventory playerInv, FriendlyByteBuf buf) {
@@ -50,34 +55,42 @@ public class RitualConfiguratorMenu extends AbstractContainerMenu {
                 b.readVarInt(), b.readVarInt(), b.readVarInt(),
                 b.readVarInt(), b.readVarInt(), b.readVarInt()));
         this.initialAspect = buf.readVarInt();
+        this.usesAspect = buf.readBoolean();
         this.ritualActive = buf.readBoolean();
         this.usesKeepCount = buf.readBoolean();
         this.initialKeepCount = buf.readVarInt();
         this.usesFillMode = buf.readBoolean();
         this.initialFillMode = buf.readEnum(EnumFillMode.class);
+        this.usesMiningMode = buf.readBoolean();
+        this.initialMiningMode = buf.readEnum(EnumMiningMode.class);
     }
 
     public RitualConfiguratorMenu(int containerId, Inventory playerInv, InteractionHand hand,
                                   BlockPos masterPos, String ritualKey, List<RangeInfo> ranges,
-                                  int initialAspect, boolean ritualActive, boolean usesKeepCount, int initialKeepCount,
-                                  boolean usesFillMode, EnumFillMode initialFillMode) {
+                                  int initialAspect, boolean usesAspect, boolean ritualActive, boolean usesKeepCount, int initialKeepCount,
+                                  boolean usesFillMode, EnumFillMode initialFillMode,
+                                  boolean usesMiningMode, EnumMiningMode initialMiningMode) {
         super(NVMenus.RITUAL_CONFIGURATOR.get(), containerId);
         this.hand = hand;
         this.masterPos = masterPos;
         this.ritualKey = ritualKey;
         this.ranges = new ArrayList<>(ranges);
         this.initialAspect = initialAspect;
+        this.usesAspect = usesAspect;
         this.ritualActive = ritualActive;
         this.usesKeepCount = usesKeepCount;
         this.initialKeepCount = initialKeepCount;
         this.usesFillMode = usesFillMode;
         this.initialFillMode = initialFillMode;
+        this.usesMiningMode = usesMiningMode;
+        this.initialMiningMode = initialMiningMode;
     }
 
     public static void write(FriendlyByteBuf buf, InteractionHand hand, BlockPos masterPos,
-                             String ritualKey, List<RangeInfo> ranges, int initialAspect, boolean ritualActive,
+                             String ritualKey, List<RangeInfo> ranges, int initialAspect, boolean usesAspect, boolean ritualActive,
                              boolean usesKeepCount, int initialKeepCount,
-                             boolean usesFillMode, EnumFillMode initialFillMode) {
+                             boolean usesFillMode, EnumFillMode initialFillMode,
+                             boolean usesMiningMode, EnumMiningMode initialMiningMode) {
         buf.writeEnum(hand);
         buf.writeBlockPos(masterPos);
         buf.writeUtf(ritualKey);
@@ -91,11 +104,14 @@ public class RitualConfiguratorMenu extends AbstractContainerMenu {
             b.writeVarInt(r.maxVertical());
         });
         buf.writeVarInt(initialAspect);
+        buf.writeBoolean(usesAspect);
         buf.writeBoolean(ritualActive);
         buf.writeBoolean(usesKeepCount);
         buf.writeVarInt(initialKeepCount);
         buf.writeBoolean(usesFillMode);
         buf.writeEnum(initialFillMode);
+        buf.writeBoolean(usesMiningMode);
+        buf.writeEnum(initialMiningMode);
     }
 
     public boolean isRitualActive() {
@@ -118,6 +134,10 @@ public class RitualConfiguratorMenu extends AbstractContainerMenu {
         return initialAspect;
     }
 
+    public boolean usesAspect() {
+        return usesAspect;
+    }
+
     public boolean usesKeepCount() {
         return usesKeepCount;
     }
@@ -132,6 +152,14 @@ public class RitualConfiguratorMenu extends AbstractContainerMenu {
 
     public EnumFillMode getInitialFillMode() {
         return initialFillMode;
+    }
+
+    public boolean usesMiningMode() {
+        return usesMiningMode;
+    }
+
+    public EnumMiningMode getInitialMiningMode() {
+        return initialMiningMode;
     }
 
     @Override
@@ -161,6 +189,14 @@ public class RitualConfiguratorMenu extends AbstractContainerMenu {
             BlockEntity be = player.level().getBlockEntity(masterPos);
             if (be instanceof MasterRitualStoneBlockEntity mrs) {
                 mrs.setFillMode(EnumFillMode.values()[id - FILL_MODE_BUTTON_BASE]);
+            }
+            return true;
+        }
+
+        if (id >= MINING_MODE_BUTTON_BASE && id < MINING_MODE_BUTTON_BASE + EnumMiningMode.values().length) {
+            BlockEntity be = player.level().getBlockEntity(masterPos);
+            if (be instanceof MasterRitualStoneBlockEntity mrs) {
+                mrs.setMiningMode(EnumMiningMode.values()[id - MINING_MODE_BUTTON_BASE]);
             }
             return true;
         }

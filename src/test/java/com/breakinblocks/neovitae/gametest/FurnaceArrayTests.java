@@ -8,10 +8,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import com.breakinblocks.neovitae.api.soul.AnimaTicket;
+import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectCollection;
 import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectFurnace;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.blockentity.AlchemyArrayBlockEntity;
@@ -31,6 +33,8 @@ public class FurnaceArrayTests {
     private static final int STACK = 64;
 
     private static final BlockPos ARRAY_POS = new BlockPos(3, 1, 2);
+    private static final BlockPos COLLECTOR_POS = new BlockPos(4, 1, 2);
+    private static final BlockPos CHEST_POS = COLLECTOR_POS.below();
 
     private record Rig(AlchemyArrayBlockEntity array, Anima anima) {}
 
@@ -72,6 +76,45 @@ public class FurnaceArrayTests {
             }
         }
         return total;
+    }
+
+    private static void drop(GameTestHelper helper, ItemStack stack) {
+        BlockPos abs = helper.absolutePos(ARRAY_POS.above());
+        ItemEntity entity = new ItemEntity(helper.getLevel(),
+                abs.getX() + 0.5, abs.getY() + 0.5, abs.getZ() + 0.5, stack);
+        entity.setDeltaMovement(0, 0, 0);
+        helper.getLevel().addFreshEntity(entity);
+    }
+
+    private static ChestBlockEntity buildCollector(GameTestHelper helper) {
+        helper.setBlock(CHEST_POS, Blocks.CHEST.defaultBlockState());
+        helper.setBlock(COLLECTOR_POS, NVBlocks.ALCHEMY_ARRAY.get().defaultBlockState());
+        AlchemyArrayBlockEntity collector = (AlchemyArrayBlockEntity) helper.getBlockEntity(COLLECTOR_POS);
+        collector.arrayEffect = new AlchemyArrayEffectCollection();
+        collector.isActive = true;
+        return (ChestBlockEntity) helper.getBlockEntity(CHEST_POS);
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 400)
+    public void collectorWaitsForSmelting(GameTestHelper helper) {
+        Rig rig = build(helper);
+        if (rig == null) return;
+        ChestBlockEntity chest = buildCollector(helper);
+
+        drop(helper, new ItemStack(Items.RAW_IRON, STACK));
+        drop(helper, new ItemStack(Items.STICK, 1));
+
+        helper.runAtTickTime(100, () -> {
+            helper.assertTrue(chest.countItem(Items.STICK) == 1, "The collector should take items that are not being smelted");
+            helper.assertTrue(chest.countItem(Items.RAW_IRON) == 0, "The collector took raw iron before it was smelted");
+        });
+
+        helper.succeedWhen(() -> {
+            helper.assertTrue(helper.getTick() > 100, "Waiting for the mid-smelt check");
+            helper.assertTrue(chest.countItem(Items.IRON_INGOT) == STACK,
+                    "Expected " + STACK + " smelted ingots in the chest, got " + chest.countItem(Items.IRON_INGOT));
+            helper.assertTrue(chest.countItem(Items.RAW_IRON) == 0, "No raw iron should reach the chest");
+        });
     }
 
     @GameTest(template = "empty_5x5x7", timeoutTicks = 400)

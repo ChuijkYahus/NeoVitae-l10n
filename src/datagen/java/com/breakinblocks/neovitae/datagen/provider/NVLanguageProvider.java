@@ -184,6 +184,9 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add("gui.neovitae.athanor.idle.spent_tool", "The tool is worn out and needs collecting");
         add("gui.neovitae.athanor.idle.not_enough_spiritus", "Not enough Spiritus in this chunk");
         add("gui.neovitae.show_recipes", "Click to view recipes (JEI)");
+        add("gui.neovitae.athanor.idle.tool_unbound", "The tool is not bound to anyone");
+        add("gui.neovitae.athanor.idle.not_enough_ev", "Not enough Essentia Vitae in the tool owner's network");
+        add("gui.neovitae.tabula_vitae.idle.cutting_fluid_unbound", "That cutting fluid is not bound to anyone");
         add("gui.neovitae.side.down", "Bottom");
         add("gui.neovitae.side.up", "Top");
         add("gui.neovitae.side.north", "North");
@@ -441,6 +444,8 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add("entity.neovitae.throwing_dagger", "Throwing Dagger");
         add("entity.neovitae.throwing_dagger_syringe", "Syringe Throwing Dagger");
         add("entity.neovitae.blood_shield", "Sanguine Ward");
+        add("message.neovitae.sanguine_ward.not_enough_ev", "Not enough Essentia Vitae to raise the Sanguine Ward. It needs at least %s EV in your network.");
+        add("message.neovitae.sanguine_ward.collapsed", "The Sanguine Ward collapses: out of Essentia Vitae.");
         add("entity.neovitae.blood_light", "Blood Light");
 
         add("entity.neovitae.necromancy_summon", "Undead Servant");
@@ -691,9 +696,11 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         // Activation Crystals
         add(NVItems.ACTIVATION_CRYSTAL_WEAK.get(), "Weak Activation Crystal");
         add(NVItems.ACTIVATION_CRYSTAL_AWAKENED.get(), "Awakened Activation Crystal");
+        add(NVItems.ACTIVATION_CRYSTAL_DIVINUS.get(), "Divinus Activation Crystal");
         add(NVItems.ACTIVATION_CRYSTAL_CREATIVE.get(), "Creative Activation Crystal");
         addTooltip("activationcrystal.weak", "Activates low-level rituals.");
         addTooltip("activationcrystal.awakened", "Activates more powerful rituals.");
+        addTooltip("activationcrystal.divinus", "Activates the mightiest rituals, those built with Deus stones.");
         addTooltip("activationcrystal.creative", "Creative Only - Activates any ritual.");
 
         // Inscription Tools
@@ -702,11 +709,13 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add(NVItems.INSCRIPTION_TOOL_WATER.get(), "Inscription Tool: Water");
         add(NVItems.INSCRIPTION_TOOL_EARTH.get(), "Inscription Tool: Earth");
         add(NVItems.INSCRIPTION_TOOL_TENEBRAE.get(), "Inscription Tool: Tenebrae");
+        add(NVItems.INSCRIPTION_TOOL_DEUS.get(), "Inscription Tool: Deus");
         addTooltip("inscriber.desc", "The writing is on the wall...");
 
         // Ritual Diviners
         add(NVItems.RITUAL_DIVINER.get(), "Ritual Diviner");
         add(NVItems.RITUAL_DIVINER_TENEBRAE.get(), "Ritual Diviner [Tenebrae]");
+        add(NVItems.RITUAL_DIVINER_DEUS.get(), "Ritual Diviner [Deus]");
         addTooltip("diviner.desc", "Used to build rituals.");
         addTooltip("diviner.currentRitual", "Current Ritual: %s");
         addTooltip("diviner.currentDirection", "Current Direction: %s");
@@ -935,6 +944,12 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add(NVItems.PRIMITIVE_EXPLOSIVE_CELL.get(), "Reinforced Explosive Cell");
         add(NVItems.HELLFORGED_EXPLOSIVE_CELL.get(), "Hellforged Explosive Cell");
         add(NVItems.SANGUINE_REVERTER.get(), "Sanguine Reverter");
+        add(NVItems.DEUS_CUTTING_FLUID.get(), "Deus Cutting Fluid");
+        add(NVItems.DEUS_EXPLOSIVE_CELL.get(), "Deus Explosive Cell");
+        add(NVItems.DEUS_RESONATOR.get(), "Deus Resonator");
+        add(NVItems.DEUS_HYDRATION_CELL.get(), "Deus Hydration Cell");
+        add(NVItems.DEUS_REVERTER.get(), "Deus Reverter");
+        add(NVItems.PRISMATIC_SPIRITUS_GEM.get(), "Prismatic Spiritus Gem");
         add(NVItems.GUIDE_BOOK.get(), "Scriptura Vitae");
 
 
@@ -959,6 +974,7 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         addTooltip("arctool.usage", "Used in the Athanor");
         addTooltip("arctool.usage.cutting_fluid", "Used in the Athanor and Tabula Vitae");
         addTooltip("arctool.uses", "Uses Remaining: %s");
+        addTooltip("arctool.deus_cost", "Never wears out. Draws %s EV per use from its owner");
         addTooltip("arctool.craftspeed", "Crafting Speed: %sx");
         addTooltip("arctool.additionaldrops", "Additional Output Chance: %sx");
 
@@ -1176,7 +1192,11 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
 
         add("chat.neovitae.sentient_upgrade.level_up", "%s has levelled up to %s!");
         add("chat.neovitae.armour_evolve.evolved", "The armor evolves; it can now hold %s Upgrade Points.");
-        add("chat.neovitae.armour_evolve.maxed", "The armor has evolved as far as it can.");
+        add("chat.neovitae.armour_evolve.maxed", "The armor has evolved as far as this circle can take it.");
+        add("chat.neovitae.deus_armour_evolve.evolved", "The armor ascends; it can now hold %s Upgrade Points, and every piece is bound with Blood Mending.");
+        add("chat.neovitae.deus_armour_evolve.mended", "Every piece of your Sentient Armor is bound with Blood Mending.");
+        add("chat.neovitae.deus_armour_evolve.maxed", "The armor has ascended as far as it can.");
+        add("chat.neovitae.deus_armour_evolve.unready", "The armor must first evolve to %s Upgrade Points through the Ritual of Sentient Evolution.");
 
         SentientUpgrades.translations(this::add);
 
@@ -1235,6 +1255,7 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         addJei("recipe.ritual.total_runes", "Total Runes: %s");
         addJei("recipe.ritual.crystal.weak", "Tier: Weak");
         addJei("recipe.ritual.crystal.awakened", "Tier: Awakened");
+        addJei("recipe.ritual.crystal.divinus", "Tier: Divinus");
         addJei("recipe.ritual.crystal.creative", "Tier: Creative");
 
         // Jade integration
@@ -1450,6 +1471,27 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         addRitual("placer", "Ritual of the Mason", "Places blocks drawn from an adjacent chest across the configured area. Raw Spiritus sets how large an area you may configure and how fast it fills, and the Ritual Configurator chooses the shape.");
         add("ritual.neovitae.placer.placerRange.info", "The area the Mason fills.");
         add("ritual.neovitae.placer.spiritus.raw", "Raw Spiritus quickens the work and widens the domain: 20 raw for four blocks a pulse and 20,000 blocks of room, 50 raw for eight and 80,000.");
+        addRitual("deus_well_of_suffering", "Deus Well of Suffering", "A Deus Well of Suffering: reaches up to 32 blocks out and channels twice the Essentia Vitae from every wound.");
+        addRitual("deus_torment_nexus", "Deus Torment Nexus", "A Deus Torment Nexus: scans spawners up to 64 blocks out, rolls three times the loot per operation, and costs under half the EV per kill.");
+        addRitual("deus_magnetism", "Deus Endless Quarry", "A Deus Endless Quarry: moves four times the ore each pulse. The Ritual Configurator chooses Silk Touch, which keeps whole ore blocks, or Fortune III, which mines them for drops.");
+        add("ritual.neovitae.deus_magnetism.spiritus.invictus", "Spiritus Invictus: Fills each mined slot with the surrounding stone instead of leaving it open.");
+        add("ritual.neovitae.deus_magnetism.spiritus.ruina", "Spiritus Ruina: Also destroys stone, cobblestone, netherrack and other filler rock in range, up to 30 blocks per refresh at 10 EV each. Takes priority over Invictus.");
+        addRitual("deus_crystallum_fractura", "Deus Crystallum Fractura", "A Deus Crystallum Fractura: quadruples crystal growth across a 31-wide area and always harvests with Fortune III, spending no Spiritus to do so.");
+        add("ritual.neovitae.deus_crystallum_fractura.aspect_effect", "Biases the growth aura's Spiritus injection toward the chosen aspect's crystals. Raw leaves the aura unbiased.");
+        addRitual("deus_green_grove", "Deus Overgrowth", "A Deus Overgrowth: tends three times the area and pulses twice as often, before any Spiritus is added.");
+        add("ritual.neovitae.deus_green_grove.spiritus.raw", "Raw Spiritus: Hastens the refresh rate (10 ticks down to 5 as raw rises).");
+        add("ritual.neovitae.deus_green_grove.spiritus.invictus", "Spiritus Invictus: Hydrates nearby farmland to full moisture.");
+        add("ritual.neovitae.deus_green_grove.spiritus.ruina", "Spiritus Ruina: Applies Plant Leech to nearby mobs.");
+        add("ritual.neovitae.deus_green_grove.spiritus.vindicta", "Spiritus Vindicta: Scales growth success chance up to 100%%.");
+        addRitual("deus_placer", "Deus Mason", "A Deus Mason: lays eight times as many blocks each pulse across four times the volume and twice the reach.");
+        add("ritual.neovitae.deus_placer.placerRange.info", "The area the Mason fills.");
+        add("ritual.neovitae.deus_placer.spiritus.raw", "Raw Spiritus quickens the work and widens the domain: 20 raw for 32 blocks a pulse and 80,000 blocks of room, 50 raw for 64 and 320,000.");
+        addRitual("deus_felling", "Deus Fallen Trees", "A Deus Fallen Trees: fells up to 512 blocks each operation across a 41-wide area and replants from its drops or the chest.");
+        addRitual("deus_armour_evolve", "Deus Sentient Evolution", "A Deus Sentient Evolution: stand on the master stone in Sentient Armor that holds 500 Upgrade Points to raise its capacity to 600 and bind Blood Mending into every worn piece.");
+        addRitual("deus_meteor", "Deus Meteo", "A Deus Meteo: calls the same meteors as the Ritual of Meteo, but every outer layer is pure ore with no filler stone.");
+        add("gui.neovitae.configurator.mining_mode", "Mining:");
+        add("gui.neovitae.configurator.mining.silk_touch", "Silk Touch");
+        add("gui.neovitae.configurator.mining.fortune", "Fortune III");
         addRitual("sphere", "Dawn of the New Moon", "Scoops the ellipsoidal volume of terrain below the master stone and lifts it upward into a floating moon. Foundation block beneath the master sets the size: iron 41, gold 49, diamond 57, netherite 65 across, anything else 33. 10 EV per block moved; ~100 checks per refresh.");
         addRitual("armour_evolve", "Ritual of Sentient Evolution", "Stand on the master stone in Sentient Armor; each activation adds 100 Upgrade Points of capacity, up to a maximum of 500.");
         addRitual("upgrade_remove", "Tabula Rasa", "Wipes every upgrade from worn Sentient Armor and resets used points to zero; no tomes are produced.");

@@ -34,6 +34,11 @@ public class ItemInscriptionTool extends Item {
     }
 
     @Override
+    public boolean isFoil(ItemStack stack) {
+        return type == EnumRuneType.DEUS || super.isFoil(stack);
+    }
+
+    @Override
     public InteractionResult useOn(UseOnContext context) {
         BlockPos pos = context.getClickedPos();
         Level world = context.getLevel();

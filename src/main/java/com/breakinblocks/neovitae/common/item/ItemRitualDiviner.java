@@ -73,6 +73,11 @@ public class ItemRitualDiviner extends Item {
         this.type = type;
     }
 
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return type == 2 || super.isFoil(stack);
+    }
+
 
     public boolean isActivated(ItemStack stack) {
         return Boolean.TRUE.equals(stack.get(NVDataComponents.DIVINER_ACTIVATED.get()));

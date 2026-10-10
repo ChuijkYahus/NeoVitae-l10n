@@ -47,5 +47,9 @@ public class NVGameTestRegistration {
         event.register(AlternatorTests.class);
         event.register(TrainerLimitTests.class);
         event.register(FlaskRinseTests.class);
+        event.register(BurdenGroundingTests.class);
+        event.register(DeusToolTests.class);
+        event.register(DeusRitualTests.class);
+        event.register(SentientScytheEnchantTests.class);
     }
 }

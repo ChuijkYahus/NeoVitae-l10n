@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.common.item.ItemRitualReader;
 import com.breakinblocks.neovitae.ritual.EnumFillMode;
+import com.breakinblocks.neovitae.ritual.EnumMiningMode;
 import com.breakinblocks.neovitae.common.menu.RitualConfiguratorMenu;
 import com.breakinblocks.neovitae.common.menu.RitualConfiguratorMenu.RangeInfo;
 
@@ -43,24 +44,31 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
     private static final int FILL_ROWS = 2;
 
     private final List<RangeInfo> ranges;
+    private final boolean usesAspect;
     private final boolean usesKeepCount;
     private final boolean usesFillMode;
+    private final boolean usesMiningMode;
     private int selectedAspect;
     private int keepCount;
     private EnumFillMode fillMode;
+    private EnumMiningMode miningMode;
 
     public RitualConfiguratorScreen(RitualConfiguratorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.ranges = menu.getRanges();
         this.selectedAspect = menu.getInitialAspect();
+        this.usesAspect = menu.usesAspect();
         this.usesKeepCount = menu.usesKeepCount();
         this.keepCount = menu.getInitialKeepCount();
         this.imageWidth = PANEL_WIDTH;
         this.usesFillMode = menu.usesFillMode();
         this.fillMode = menu.getInitialFillMode();
+        this.usesMiningMode = menu.usesMiningMode();
+        this.miningMode = menu.getInitialMiningMode();
         this.imageHeight = TITLE_HEIGHT + ranges.size() * ROW_HEIGHT
-                + ASPECT_LABEL_H + ASPECT_ROW_H + (usesKeepCount ? GAP + KEEP_ROW_H : 0)
+                + (usesAspect ? ASPECT_LABEL_H + ASPECT_ROW_H : 0) + (usesKeepCount ? GAP + KEEP_ROW_H : 0)
                 + (usesFillMode ? GAP + FILL_LABEL_H + FILL_ROWS * FILL_ROW_H : 0)
+                + (usesMiningMode ? GAP + FILL_LABEL_H + FILL_ROW_H : 0)
                 + GAP + BUTTON_H + PAD_BOTTOM;
     }
 
@@ -76,8 +84,12 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
         return aspectLabelY() + ASPECT_LABEL_H;
     }
 
+    private int afterAspectY() {
+        return usesAspect ? aspectRowY() + ASPECT_ROW_H : aspectLabelY();
+    }
+
     private int keepRowY() {
-        return aspectRowY() + ASPECT_ROW_H + GAP;
+        return afterAspectY() + GAP;
     }
 
     private int keepStepperX() {
@@ -85,8 +97,7 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
     }
 
     private int afterKeepY() {
-        int afterAspect = aspectRowY() + ASPECT_ROW_H;
-        return usesKeepCount ? keepRowY() + KEEP_ROW_H : afterAspect;
+        return usesKeepCount ? keepRowY() + KEEP_ROW_H : afterAspectY();
     }
 
     private int fillLabelY() {
@@ -115,8 +126,30 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
         return mouseX >= bx && mouseX < bx + fillButtonWidth() - 1 && mouseY >= by && mouseY < by + FILL_ROW_H - 1;
     }
 
+    private int afterFillY() {
+        return usesFillMode ? fillRowY() + FILL_ROWS * FILL_ROW_H : afterKeepY();
+    }
+
+    private int miningLabelY() {
+        return afterFillY() + GAP;
+    }
+
+    private int miningRowY() {
+        return miningLabelY() + FILL_LABEL_H;
+    }
+
+    private int miningButtonWidth() {
+        return (imageWidth - LIST_X * 2) / EnumMiningMode.values().length;
+    }
+
+    private boolean overMiningButton(int index, double mouseX, double mouseY) {
+        int bx = leftPos + LIST_X + index * miningButtonWidth();
+        int by = miningRowY();
+        return mouseX >= bx && mouseX < bx + miningButtonWidth() - 1 && mouseY >= by && mouseY < by + FILL_ROW_H - 1;
+    }
+
     private int editButtonY() {
-        return (usesFillMode ? fillRowY() + FILL_ROWS * FILL_ROW_H : afterKeepY()) + GAP;
+        return (usesMiningMode ? miningRowY() + FILL_ROW_H : afterFillY()) + GAP;
     }
 
     private String selectedRangeKey() {
@@ -154,26 +187,27 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
             g.drawString(font, dims, dimX, rowY + (ROW_HEIGHT - 8) / 2, 0xFF9A8088, false);
         }
 
-        g.drawString(font, Component.translatable("gui.neovitae.configurator.aspect"),
-                leftPos + LIST_X + 2, aspectLabelY() + 3, 0xFFA05050, false);
+        if (usesAspect) {
+            g.drawString(font, Component.translatable("gui.neovitae.configurator.aspect"),
+                    leftPos + LIST_X + 2, aspectLabelY() + 3, 0xFFA05050, false);
 
-        int innerW = imageWidth - LIST_X * 2;
-        int btnW = innerW / SpiritusType.values().length;
-        for (int i = 0; i < SpiritusType.values().length; i++) {
-            int bx = leftPos + LIST_X + i * btnW;
-            int by = aspectRowY();
-            boolean hovered = mouseX >= bx && mouseX < bx + btnW - 1 && mouseY >= by && mouseY < by + ASPECT_ROW_H - 1;
-            boolean isSelected = i == selectedAspect;
-            int fill = isSelected ? 0xAA3A2030 : (hovered ? 0x33FFFFFF : 0x22000000);
-            g.fill(bx, by, bx + btnW - 1, by + ASPECT_ROW_H - 1, fill);
-            if (isSelected) {
-                int c = ASPECT_COLORS[i];
-                g.fill(bx, by, bx + btnW - 1, by + 2, c);
+            int innerW = imageWidth - LIST_X * 2;
+            int btnW = innerW / SpiritusType.values().length;
+            for (int i = 0; i < SpiritusType.values().length; i++) {
+                int bx = leftPos + LIST_X + i * btnW;
+                int by = aspectRowY();
+                boolean hovered = mouseX >= bx && mouseX < bx + btnW - 1 && mouseY >= by && mouseY < by + ASPECT_ROW_H - 1;
+                boolean isSelected = i == selectedAspect;
+                int fill = isSelected ? 0xAA3A2030 : (hovered ? 0x33FFFFFF : 0x22000000);
+                g.fill(bx, by, bx + btnW - 1, by + ASPECT_ROW_H - 1, fill);
+                if (isSelected) {
+                    g.fill(bx, by, bx + btnW - 1, by + 2, ASPECT_COLORS[i]);
+                }
+                Component label = Component.translatable("gui.neovitae.configurator.aspect." + SpiritusType.values()[i].getSerializedName());
+                int lw = font.width(label);
+                int color = isSelected ? ASPECT_COLORS[i] : (hovered ? 0xFFFFFFFF : 0xFFB0A0A4);
+                g.drawString(font, label, bx + (btnW - lw) / 2, by + (ASPECT_ROW_H - 8) / 2, color, false);
             }
-            Component label = Component.translatable("gui.neovitae.configurator.aspect." + SpiritusType.values()[i].getSerializedName());
-            int lw = font.width(label);
-            int color = isSelected ? ASPECT_COLORS[i] : (hovered ? 0xFFFFFFFF : 0xFFB0A0A4);
-            g.drawString(font, label, bx + (btnW - lw) / 2, by + (ASPECT_ROW_H - 8) / 2, color, false);
         }
 
         if (usesFillMode) {
@@ -195,6 +229,28 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
                 int lw = font.width(label);
                 int color = isSelected ? 0xFFB8860B : (hovered ? 0xFFFFFFFF : 0xFFB0A0A4);
                 g.drawString(font, label, bx + (fbw - lw) / 2, by + (FILL_ROW_H - 8) / 2, color, false);
+            }
+        }
+
+        if (usesMiningMode) {
+            g.drawString(font, Component.translatable("gui.neovitae.configurator.mining_mode"),
+                    leftPos + LIST_X + 2, miningLabelY() + 3, 0xFFA05050, false);
+            EnumMiningMode[] modes = EnumMiningMode.values();
+            int mbw = miningButtonWidth();
+            for (int i = 0; i < modes.length; i++) {
+                int bx = leftPos + LIST_X + i * mbw;
+                int by = miningRowY();
+                boolean hovered = overMiningButton(i, mouseX, mouseY);
+                boolean isSelected = modes[i] == miningMode;
+                int fill = isSelected ? 0xAA3A2030 : (hovered ? 0x33FFFFFF : 0x22000000);
+                g.fill(bx, by, bx + mbw - 1, by + FILL_ROW_H - 1, fill);
+                if (isSelected) {
+                    g.fill(bx, by, bx + mbw - 1, by + 2, 0xFFB8860B);
+                }
+                Component label = Component.translatable(modes[i].translationKey());
+                int lw = font.width(label);
+                int color = isSelected ? 0xFFB8860B : (hovered ? 0xFFFFFFFF : 0xFFB0A0A4);
+                g.drawString(font, label, bx + (mbw - lw) / 2, by + (FILL_ROW_H - 8) / 2, color, false);
             }
         }
 
@@ -259,7 +315,7 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
 
             int innerW = imageWidth - LIST_X * 2;
             int btnW = innerW / SpiritusType.values().length;
-            for (int i = 0; i < SpiritusType.values().length; i++) {
+            for (int i = 0; usesAspect && i < SpiritusType.values().length; i++) {
                 int bx = leftPos + LIST_X + i * btnW;
                 int by = aspectRowY();
                 if (mouseX >= bx && mouseX < bx + btnW - 1 && mouseY >= by && mouseY < by + ASPECT_ROW_H - 1) {
@@ -299,6 +355,18 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
                 }
             }
 
+            if (usesMiningMode) {
+                EnumMiningMode[] modes = EnumMiningMode.values();
+                for (int i = 0; i < modes.length; i++) {
+                    if (overMiningButton(i, mouseX, mouseY)) {
+                        miningMode = modes[i];
+                        minecraft.gameMode.handleInventoryButtonClick(menu.containerId,
+                                RitualConfiguratorMenu.MINING_MODE_BUTTON_BASE + i);
+                        return true;
+                    }
+                }
+            }
+
             int eby = editButtonY();
             if (mouseX >= leftPos + LIST_X && mouseX < leftPos + imageWidth - LIST_X
                     && mouseY >= eby && mouseY < eby + BUTTON_H) {
@@ -321,7 +389,7 @@ public class RitualConfiguratorScreen extends AbstractContainerScreen<RitualConf
         }
         int innerW = imageWidth - LIST_X * 2;
         int btnW = innerW / SpiritusType.values().length;
-        for (int i = 0; i < SpiritusType.values().length; i++) {
+        for (int i = 0; usesAspect && i < SpiritusType.values().length; i++) {
             int bx = leftPos + LIST_X + i * btnW;
             int by = aspectRowY();
             if (mouseX >= bx && mouseX < bx + btnW - 1 && mouseY >= by && mouseY < by + ASPECT_ROW_H - 1) {

@@ -51,6 +51,7 @@ public class NVTags {
         public static final TagKey<Item> ARC_SMOKING = withParent(ATHANOR_FURNACE, bm("smoking"));
 
         public static final TagKey<Item> LINGERING_FLASK = withParent(ATHANOR_TOOL, bm("lingering_flask"));
+        public static final TagKey<Item> ATHANOR_ORB = withParent(ATHANOR_TOOL, bm("orb"));
 
         public static final TagKey<Item> CHARGES = tag(bm("charges"));
 
@@ -203,6 +204,7 @@ public class NVTags {
         public static final TagKey<EntityType<?>> LOYAL_FRIENDS_BLACKLIST = tag(bm("loyal_friends_blacklist"));
         public static final TagKey<EntityType<?>> NO_SENTIENT_TRAINING = tag(bm("no_sentient_training"));
         public static final TagKey<EntityType<?>> DENY_IMPRISONMENT = tag(bm("deny_imprisonment"));
+        public static final TagKey<EntityType<?>> WARD_RETRIEVABLE = tag(bm("ward_retrievable"));
 
         private static TagKey<EntityType<?>> tag(ResourceLocation id) {
             return TagKey.create(Registries.ENTITY_TYPE, id);

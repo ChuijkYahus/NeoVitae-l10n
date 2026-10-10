@@ -99,7 +99,11 @@ public class RitualTormentNexus extends Ritual {
     private int refreshesSinceScan = 0;
 
     public RitualTormentNexus() {
-        super(NAME, 1, 25000, "ritual." + NeoVitae.MODID + "." + NAME);
+        this(NAME, 1, 25000);
+    }
+
+    protected RitualTormentNexus(String name, int crystalLevel, int activationCost) {
+        super(name, crystalLevel, activationCost, "ritual." + NeoVitae.MODID + "." + name);
         addBlockRange(EFFECT_RANGE, new AreaDescriptor.Rectangle(new BlockPos(-5, -5, -5), 11, 11, 11));
         addBlockRange(ALTAR_RANGE, new AreaDescriptor.Rectangle(new BlockPos(-5, -10, -5), 11, 21, 11));
         setMaximumVolumeAndDistanceOfRange(EFFECT_RANGE, 0, 32, 32);
@@ -320,7 +324,7 @@ public class RitualTormentNexus extends Ritual {
 
         prunePresence(level);
 
-        int evPerKill = NeoVitae.SERVER_CONFIG.TORMENT_NEXUS_EV_PER_KILL.get();
+        int evPerKill = getEvPerKill();
         int evModPercent = NeoVitae.SERVER_CONFIG.TORMENT_NEXUS_EV_MODIFIER_PERCENT.get();
         int maxEvPerOperation = NeoVitae.SERVER_CONFIG.TORMENT_NEXUS_MAX_EV_PER_OPERATION.get();
         int refreshTicks = getRefreshTime();
@@ -581,6 +585,14 @@ public class RitualTormentNexus extends Ritual {
         }
     }
 
+    protected int getEvPerKill() {
+        return NeoVitae.SERVER_CONFIG.TORMENT_NEXUS_EV_PER_KILL.get();
+    }
+
+    protected int getMaxLootRolls() {
+        return NeoVitae.SERVER_CONFIG.TORMENT_NEXUS_MAX_LOOT_ROLLS.get();
+    }
+
     private void rollScaledLoot(ServerLevel level, LivingEntity living, FakePlayer fakePlayer,
             long performed, IItemHandler chestInv) {
         ResourceKey<LootTable> lootKey = living.getLootTable();
@@ -596,7 +608,7 @@ public class RitualTormentNexus extends Ritual {
                     .withOptionalParameter(LootContextParams.LAST_DAMAGE_PLAYER, fakePlayer)
                     .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, fakePlayer)
                     .create(LootContextParamSets.ENTITY);
-            long rolls = Math.min(performed, NeoVitae.SERVER_CONFIG.TORMENT_NEXUS_MAX_LOOT_ROLLS.get());
+            long rolls = Math.min(performed, getMaxLootRolls());
             double scale = performed / (double) rolls;
             RandomSource rng = level.getRandom();
             for (long r = 0; r < rolls; r++) {
@@ -657,7 +669,7 @@ public class RitualTormentNexus extends Ritual {
         ServerLevel level = ctx.serverLevel();
         BlockPos masterPos = ctx.masterPos();
 
-        int evPerKill = NeoVitae.SERVER_CONFIG.TORMENT_NEXUS_EV_PER_KILL.get();
+        int evPerKill = getEvPerKill();
         if (evPerKill > 0 && ctx.currentEV() < evPerKill) return false;
 
         UUID owner = master.getOwner() != null ? master.getOwner() : UUID.randomUUID();

@@ -28,6 +28,7 @@ import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.SentientStats;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.common.registry.NVRegistries;
+import com.breakinblocks.neovitae.common.sentient.SentientHelper;
 import com.breakinblocks.neovitae.common.sentient.SentientUpgrade;
 import com.breakinblocks.neovitae.ritual.EnumRuneType;
 import com.breakinblocks.neovitae.ritual.NVRituals;
@@ -81,6 +82,25 @@ public class SentientRitualTests {
         player.setPos(standAt.x, standAt.y, standAt.z);
         helper.getLevel().addFreshEntity(player);
         return player;
+    }
+
+    private static Player standingFullSetWearer(GameTestHelper helper, BlockPos mrsPos, int maxPoints) {
+        Player player = standingWearer(helper, mrsPos);
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        SentientHelper.setDefaultSentient(chest, helper.getLevel().registryAccess());
+        chest.set(NVDataComponents.CURRENT_MAX_UPGRADE_POINTS, maxPoints);
+        player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(NVItems.SENTIENT_HELMET.get()));
+        player.setItemSlot(EquipmentSlot.LEGS, new ItemStack(NVItems.SENTIENT_LEGGINGS.get()));
+        player.setItemSlot(EquipmentSlot.FEET, new ItemStack(NVItems.SENTIENT_BOOTS.get()));
+        return player;
+    }
+
+    private static int mendedPieces(Player player) {
+        int count = 0;
+        for (EquipmentSlot slot : List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)) {
+            if (player.getItemBySlot(slot).has(NVDataComponents.BLOOD_MENDING)) count++;
+        }
+        return count;
     }
 
     private static void throwCatalyst(GameTestHelper helper, Item item) {
@@ -195,6 +215,87 @@ public class SentientRitualTests {
             }
             if (mrs.isActive()) {
                 helper.fail("Evolution ritual should deactivate when the armor is already at the cap");
+                return;
+            }
+            helper.succeed();
+        });
+
+    }
+
+    private static MasterRitualStoneBlockEntity activeMrs(GameTestHelper helper, BlockPos mrsPos, Ritual ritual) {
+        UUID owner = UUID.randomUUID();
+        MasterRitualStoneBlockEntity mrs = placeMrs(helper, mrsPos, owner, ritual);
+        if (mrs == null) return null;
+        mrs.forceActivateRitual(ritual, null);
+        mrs.setOwner(owner);
+        return mrs;
+    }
+
+    @GameTest(template = "empty_24x5x24", timeoutTicks = 200)
+    public void deusEvolveAscendsAndMendsEveryPiece(GameTestHelper helper) {
+        BlockPos mrsPos = new BlockPos(12, 1, 12);
+        MasterRitualStoneBlockEntity mrs = activeMrs(helper, mrsPos, NVRituals.DEUS_ARMOUR_EVOLVE.get());
+        if (mrs == null) return;
+
+        Player player = standingFullSetWearer(helper, mrsPos, 500);
+
+        helper.runAfterDelay(100, () -> {
+            Integer maxPoints = player.getItemBySlot(EquipmentSlot.CHEST).get(NVDataComponents.CURRENT_MAX_UPGRADE_POINTS);
+            if (maxPoints == null || maxPoints != 600) {
+                helper.fail("Deus evolution should raise capacity from 500 to 600, got " + maxPoints);
+                return;
+            }
+            int mended = mendedPieces(player);
+            if (mended != 4) {
+                helper.fail("Deus evolution should bind Blood Mending into all four pieces, got " + mended);
+                return;
+            }
+            if (mrs.isActive()) {
+                helper.fail("Deus evolution should deactivate after evolving");
+                return;
+            }
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty_24x5x24", timeoutTicks = 200)
+    public void deusEvolveRefusesArmorBelow500(GameTestHelper helper) {
+        BlockPos mrsPos = new BlockPos(12, 1, 12);
+        MasterRitualStoneBlockEntity mrs = activeMrs(helper, mrsPos, NVRituals.DEUS_ARMOUR_EVOLVE.get());
+        if (mrs == null) return;
+
+        Player player = standingFullSetWearer(helper, mrsPos, 400);
+
+        helper.runAfterDelay(100, () -> {
+            Integer maxPoints = player.getItemBySlot(EquipmentSlot.CHEST).get(NVDataComponents.CURRENT_MAX_UPGRADE_POINTS);
+            if (maxPoints == null || maxPoints != 400) {
+                helper.fail("Deus evolution should leave armor below 500 untouched, got " + maxPoints);
+                return;
+            }
+            if (mendedPieces(player) != 0) {
+                helper.fail("Deus evolution should not mend armor it refuses");
+                return;
+            }
+            if (mrs.isActive()) {
+                helper.fail("Deus evolution should deactivate when the armor is not ready");
+                return;
+            }
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty_24x5x24", timeoutTicks = 200)
+    public void evolveRefusesArmorAfterDeusAscension(GameTestHelper helper) {
+        BlockPos mrsPos = new BlockPos(12, 1, 12);
+        MasterRitualStoneBlockEntity mrs = activeMrs(helper, mrsPos, NVRituals.ARMOUR_EVOLVE.get());
+        if (mrs == null) return;
+
+        Player player = standingFullSetWearer(helper, mrsPos, 600);
+
+        helper.runAfterDelay(100, () -> {
+            Integer maxPoints = player.getItemBySlot(EquipmentSlot.CHEST).get(NVDataComponents.CURRENT_MAX_UPGRADE_POINTS);
+            if (maxPoints == null || maxPoints != 600) {
+                helper.fail("Sentient Evolution should not change ascended armor, got " + maxPoints);
                 return;
             }
             helper.succeed();

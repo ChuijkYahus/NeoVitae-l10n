@@ -9,6 +9,8 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
+import com.breakinblocks.neovitae.datagen.book.page.BookHellfireForgeRecipePageModel;
+import com.breakinblocks.neovitae.datagen.book.page.BookAthanorRecipePageModel;
 
 public class AthanorEntry extends EntryProvider {
 
@@ -105,6 +107,43 @@ public class AthanorEntry extends EntryProvider {
                 + "Outputs emerge from the bottom.[#]()\\\n\\\n"
                 + "Keep this geometry in mind when placing your Hoppers or Routing Nodes. "
                 + "An automated Athanor is the heart of any serious ore-processing chain.");
+
+        this.page("prismatic_gem", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("The Prismatic Spiritus Gem");
+        this.pageText("At the heart of every Deus working lies the [#](8B0000)Prismatic Spiritus Gem[#](), a Nether Star "
+                + "bound in diamond and steeped in every Aspect at once.\\\n\\\n"
+                + "Set a [#](8B0000)Divinus Orb of Vitae[#]() in the tool slot, where it guides the work without being spent. "
+                + "Lay a Nether Star and four Diamonds in separate slots. The chunk must hold [#](4A0080)30 of every Spiritus[#](): "
+                + "Raw, Ruina, Nihilum, Vindicta and Invictus, all consumed when the gem is complete.");
+
+        this.page("prismatic_gem_recipe", () -> BookAthanorRecipePageModel.create()
+                .withRecipeId1(ResourceLocation.fromNamespaceAndPath("neovitae", "athanor/orb/prismatic_spiritus_gem")));
+
+        this.page("deus_tools", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("Deus Tools");
+        this.pageText("Every tool the Athanor consumes has an undying counterpart. In the [#](8B0000)Hellfire Forge[#](), "
+                + "join the finest tool of its kind with a [#](8B0000)Prismatic Spiritus Gem[#]() and a "
+                + "[#](8B0000)Tabula Aetherea[#](). Only a [#](8B0000)Grand Spiritus Gem[#]() holding at least "
+                + "5,000 Spiritus can power the work. The [#](8B0000)Deus[#]() tool that emerges matches its "
+                + "predecessor's strength but never wears out.\\\n\\\n"
+                + "Bind it to yourself before use. Each task drains [#](8B0000)50 EV[#]() from your network, "
+                + "near or far; when the network runs dry, the crucible waits. A Deus Cutting Fluid serves the "
+                + "Tabula Vitae in the same way. [#](2E8B57)A bound Lava Crystal smelts for 50 EV per item.[#]()");
+
+        this.page("deus_recipes_1", () -> BookHellfireForgeRecipePageModel.create()
+                .withRecipeId1(ResourceLocation.fromNamespaceAndPath("neovitae", "hellfire_forge/deus_cutting_fluid"))
+                .withRecipeId2(ResourceLocation.fromNamespaceAndPath("neovitae", "hellfire_forge/deus_explosive_cell")));
+
+        this.page("deus_recipes_2", () -> BookHellfireForgeRecipePageModel.create()
+                .withRecipeId1(ResourceLocation.fromNamespaceAndPath("neovitae", "hellfire_forge/deus_resonator"))
+                .withRecipeId2(ResourceLocation.fromNamespaceAndPath("neovitae", "hellfire_forge/deus_hydration_cell")));
+
+        this.page("deus_recipes_3", () -> BookHellfireForgeRecipePageModel.create()
+                .withRecipeId1(ResourceLocation.fromNamespaceAndPath("neovitae", "hellfire_forge/deus_reverter")));
     }
 
     @Override

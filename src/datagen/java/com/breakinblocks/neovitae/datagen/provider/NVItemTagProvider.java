@@ -86,10 +86,10 @@ public class NVItemTagProvider extends ItemTagsProvider {
         tag(ItemTags.HOES).add(NVItems.LEX_VITAE.get());
         tag(ItemTags.MINING_ENCHANTABLE).add(NVItems.SENTIENT_PICKAXE.get(), NVItems.SENTIENT_SHOVEL.get(), NVItems.SENTIENT_AXE.get(), NVItems.LEX_VITAE.get());
         tag(ItemTags.MINING_LOOT_ENCHANTABLE).add(NVItems.SENTIENT_PICKAXE.get(), NVItems.SENTIENT_SHOVEL.get(), NVItems.SENTIENT_AXE.get(), NVItems.LEX_VITAE.get());
-        tag(ItemTags.SWORD_ENCHANTABLE).add(NVItems.SENTIENT_SWORD.get(), NVItems.LEX_VITAE.get());
-        tag(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(NVItems.SENTIENT_SWORD.get(), NVItems.SENTIENT_AXE.get(), NVItems.LEX_VITAE.get());
-        tag(ItemTags.WEAPON_ENCHANTABLE).add(NVItems.SENTIENT_SWORD.get(), NVItems.SENTIENT_AXE.get(), NVItems.LEX_VITAE.get());
-        tag(ItemTags.FIRE_ASPECT_ENCHANTABLE).add(NVItems.SENTIENT_SWORD.get(), NVItems.LEX_VITAE.get());
+        tag(ItemTags.SWORD_ENCHANTABLE).add(NVItems.SENTIENT_SWORD.get(), NVItems.SENTIENT_SCYTHE.get(), NVItems.LEX_VITAE.get());
+        tag(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(NVItems.SENTIENT_SWORD.get(), NVItems.SENTIENT_AXE.get(), NVItems.SENTIENT_SCYTHE.get(), NVItems.LEX_VITAE.get());
+        tag(ItemTags.WEAPON_ENCHANTABLE).add(NVItems.SENTIENT_SWORD.get(), NVItems.SENTIENT_AXE.get(), NVItems.SENTIENT_SCYTHE.get(), NVItems.LEX_VITAE.get());
+        tag(ItemTags.FIRE_ASPECT_ENCHANTABLE).add(NVItems.SENTIENT_SWORD.get(), NVItems.SENTIENT_SCYTHE.get(), NVItems.LEX_VITAE.get());
         tag(ItemTags.DURABILITY_ENCHANTABLE)
                 .add(NVItems.SENTIENT_SWORD.get(), NVItems.SENTIENT_AXE.get(),
                         NVItems.SENTIENT_PICKAXE.get(), NVItems.SENTIENT_SHOVEL.get(),
@@ -107,25 +107,30 @@ public class NVItemTagProvider extends ItemTagsProvider {
                 .add(NVItems.SPIRITUS_VINDICTA_CRYSTAL_ITEM.get());
 
         tag(NVTags.Items.REVERTER)
-                .add(NVItems.SANGUINE_REVERTER.get());
+                .add(NVItems.SANGUINE_REVERTER.get())
+                .add(NVItems.DEUS_REVERTER.get());
 
         tag(NVTags.Items.EXPLOSIVES)
                 .add(NVItems.EXPLOSIVE_POWDER.get())
                 .add(NVItems.PRIMITIVE_EXPLOSIVE_CELL.get())
-                .add(NVItems.HELLFORGED_EXPLOSIVE_CELL.get());
+                .add(NVItems.HELLFORGED_EXPLOSIVE_CELL.get())
+                .add(NVItems.DEUS_EXPLOSIVE_CELL.get());
 
         tag(NVTags.Items.RESONATOR)
                 .add(NVItems.RESONATOR.get())
                 .add(NVItems.PRIMITIVE_CRYSTALLINE_RESONATOR.get())
-                .add(NVItems.HELLFORGED_RESONATOR.get());
+                .add(NVItems.HELLFORGED_RESONATOR.get())
+                .add(NVItems.DEUS_RESONATOR.get());
 
         tag(NVTags.Items.CUTTING_FLUIDS)
                 .add(NVItems.BASIC_CUTTING_FLUID.get())
                 .add(NVItems.INTERMEDIATE_CUTTING_FLUID.get())
-                .add(NVItems.ADVANCED_CUTTING_FLUID.get());
+                .add(NVItems.ADVANCED_CUTTING_FLUID.get())
+                .add(NVItems.DEUS_CUTTING_FLUID.get());
 
         tag(NVTags.Items.HYDRATION)
-                .add(NVItems.PRIMITIVE_HYDRATION_CELL.get());
+                .add(NVItems.PRIMITIVE_HYDRATION_CELL.get())
+                .add(NVItems.DEUS_HYDRATION_CELL.get());
 
         tag(NVTags.Items.ARC_BLASTING);
         tag(NVTags.Items.ARC_SMELTING)
@@ -145,10 +150,14 @@ public class NVItemTagProvider extends ItemTagsProvider {
                 .addTag(NVTags.Items.CUTTING_FLUIDS)
                 .addTag(NVTags.Items.HYDRATION)
                 .addTag(NVTags.Items.ATHANOR_FURNACE)
-                .addTag(NVTags.Items.LINGERING_FLASK);
+                .addTag(NVTags.Items.LINGERING_FLASK)
+                .addTag(NVTags.Items.ATHANOR_ORB);
 
         tag(NVTags.Items.LINGERING_FLASK)
                 .add(NVItems.ALCHEMY_FLASK_LINGERING.get());
+
+        tag(NVTags.Items.ATHANOR_ORB)
+                .addTag(NVTags.Items.ORBS_TIER_6);
 
         tag(NVTags.Items.DUSTS_SULFUR).add(NVItems.SULFUR.get());
         tag(NVTags.Items.DUSTS_SALTPETER).add(NVItems.SALTPETER.get());
@@ -204,6 +213,7 @@ public class NVItemTagProvider extends ItemTagsProvider {
         tag(NVTags.Items.TOOLS_RITUAL)
                 .add(NVItems.RITUAL_DIVINER.get())
                 .add(NVItems.RITUAL_DIVINER_TENEBRAE.get())
+                .add(NVItems.RITUAL_DIVINER_DEUS.get())
                 .add(NVItems.RITUAL_READER.get())
                 .add(NVItems.RITUAL_LEDGER.get())
                 .add(NVItems.RITUAL_DESIGNER.get());
@@ -214,7 +224,8 @@ public class NVItemTagProvider extends ItemTagsProvider {
                 .add(NVItems.INSCRIPTION_TOOL_FIRE.get())
                 .add(NVItems.INSCRIPTION_TOOL_WATER.get())
                 .add(NVItems.INSCRIPTION_TOOL_EARTH.get())
-                .add(NVItems.INSCRIPTION_TOOL_TENEBRAE.get());
+                .add(NVItems.INSCRIPTION_TOOL_TENEBRAE.get())
+                .add(NVItems.INSCRIPTION_TOOL_DEUS.get());
 
         tag(NVTags.Items.TOOLS_ROUTING)
                 .add(NVItems.NODE_ROUTER.get());
@@ -236,6 +247,7 @@ public class NVItemTagProvider extends ItemTagsProvider {
         tag(NVTags.Items.ACTIVATION_CRYSTALS)
                 .add(NVItems.ACTIVATION_CRYSTAL_WEAK.get())
                 .add(NVItems.ACTIVATION_CRYSTAL_AWAKENED.get())
+                .add(NVItems.ACTIVATION_CRYSTAL_DIVINUS.get())
                 .add(NVItems.ACTIVATION_CRYSTAL_CREATIVE.get());
 
         tag(NVTags.Items.TELEPOSER_FOCI)
