@@ -173,6 +173,8 @@ public class NVTags {
 
         public static final TagKey<Block> QUARRY_FILLER = tag(bm("quarry_filler"));
 
+        public static final TagKey<Block> QUARRY_BLOCKS = tag(bm("quarry_blocks"));
+
         private static TagKey<Block> tag(ResourceLocation id) {
             return TagKey.create(Registries.BLOCK, id);
         }

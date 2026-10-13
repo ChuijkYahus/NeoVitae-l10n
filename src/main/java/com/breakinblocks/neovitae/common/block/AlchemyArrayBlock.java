@@ -37,8 +37,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectLight;
 import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectMiner;
+import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectVortex;
 import com.breakinblocks.neovitae.common.blockentity.AlchemyArrayBlockEntity;
 import com.breakinblocks.neovitae.common.blockentity.NVTiles;
+import com.breakinblocks.neovitae.common.item.NVItems;
 
 public class AlchemyArrayBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
     public static final MapCodec<AlchemyArrayBlock> CODEC = simpleCodec(AlchemyArrayBlock::new);
@@ -130,6 +132,20 @@ public class AlchemyArrayBlock extends BaseEntityBlock implements SimpleWaterlog
             array.setChanged();
             world.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.6f, 1.4f);
             player.displayClientMessage(Component.translatable("chat.neovitae.light_array.persistent"), true);
+            return ItemInteractionResult.sidedSuccess(false);
+        }
+
+        if (playerItem.is(NVItems.TABULA_RASA.get()) && array.arrayEffect instanceof AlchemyArrayEffectVortex vortex) {
+            if (world.isClientSide()) return ItemInteractionResult.sidedSuccess(true);
+            if (vortex.isIgnoringPlayers()) {
+                player.displayClientMessage(Component.translatable("chat.neovitae.vortex_array.already_ignoring"), true);
+                return ItemInteractionResult.sidedSuccess(false);
+            }
+            vortex.setIgnorePlayers(true);
+            playerItem.consume(1, player);
+            array.setChanged();
+            world.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.6f, 0.8f);
+            player.displayClientMessage(Component.translatable("chat.neovitae.vortex_array.ignore_players"), true);
             return ItemInteractionResult.sidedSuccess(false);
         }
 
