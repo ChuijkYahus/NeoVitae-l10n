@@ -3,13 +3,13 @@
   "drain": 5.0,
   "inputs": [
     {
-      "item": "minecraft:glass"
+      "tag": "c:glass_blocks/colorless"
     },
     {
-      "item": "minecraft:glass"
+      "tag": "c:glass_blocks/colorless"
     },
     {
-      "item": "minecraft:glass"
+      "tag": "c:glass_blocks/colorless"
     },
     {
       "item": "neovitae:bloodstone"
