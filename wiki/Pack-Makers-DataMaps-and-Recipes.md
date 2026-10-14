@@ -476,7 +476,7 @@ build, so the files shipped inside the jar will not always match the style you a
 ```json
 {
   "type": "neovitae:athanor",
-  "tool": { "tag": "neovitae:athanor_tool/explosives" },
+  "tool": { "tag": "neovitae:athanor_tool/cutting_fluids" },
   "inputs": [
     { "item": "minecraft:iron_ore" }
   ],
@@ -600,6 +600,7 @@ All paths are relative to `data/neovitae/tags/` unless a different namespace is 
 | `mundane_block` | Empty | Blocks whose drops the Voiding anointment deletes. The Voiding anointment does nothing until a pack fills this tag. |
 | `telepose_blacklist` | Bedrock, barriers, command blocks, structure blocks, jigsaw blocks and portal blocks | Blocks the Teleposer refuses to move. See [Pack Makers Materials and Dungeons](Pack-Makers-Materials-and-Dungeons). |
 | `generative_ores` | Filled at runtime | Ore blocks of every generative material. Populated automatically from `config/neovitae/materials.json`; see [Pack Makers Materials and Dungeons](Pack-Makers-Materials-and-Dungeons). |
+| `quarry_blocks` | Glowstone, Bone Block, `#c:ores` | Blocks the Endless Quarry collects. A Deus Meteo places only these, rerolling any other block in a meteor's list into one that is in the tag. Add a block here to have the quarry mine it and Deus Meteo keep it. |
 
 **Tranquility tags and the tranquility datamap.** The seven `tranquility/*` tags are read through the `neovitae:tranquility` block datamap at `data/neovitae/data_maps/block/tranquility.json`. The shipped datamap maps each tag to its type, so adding a block to `tranquility/plant` gives it a plant contribution of `1.0`. For a different strength, or to override a vanilla block, write a datamap entry directly:
 
@@ -667,7 +668,7 @@ Every Athanor recipe names its tool by tag. The parent tag `athanor_tool` contai
 | Tag | Default contents | Purpose |
 |-----|------------------|---------|
 | `athanor_tool` | All tags below | Anything the Athanor accepts in its tool slot. |
-| `athanor_tool/explosives` | Explosive Powder, Primitive Explosive Cell, Hellforged Explosive Cell | Ore crushing and doubling. |
+| `athanor_tool/explosives` | Empty | No shipped recipe uses it. The explosive tools are retired; add items here to use the tag in your own Athanor recipes. |
 | `athanor_tool/cutting_fluids` | Basic, Intermediate, Advanced Cutting Fluid | Cutting recipes. |
 | `athanor_tool/resonator` | Resonator, Primitive Crystalline Resonator, Hellforged Resonator | Resonance recipes (dungeon stone conversion and others). |
 | `athanor_tool/reverter` | Sanguine Reverter | Reversion recipes that break runes and other crafted blocks back into parts. |

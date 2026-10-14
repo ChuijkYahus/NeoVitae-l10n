@@ -14,9 +14,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffect;
+import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectEnderSever;
 import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectImprisonment;
 import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectLight;
 import com.breakinblocks.neovitae.common.alchemyarray.AlchemyArrayEffectType;
+import com.breakinblocks.neovitae.common.event.EnderSeverArrayHandler;
 import com.breakinblocks.neovitae.common.event.ImprisonmentArrayHandler;
 import com.breakinblocks.neovitae.common.NVSounds;
 import com.breakinblocks.neovitae.common.datacomponent.Binding;
@@ -307,6 +309,9 @@ public class AlchemyArrayBlockEntity extends BaseBlockEntity {
     public void setRemoved() {
         if (level != null && !level.isClientSide() && arrayEffect instanceof AlchemyArrayEffectImprisonment) {
             ImprisonmentArrayHandler.unregister(level, worldPosition);
+        }
+        if (level != null && !level.isClientSide() && arrayEffect instanceof AlchemyArrayEffectEnderSever) {
+            EnderSeverArrayHandler.unregister(level, worldPosition);
         }
         super.setRemoved();
     }

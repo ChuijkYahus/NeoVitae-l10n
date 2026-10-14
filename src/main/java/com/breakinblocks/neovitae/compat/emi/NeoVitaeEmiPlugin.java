@@ -58,6 +58,8 @@ public class NeoVitaeEmiPlugin implements EmiPlugin {
         addRitualRecipes(registry);
         addBloodTankUpgrades(registry);
         addDisenchant(registry);
+
+        NVItems.retiredItems().forEach(item -> registry.removeEmiStacks(EmiStack.of(item)));
     }
 
     private void addCategories(EmiRegistry registry) {
