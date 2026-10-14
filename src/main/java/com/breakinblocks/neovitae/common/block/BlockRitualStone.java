@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.Nullable;
 import com.breakinblocks.neovitae.ritual.EnumRuneType;
 import com.breakinblocks.neovitae.ritual.IRitualStone;
@@ -29,6 +30,7 @@ public class BlockRitualStone extends Block implements IRitualStone {
 
     public BlockRitualStone(EnumRuneType type) {
         super(BlockBehaviour.Properties.of()
+                .mapColor(MapColor.COLOR_BLACK)
                 .strength(2.0F, 1200.0F)
                 .sound(SoundType.STONE)
                 .requiresCorrectToolForDrops());

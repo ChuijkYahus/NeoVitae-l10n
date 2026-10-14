@@ -14,13 +14,14 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import com.breakinblocks.neovitae.common.blockentity.NVTiles;
 import com.breakinblocks.neovitae.common.blockentity.TeleposerBlockEntity;
 
 public class TeleposerBlock extends Block implements EntityBlock {
     public TeleposerBlock() {
-        super(BlockBehaviour.Properties.of().strength(2.0F, 5.0F).requiresCorrectToolForDrops());
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(2.0F, 5.0F).requiresCorrectToolForDrops());
     }
 
     @Override

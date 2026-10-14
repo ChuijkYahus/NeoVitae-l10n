@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootParams;
 import com.breakinblocks.neovitae.common.material.MaterialDefinition;
 import com.breakinblocks.neovitae.common.material.MaterialRegistry;
@@ -29,6 +30,7 @@ public class BlockPrismaticDemonite extends Block {
 
     public BlockPrismaticDemonite() {
         super(BlockBehaviour.Properties.of()
+                .mapColor(MapColor.STONE)
                 .strength(3.0F, 3.0F)
                 .sound(SoundType.STONE)
                 .requiresCorrectToolForDrops()

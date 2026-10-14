@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -49,7 +50,7 @@ public class NVBlocks {
     public static final BlockWithItemHolder<VitaeLinkBlock, BlockItem> VITAE_LINK = BLOCK_REG.register("vitae_link", VitaeLinkBlock::new);
     public static final BlockWithItemHolder<OrbFillingLinkBlock, BlockItem> ORB_FILLING_LINK = BLOCK_REG.register("orb_filling_link", OrbFillingLinkBlock::new);
 
-    private static final BlockBehaviour.Properties rune_properties = BlockBehaviour.Properties.of().strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().lightLevel(state -> 10);
+    private static final BlockBehaviour.Properties rune_properties = BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().lightLevel(state -> 10);
     private static final Item.Properties rune_item_properties = new Item.Properties();
 
     private static RuneBlockItem runeItem(Block block, String... tooltipSuffixes) {
@@ -84,10 +85,11 @@ public class NVBlocks {
     public static final BlockWithItemHolder<Block, RuneBlockItem> RUNE_2_ORB = BASIC_REG.register("rune_2_orb", rune_properties, b -> runeItem(b, "orb", "reinforced"));
     public static final BlockWithItemHolder<Block, RuneBlockItem> RUNE_2_EFFICIENCY = BASIC_REG.register("rune_2_efficiency", rune_properties, b -> runeItem(b, "efficiency", "reinforced"));
 
-    public static final BlockWithItemHolder<Block, BlockItem> BLOODSTONE = BASIC_REG.register("bloodstone", rune_properties, rune_item_properties);
-    public static final BlockWithItemHolder<Block, BlockItem> BLOODSTONE_BRICK = BASIC_REG.register("bloodstone_brick", rune_properties, rune_item_properties);
+    private static final BlockBehaviour.Properties bloodstone_properties = BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().lightLevel(state -> 10);
+    public static final BlockWithItemHolder<Block, BlockItem> BLOODSTONE = BASIC_REG.register("bloodstone", bloodstone_properties, rune_item_properties);
+    public static final BlockWithItemHolder<Block, BlockItem> BLOODSTONE_BRICK = BASIC_REG.register("bloodstone_brick", bloodstone_properties, rune_item_properties);
 
-    private static final BlockBehaviour.Properties metal_block_properties = BlockBehaviour.Properties.of().strength(5, 6).sound(SoundType.METAL).requiresCorrectToolForDrops();
+    private static final BlockBehaviour.Properties metal_block_properties = BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5, 6).sound(SoundType.METAL).requiresCorrectToolForDrops();
     public static final BlockWithItemHolder<Block, BlockItem> HELLFORGED_BLOCK = BASIC_REG.register("hellforged_block", metal_block_properties, new Item.Properties());
     public static final BlockWithItemHolder<Block, BlockItem> RAW_DEMONITE_BLOCK = BASIC_REG.register("raw_demonite_block", metal_block_properties, new Item.Properties());
 
@@ -113,7 +115,7 @@ public class NVBlocks {
 
     public static final BlockWithItemHolder<BlockIncenseAltar, BlockItem> INCENSE_ALTAR = BLOCK_REG.register("incense_altar", BlockIncenseAltar::new);
 
-    private static final BlockBehaviour.Properties tau_properties = BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY).randomTicks();
+    private static final BlockBehaviour.Properties tau_properties = BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY).randomTicks();
     public static final BlockWithItemHolder<BlockTau, BlockItem> STRONG_TAU = BLOCK_REG.register("strong_tau", () -> new BlockTau(tau_properties, true));
     public static final BlockWithItemHolder<BlockTau, BlockItem> WEAK_TAU = BLOCK_REG.register("weak_tau", () -> {
         BlockTau weakTau = new BlockTau(tau_properties, false);
@@ -136,21 +138,23 @@ public class NVBlocks {
     public static final BlockWithItemHolder<CrystallariumMaleficumBlock, BlockItem> CRYSTALLARIUM_MALEFICUM = BLOCK_REG.register("crystallarium_maleficum", CrystallariumMaleficumBlock::new);
     public static final BlockWithItemHolder<SpiraInfernalisBlock, BlockItem> SPIRA_INFERNALIS = BLOCK_REG.register("spira_infernalis", SpiraInfernalisBlock::new);
 
-    private static final BlockBehaviour.Properties crystal_block_properties = BlockBehaviour.Properties.of().strength(3.0F, 3.0F).sound(SoundType.AMETHYST).requiresCorrectToolForDrops().lightLevel(state -> 7).noOcclusion();
-    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> RAW_SPIRITUS_CRYSTAL = BLOCK_REG.register("raw_spiritus_crystal", () -> new BlockSpiritusCrystal(SpiritusType.RAW, crystal_block_properties));
-    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> SPIRITUS_RUINA_CRYSTAL = BLOCK_REG.register("spiritus_ruina_crystal", () -> new BlockSpiritusCrystal(SpiritusType.RUINA, crystal_block_properties));
-    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> SPIRITUS_NIHILUM_CRYSTAL = BLOCK_REG.register("spiritus_nihilum_crystal", () -> new BlockSpiritusCrystal(SpiritusType.NIHILUM, crystal_block_properties));
-    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> SPIRITUS_VINDICTA_CRYSTAL = BLOCK_REG.register("spiritus_vindicta_crystal", () -> new BlockSpiritusCrystal(SpiritusType.VINDICTA, crystal_block_properties));
-    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> SPIRITUS_INVICTUS_CRYSTAL = BLOCK_REG.register("spiritus_invictus_crystal", () -> new BlockSpiritusCrystal(SpiritusType.INVICTUS, crystal_block_properties));
+    private static BlockBehaviour.Properties crystal_block_properties(MapColor color) {
+        return BlockBehaviour.Properties.of().mapColor(color).strength(3.0F, 3.0F).sound(SoundType.AMETHYST).requiresCorrectToolForDrops().lightLevel(state -> 7).noOcclusion();
+    }
+    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> RAW_SPIRITUS_CRYSTAL = BLOCK_REG.register("raw_spiritus_crystal", () -> new BlockSpiritusCrystal(SpiritusType.RAW, crystal_block_properties(MapColor.COLOR_LIGHT_BLUE)));
+    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> SPIRITUS_RUINA_CRYSTAL = BLOCK_REG.register("spiritus_ruina_crystal", () -> new BlockSpiritusCrystal(SpiritusType.RUINA, crystal_block_properties(MapColor.COLOR_LIGHT_GREEN)));
+    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> SPIRITUS_NIHILUM_CRYSTAL = BLOCK_REG.register("spiritus_nihilum_crystal", () -> new BlockSpiritusCrystal(SpiritusType.NIHILUM, crystal_block_properties(MapColor.COLOR_RED)));
+    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> SPIRITUS_VINDICTA_CRYSTAL = BLOCK_REG.register("spiritus_vindicta_crystal", () -> new BlockSpiritusCrystal(SpiritusType.VINDICTA, crystal_block_properties(MapColor.COLOR_PURPLE)));
+    public static final BlockWithItemHolder<BlockSpiritusCrystal, BlockItem> SPIRITUS_INVICTUS_CRYSTAL = BLOCK_REG.register("spiritus_invictus_crystal", () -> new BlockSpiritusCrystal(SpiritusType.INVICTUS, crystal_block_properties(MapColor.COLOR_YELLOW)));
 
-    private static final BlockBehaviour.Properties routing_node_properties = BlockBehaviour.Properties.of().strength(2.0F, 5.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion();
+    private static final BlockBehaviour.Properties routing_node_properties = BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0F, 5.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion();
     public static final BlockWithItemHolder<BlockRoutingConduit, BlockItem> ROUTING_CONDUIT = BLOCK_REG.register("routing_conduit", () -> new BlockRoutingConduit(routing_node_properties));
     public static final BlockWithItemHolder<BlockInputRoutingNode, BlockItem> INPUT_ROUTING_NODE = BLOCK_REG.register("input_routing_node", () -> new BlockInputRoutingNode(routing_node_properties));
     public static final BlockWithItemHolder<BlockOutputRoutingNode, BlockItem> OUTPUT_ROUTING_NODE = BLOCK_REG.register("output_routing_node", () -> new BlockOutputRoutingNode(routing_node_properties));
     public static final BlockWithItemHolder<BlockOmniRoutingNode, BlockItem> OMNI_ROUTING_NODE = BLOCK_REG.register("omni_routing_node", () -> new BlockOmniRoutingNode(routing_node_properties));
     public static final BlockWithItemHolder<BlockMasterRoutingNode, BlockItem> MASTER_ROUTING_NODE = BLOCK_REG.register("master_routing_node", () -> new BlockMasterRoutingNode(routing_node_properties));
 
-    private static final BlockBehaviour.Properties charge_properties = BlockBehaviour.Properties.of().strength(2.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion();
+    private static final BlockBehaviour.Properties charge_properties = BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion();
 
     public static final BlockWithItemHolder<BlockShapedExplosive, BlockItem> SHAPED_CHARGE = BLOCK_REG.register("shaped_charge", () -> new BlockShapedExplosive(3, charge_properties));
     public static final BlockWithItemHolder<BlockShapedExplosive, BlockItem> AUG_SHAPED_CHARGE = BLOCK_REG.register("aug_shaped_charge", () -> new BlockShapedExplosive(5, charge_properties));
@@ -165,12 +169,12 @@ public class NVBlocks {
     public static final BlockWithItemHolder<BlockFungalCharge, BlockItem> FUNGAL_CHARGE = BLOCK_REG.register("fungal_charge", () -> new BlockFungalCharge(128, charge_properties));
     public static final BlockWithItemHolder<BlockFungalCharge, BlockItem> FUNGAL_CHARGE_2 = BLOCK_REG.register("fungal_charge_2", () -> new BlockFungalCharge(256, charge_properties));
 
-    private static final BlockBehaviour.Properties mimic_properties = BlockBehaviour.Properties.of().strength(2.0F, 5.0F).sound(SoundType.STONE).noOcclusion();
+    private static final BlockBehaviour.Properties mimic_properties = BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(2.0F, 5.0F).sound(SoundType.STONE).noOcclusion();
     public static final BlockWithItemHolder<BlockMimic, BlockItem> MIMIC = BLOCK_REG.register("mimic", () -> new BlockMimic(mimic_properties));
-    private static final BlockBehaviour.Properties ethereal_mimic_properties = BlockBehaviour.Properties.of().strength(2.0F, 5.0F).sound(SoundType.STONE).noOcclusion().noCollission();
+    private static final BlockBehaviour.Properties ethereal_mimic_properties = BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(2.0F, 5.0F).sound(SoundType.STONE).noOcclusion().noCollission();
     public static final BlockWithItemHolder<BlockMimic, BlockItem> ETHEREAL_MIMIC = BLOCK_REG.register("ethereal_mimic", () -> new BlockMimic(ethereal_mimic_properties));
 
-    private static final BlockBehaviour.Properties inversion_pillar_properties = BlockBehaviour.Properties.of().strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().noOcclusion();
+    private static final BlockBehaviour.Properties inversion_pillar_properties = BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().noOcclusion();
     public static final BlockWithItemHolder<BlockInversionPillar, BlockItem> INVERSION_PILLAR = BLOCK_REG.register("inversion_pillar", () -> new BlockInversionPillar(inversion_pillar_properties));
     public static final BlockWithItemHolder<BlockInversionPillarEnd, BlockItem> INVERSION_PILLAR_CAP = BLOCK_REG.register("inversion_pillar_cap", () -> new BlockInversionPillarEnd(inversion_pillar_properties));
     public static final BlockWithItemHolder<BlockSpatialRift, BlockItem> SPATIAL_RIFT = BLOCK_REG.register("spatial_rift", BlockSpatialRift::new);

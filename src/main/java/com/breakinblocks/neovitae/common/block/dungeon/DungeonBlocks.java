@@ -5,6 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import com.breakinblocks.neovitae.NeoVitae;
@@ -23,17 +24,17 @@ public class DungeonBlocks {
     public static final BlockWithItemRegister REG = new BlockWithItemRegister(BLOCKS, ITEMS);
 
     private static BlockBehaviour.Properties dungeonStoneProps() {
-        return BlockBehaviour.Properties.of()
+        return BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
                 .strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops();
     }
 
     private static BlockBehaviour.Properties dungeonMetalProps() {
-        return BlockBehaviour.Properties.of()
+        return BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
                 .strength(5.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops();
     }
 
     private static BlockBehaviour.Properties dungeonEyeProps() {
-        return BlockBehaviour.Properties.of()
+        return BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
                 .strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().lightLevel(state -> 15);
     }
 
@@ -87,22 +88,22 @@ public class DungeonBlocks {
     public static BlockWithItemHolder<Block, BlockItem> OBSIDIAN_TILE_PATH;
 
     static {
-        DUNGEON_ORE = REG.register("dungeon_ore", BlockBehaviour.Properties.of()
+        DUNGEON_ORE = REG.register("dungeon_ore", BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
                 .strength(3.0F, 3.0F).sound(SoundType.STONE).requiresCorrectToolForDrops(), new Item.Properties());
         PRISMATIC_DEMONITE = REG.register("prismatic_demonite", BlockPrismaticDemonite::new);
-        DUNGEON_BRICK_ASSORTED = REG.register("dungeon_brick_assorted", BlockBehaviour.Properties.of()
+        DUNGEON_BRICK_ASSORTED = REG.register("dungeon_brick_assorted", BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
                 .strength(20.0F, 50.0F).sound(SoundType.STONE).requiresCorrectToolForDrops(), new Item.Properties());
 
-        SPIKES = REG.register("spikes", () -> new BlockSpikes(BlockBehaviour.Properties.of()
+        SPIKES = REG.register("spikes", () -> new BlockSpikes(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
                 .strength(2.0F, 5.0F).sound(SoundType.METAL).noOcclusion()));
-        SPIKE_TRAP = REG.register("spike_trap", () -> new BlockSpikeTrap(BlockBehaviour.Properties.of()
+        SPIKE_TRAP = REG.register("spike_trap", () -> new BlockSpikeTrap(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
                 .strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops()));
-        ALTERNATOR = REG.register("alternator", () -> new BlockAlternator(BlockBehaviour.Properties.of()
+        ALTERNATOR = REG.register("alternator", () -> new BlockAlternator(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
                 .strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops()));
 
-        BlockBehaviour.Properties pathProps = BlockBehaviour.Properties.of()
+        BlockBehaviour.Properties pathProps = BlockBehaviour.Properties.of().mapColor(MapColor.WOOD)
                 .strength(2.0F, 5.0F).sound(SoundType.WOOD).requiresCorrectToolForDrops();
-        BlockBehaviour.Properties stonePathProps = BlockBehaviour.Properties.of()
+        BlockBehaviour.Properties stonePathProps = BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
                 .strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops();
 
         WOOD_BRICK_PATH = REG.register("wood_brick_path", pathProps, new Item.Properties());

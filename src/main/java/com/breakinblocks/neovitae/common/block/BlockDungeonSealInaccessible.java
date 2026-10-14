@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class BlockDungeonSealInaccessible extends Block {
@@ -23,6 +24,7 @@ public class BlockDungeonSealInaccessible extends Block {
 
     public BlockDungeonSealInaccessible() {
         super(BlockBehaviour.Properties.of()
+                .mapColor(MapColor.STONE)
                 .sound(SoundType.STONE)
                 .strength(-1.0F, 3600000.0F)
                 .noLootTable()
