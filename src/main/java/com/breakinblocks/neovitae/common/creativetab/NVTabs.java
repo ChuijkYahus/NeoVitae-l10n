@@ -154,7 +154,8 @@ public class NVTabs {
                 NVMobEffects.OBSIDIAN_CLOAK.getDelegate(),
                 NVMobEffects.HEAVY_HEART.getDelegate(),
                 NVMobEffects.PASSIVITY.getDelegate(),
-                NVMobEffects.SPECTRAL_SIGHT.getDelegate()
+                NVMobEffects.SPECTRAL_SIGHT.getDelegate(),
+                NVMobEffects.SPIRITUS_SNARE.getDelegate()
         );
 
         for (Holder<MobEffect> effect : flaskEffects) {

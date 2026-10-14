@@ -4330,6 +4330,12 @@ public class NVRecipeProvider extends RecipeProvider {
                 .syphon(500).ticks(200).minimumTier(1)
                 .save(output, NeoVitae.rl("hard_cloak"));
 
+        FlaskRecipeBuilder.effect(NVMobEffects.SPIRITUS_SNARE, 1200)
+                .addIngredient(NVItems.SIMPLE_CATALYST.get())
+                .addIngredient(NVItems.SPIRITUS_GEM_PETTY.get())
+                .syphon(500).ticks(200).minimumTier(1)
+                .save(output, NeoVitae.rl("spiritus_snare"));
+
         // ==================== Effect Transform Recipes ====================
         // Transform one effect into another using fermented spider eye or other items
 
@@ -4502,6 +4508,7 @@ public class NVRecipeProvider extends RecipeProvider {
         addLengthOnlyRecipes(output, NVMobEffects.BOUNCE, "bounce");
         addLengthOnlyRecipes(output, NVMobEffects.GROUNDED, "grounded");
         addLengthOnlyRecipes(output, NVMobEffects.SUSPENDED, "suspended");
+        addLengthOnlyRecipes(output, NVMobEffects.SPIRITUS_SNARE, "spiritus_snare");
 
         // ==================== Fill Recipes ====================
         // Refill depleted flasks
