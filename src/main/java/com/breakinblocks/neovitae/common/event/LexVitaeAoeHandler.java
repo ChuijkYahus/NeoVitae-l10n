@@ -2,6 +2,7 @@ package com.breakinblocks.neovitae.common.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -74,10 +75,12 @@ public final class LexVitaeAoeHandler {
                     if (state.isAir()) continue;
                     if (state.getDestroySpeed(level, pos) < 0) continue;
                     if (!stack.isCorrectToolForDrops(state)) continue;
-                    if (BlockProtectionHelper.tryBreakBlock(level, pos, player)) {
+                    if (player instanceof ServerPlayer sp) {
+                        sp.gameMode.destroyBlock(pos);
+                    } else if (BlockProtectionHelper.tryBreakBlock(level, pos, player)) {
                         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-                        if (stack.isEmpty()) return;
                     }
+                    if (stack.isEmpty()) return;
                 }
             }
         } finally {

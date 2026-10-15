@@ -2,6 +2,7 @@ package com.breakinblocks.neovitae.gametest;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -269,6 +271,47 @@ public class LexVitaeTests {
             } finally {
                 LexVitaeItem.setBeaming(player, false);
             }
+        });
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 60)
+    public void lexVitaeAoeAppliesToolEnchantments(GameTestHelper helper) {
+        BlockPos center = new BlockPos(2, 2, 1);
+        for (int x = 1; x <= 3; x++) {
+            for (int y = 1; y <= 3; y++) {
+                helper.setBlock(new BlockPos(x, y, 1), Blocks.STONE.defaultBlockState());
+            }
+        }
+
+        FakePlayer player = RitualHelper.createRitualFakePlayer(helper.getLevel(), UUID.randomUUID(),
+                "NeoVitae Lex Test", helper.absolutePos(new BlockPos(2, 1, 3)));
+        ItemStack lex = activeLexVitae(1);
+        lex.enchant(helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                .getOrThrow(Enchantments.SILK_TOUCH), 1);
+        player.setItemInHand(InteractionHand.MAIN_HAND, lex);
+        player.setYRot(180.0F);
+        player.setXRot(0.0F);
+
+        helper.runAfterDelay(1, () -> {
+            player.gameMode.destroyBlock(helper.absolutePos(center));
+            for (int x = 1; x <= 3; x++) {
+                for (int y = 1; y <= 3; y++) {
+                    helper.assertBlockNotPresent(Blocks.STONE, new BlockPos(x, y, 1));
+                }
+            }
+            int stone = 0;
+            int cobble = 0;
+            for (ItemEntity drop : helper.getLevel().getEntitiesOfClass(ItemEntity.class,
+                    new AABB(helper.absolutePos(center)).inflate(3))) {
+                if (drop.getItem().is(Items.STONE)) stone += drop.getItem().getCount();
+                if (drop.getItem().is(Items.COBBLESTONE)) cobble += drop.getItem().getCount();
+            }
+            if (cobble > 0 || stone != 9) {
+                helper.fail("Silk Touch should apply to every block in the area, got " + stone + " stone and "
+                        + cobble + " cobblestone");
+                return;
+            }
+            helper.succeed();
         });
     }
 }
