@@ -125,29 +125,4 @@ public class SlimeVitaeEntity extends Slime {
             this.discard();
         }
     }
-
-    @Override
-    public void remove(RemovalReason reason) {
-        int size = this.getSize();
-        if (!this.isRemoved() && !this.level().isClientSide && size > 1 && this.isDeadOrDying()) {
-            int count = 2 + this.random.nextInt(3);
-            for (int i = 0; i < count; i++) {
-                float offset = ((float) (i % 2) - 0.5F) * (float) size / 4.0F;
-                float offsetZ = ((float) (i / 2) - 0.5F) * (float) size / 4.0F;
-                SlimeVitaeEntity baby = NVEntities.SLIME_VITAE.get().create(this.level());
-                if (baby != null) {
-                    if (this.isPersistenceRequired()) {
-                        baby.setPersistenceRequired();
-                    }
-                    baby.setSize(size / 2, true);
-                    baby.moveTo(this.getX() + offset, this.getY() + 0.5, this.getZ() + offsetZ,
-                            this.random.nextFloat() * 360.0F, 0.0F);
-                    if (this.level() instanceof ServerLevel sl) {
-                        sl.addFreshEntity(baby);
-                    }
-                }
-            }
-        }
-        super.remove(reason);
-    }
 }
