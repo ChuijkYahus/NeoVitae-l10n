@@ -21,12 +21,16 @@ The Sanguine Reverter's reversion and **disenchanting** (books + an enchanted it
 
 ## The Tabula Vitae
 
-The Tabula Vitae has **per-side slot configuration**: open its UI and assign which of its slots each face exposes, then point Routing Nodes or hoppers at the configured faces. Feed the ingredient slots and a bound **Orb of Vitae**, and pull from the output slot.
+The Tabula Vitae has **per-side slot configuration**: open its UI and assign which of its slots each face exposes, then point Routing Nodes or hoppers at the configured faces. Feed the ingredient slots and a bound **Orb of Vitae**, and pull from the output slot, or select the output slot and right-click a side button to have the table push finished items out of that side itself.
 
 Automate it to mass-produce:
 
 - **Cutting Fluids** for the Athanor's ore chain.
 - **Tabula** slates (Rasa, Robur, Animata, and up) for downstream crafting.
+
+The **[Hellfire Forge](Hellfire-Forge-and-Sentient-Equipment)** uses the same per-side slot configuration, gem slot included. Keep each ingredient on its own side so the forge receives one of each, and let the gem refill from the chunk's Aura or swap gems in through its configured face. It can push its output out of a chosen side the same way.
+
+Both stations work behind an AE2 pattern provider or a Refined Storage autocrafter: expose only the ingredient slots on the provider's face, turn on the provider's blocking mode, and push the output back into the provider. For running these recipes in bulk, the **[Sanguine Crafter](Sanguine-Crafter)** crafts Tabula Vitae and Hellfire Forge recipes several at a time from one buffer.
 
 ## Tying them together
 

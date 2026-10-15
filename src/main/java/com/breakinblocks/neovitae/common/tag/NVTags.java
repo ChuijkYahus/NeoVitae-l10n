@@ -135,6 +135,7 @@ public class NVTags {
         public static final TagKey<Block> ANIMA_COMPARATOR = tag(bm("altar/anima_comparator"));
 
         public static final TagKey<Block> TELEPOSE_BLACKLIST = tag(bm("telepose_blacklist"));
+        public static final TagKey<Block> SANGUINE_CASINGS = tag(bm("sanguine_crafter/casings"));
 
         public static final TagKey<Block> STORAGE_BLOCKS_HELLFORGED = tag(c("storage_blocks/hellforged"));
         public static final TagKey<Block> STORAGE_BLOCKS_RAW = tag(c("storage_blocks/raw"));

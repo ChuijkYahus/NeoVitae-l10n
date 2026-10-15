@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
@@ -17,8 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.items.IItemHandler;
+import com.breakinblocks.neovitae.common.sideconfig.SideConfigItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.common.event.NeoVitaeCraftedEvent;
@@ -27,6 +28,10 @@ import com.breakinblocks.neovitae.common.menu.HellfireForgeMenu;
 import com.breakinblocks.neovitae.common.recipe.NVRecipes;
 import com.breakinblocks.neovitae.common.recipe.forge.ForgeInput;
 import com.breakinblocks.neovitae.common.recipe.forge.ForgeRecipe;
+import com.breakinblocks.neovitae.common.sideconfig.OutputFaceConfigurable;
+import com.breakinblocks.neovitae.common.sideconfig.OutputPusher;
+import com.breakinblocks.neovitae.common.sideconfig.SideConfigurable;
+import com.breakinblocks.neovitae.common.sideconfig.SlotSideConfig;
 import com.breakinblocks.neovitae.common.tag.NVTags;
 import com.breakinblocks.neovitae.common.NVSounds;
 import com.breakinblocks.neovitae.client.particle.ColoredParticleOptions;
@@ -41,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuProvider {
+public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuProvider, SideConfigurable, OutputFaceConfigurable, IRitualAccelerated {
     public ItemStackHandler inv = new ItemStackHandler(6) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
@@ -71,6 +76,21 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
 
     public static final int GEM_SLOT = 4;
     public static final int OUTPUT_SLOT = 5;
+    public static final int SLOT_COUNT = 6;
+
+    private static final boolean[][] DEFAULT_SIDE_CONFIG = new boolean[][] {
+            { false, false, false, true, false, false },
+            { false, false, false, false, true, false },
+            { false, false, true, false, false, false },
+            { false, false, false, false, false, true },
+            { false, true, false, false, false, false },
+            { true, false, false, false, false, false }
+    };
+
+    private final SlotSideConfig sideConfig = new SlotSideConfig(SLOT_COUNT, DEFAULT_SIDE_CONFIG);
+    public int activeSlot = -1;
+    @Nullable
+    private Direction outputFace = null;
 
     public static final int MAX_PROGRESS = 100;
 
@@ -85,6 +105,7 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
     public static final int STATUS_NEEDS_SPIRITUS = 2;
 
     protected int progress = 0;
+    private final RitualAcceleration ritualAcceleration = new RitualAcceleration();
     protected int status = STATUS_IDLE;
     protected int requiredSpiritus = 0;
     protected int storedSpiritus = 0;
@@ -135,6 +156,10 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
 
         absorbSpiritusFromChunk(level, pos, tile);
 
+        if (OutputPusher.shouldPush(level)) {
+            OutputPusher.push(level, pos, tile.outputFace, tile.inv, OUTPUT_SLOT, OUTPUT_SLOT);
+        }
+
         ForgeInput input = tile.getInput();
         Optional<RecipeHolder<ForgeRecipe>> recipeOptional = findRecipe(level, input);
 
@@ -180,9 +205,10 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
         if (tile.progress == 0) {
             level.playSound(null, pos, NVSounds.HELLFIRE_FORGE_CRAFT.get(), SoundSource.BLOCKS, 0.5f, 1.0f);
         }
-        tile.progress++;
+        tile.progress += tile.ritualAcceleration.factor(level);
+        tile.ritualAcceleration.markWorked(level);
         if (tile.progress < MAX_PROGRESS) {
-            if (tile.progress % 4 == 0) {
+            if (level.getGameTime() % 4 == 0) {
                 ((ServerLevel) level).sendParticles(new ColoredParticleOptions(NVParticles.BLOOD_FLAME.get(), 0xFF4400), pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 2, 0.1, 0, 0.1, 0.02);
             }
             return;
@@ -250,9 +276,16 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
 
     private static void absorbSpiritusFromChunk(Level level, BlockPos pos, HellfireForgeBlockEntity tile) {
         ItemStack gemStack = tile.inv.getStackInSlot(GEM_SLOT);
-        if (gemStack.isEmpty() || !SpiritusHelper.isRechargeable(gemStack)) {
-            return;
+        if (absorbIntoGem(level, pos, gemStack)) {
+            tile.inv.setStackInSlot(GEM_SLOT, gemStack);
         }
+    }
+
+    public static boolean absorbIntoGem(Level level, BlockPos pos, ItemStack gemStack) {
+        if (gemStack.isEmpty() || !SpiritusHelper.isRechargeable(gemStack)) {
+            return false;
+        }
+        boolean changed = false;
         for (SpiritusType type : SpiritusType.values()) {
             double currentChunkSpiritus = WorldSpiritusHandler.getCurrentSpiritus(level, pos, type);
             if (currentChunkSpiritus <= 0) continue;
@@ -263,10 +296,11 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
                 double drained = WorldSpiritusHandler.drainSpiritusFromChunk(level, pos, type, canFill);
                 if (drained > 0) {
                     SpiritusHelper.fillSpiritus(gemStack, type, drained, true);
-                    tile.setChanged();
+                    changed = true;
                 }
             }
         }
+        return changed;
     }
 
     public ForgeInput getInput() {
@@ -305,6 +339,8 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
         super.loadAdditional(tag, registries);
         inv.deserializeNBT(registries, tag.getCompound("inventory"));
         progress = tag.getInt("progress");
+        sideConfig.load(tag);
+        outputFace = OutputPusher.load(tag);
     }
 
     @Override
@@ -312,6 +348,24 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
         super.saveAdditional(tag, registries);
         tag.put("inventory", inv.serializeNBT(registries));
         tag.putInt("progress", progress);
+        sideConfig.save(tag);
+        OutputPusher.save(tag, outputFace);
+    }
+
+    @Override
+    public SlotSideConfig getSideConfig() {
+        return sideConfig;
+    }
+
+    @Override
+    @Nullable
+    public Direction getOutputFace() {
+        return outputFace;
+    }
+
+    @Override
+    public void setOutputFace(@Nullable Direction face) {
+        outputFace = face;
     }
 
     public @Nullable IItemHandler getInventory(Direction side) {
@@ -319,11 +373,7 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
             return inv;
         }
 
-        return switch (side) {
-            case UP -> new RangedWrapper(inv, GEM_SLOT, GEM_SLOT + 1);
-            case DOWN -> new RangedWrapper(inv, OUTPUT_SLOT, OUTPUT_SLOT + 1);
-            default -> new RangedWrapper(inv, side.get2DDataValue(), side.get2DDataValue() + 1);
-        };
+        return new SideConfigItemHandler(inv, sideConfig, side);
     }
 
     @Override
@@ -340,5 +390,15 @@ public class HellfireForgeBlockEntity extends BaseBlockEntity implements MenuPro
 
     public double getProgressForGui() {
         return (double) progress / (double) MAX_PROGRESS;
+    }
+
+    @Override
+    public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buffer) {
+        buffer.writeBlockPos(worldPosition);
+    }
+
+    @Override
+    public RitualAcceleration getRitualAcceleration() {
+        return ritualAcceleration;
     }
 }

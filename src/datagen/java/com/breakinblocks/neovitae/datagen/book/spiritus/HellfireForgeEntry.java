@@ -42,6 +42,16 @@ public class HellfireForgeEntry extends EntryProvider {
                 + "the same pace a [#](8B0000)Spiritus Crucible[#]() would fill it.\\\n\\\n"
                 + "[#](2E8B57)Feed the local Aura with a Crystallum Fractura farm and the Forge can craft "
                 + "unattended, its gem refilling as quickly as it is spent.[#]()");
+
+        this.page("automation", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("Automating the Forge");
+        this.pageText("Every slot of the Forge, the gem slot included, can be opened to any side for hoppers and pipes. "
+                + "Click an empty slot, then toggle the side buttons that appear: green sides reach that slot, red "
+                + "sides do not. By default each ingredient slot takes its own side, the gem the top, and the output "
+                + "the bottom. With the output slot chosen, right-click a side to push finished items out of it.\\\n\\\n"
+                + "[#](2E8B57)The Sanguine Crafter can also work Forge recipes, many at a time.[#]()");
     }
 
     @Override

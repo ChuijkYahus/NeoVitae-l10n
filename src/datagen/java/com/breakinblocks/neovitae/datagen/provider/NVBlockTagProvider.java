@@ -1,6 +1,8 @@
 package com.breakinblocks.neovitae.datagen.provider;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -56,6 +58,11 @@ public class NVBlockTagProvider extends BlockTagsProvider {
         this.tag(NVTags.Blocks.PULSE_ON_CRAFTING)
                 .add(Blocks.REDSTONE_LAMP, Blocks.NOTE_BLOCK);
 
+        this.tag(NVTags.Blocks.SANGUINE_CASINGS)
+                .add(NVBlocks.SANGUINE_CASING.block().get(),
+                        NVBlocks.HELLFORGED_SANGUINE_CASING.block().get(),
+                        NVBlocks.SWIFT_SANGUINE_CASING.block().get());
+
         this.tag(NVTags.Blocks.TELEPOSE_BLACKLIST)
                 .add(Blocks.BEDROCK,
                         Blocks.BARRIER,
@@ -87,6 +94,8 @@ public class NVBlockTagProvider extends BlockTagsProvider {
                 .add(NVBlocks.ATHANOR_BLOCK.block().getKey())
                 .add(NVBlocks.BLOOD_LANTERN.block().getKey(), NVBlocks.DEMON_LANTERN.block().getKey())
                 .add(NVBlocks.TABULA_VITAE.block().getKey())
+                .add(NVBlocks.SANGUINE_CRAFTER.block().getKey())
+                .addTag(NVTags.Blocks.SANGUINE_CASINGS)
                 .add(NVBlocks.VITAE_LINK.block().getKey())
                 .add(NVBlocks.ORB_FILLING_LINK.block().getKey())
                 .add(NVBlocks.TELEPOSER.block().getKey())
@@ -132,6 +141,8 @@ public class NVBlockTagProvider extends BlockTagsProvider {
                 .add(NVBlocks.HELLFIRE_FORGE.block().getKey())
                 .add(NVBlocks.ATHANOR_BLOCK.block().getKey())
                 .add(NVBlocks.TABULA_VITAE.block().getKey())
+                .add(NVBlocks.SANGUINE_CRAFTER.block().getKey())
+                .addTag(NVTags.Blocks.SANGUINE_CASINGS)
                 .add(NVBlocks.TELEPOSER.block().getKey())
                 .add(NVBlocks.BLANK_RITUAL_STONE.block().getKey())
                 .add(NVBlocks.AIR_RITUAL_STONE.block().getKey())
@@ -250,8 +261,13 @@ public class NVBlockTagProvider extends BlockTagsProvider {
                 .addOptionalTag(Tags.Blocks.COBBLESTONES);
 
         this.tag(NVTags.Blocks.QUARRY_BLOCKS)
-                .add(Blocks.GLOWSTONE, Blocks.BONE_BLOCK)
-                .addTag(Tags.Blocks.ORES);
+                .add(Blocks.GLOWSTONE, Blocks.BONE_BLOCK, Blocks.QUARTZ_BLOCK, Blocks.GILDED_BLACKSTONE)
+                .addTag(Tags.Blocks.ORES)
+                .addOptionalTag(NVTags.Blocks.GENERATIVE_ORES)
+                .addOptionalTag(TagKey.create(Registries.BLOCK,
+                        ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/certus_quartz")));
+        getOrCreateRawBuilder(NVTags.Blocks.QUARRY_BLOCKS)
+                .addOptionalElement(ResourceLocation.fromNamespaceAndPath("ae2", "fluix_block"));
 
         // Mushroom blocks for fungal charges
         this.tag(NVTags.Blocks.MUSHROOM_STEM)

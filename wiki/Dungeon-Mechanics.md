@@ -98,7 +98,7 @@ A vile draught brewed in the forge from **Ectoplasmic Residue** (Rancoris), **Ve
 
 ## Dungeon Eyes
 
-Set into the walls of the Endless Realm and gleaming with a pale, unwavering light, the **Dungeon Eye** is a self-illuminating block with no fuel cost. Variants exist tinted by Raw, Ruina, Nihilum, Invictus, and Vindicta [Spiritus](Spiritus-Aspects-and-Crystals). You can harvest the ones you find or craft new ones; consult JEI.
+Set into the walls of the Endless Realm and gleaming with a pale, unwavering light, the **Dungeon Eye** is a self-illuminating block with no fuel cost. Variants exist tinted by Raw, Ruina, Nihilum, Invictus, and Vindicta [Spiritus](Spiritus-Aspects-and-Crystals). You can harvest the ones you find or craft new ones; consult JEI. Like a log, an eye turns to match the face you place it against, so it can lie along a horizontal pillar.
 
 ## The Blood Lantern
 

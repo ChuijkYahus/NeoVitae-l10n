@@ -4,6 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +31,7 @@ public class HellfireForgeMenu extends AbstractBlockEntityMenu<HellfireForgeBloc
         this.addSlot(new SlotItemHandler(tile.inv, 2, 8, 87));
         this.addSlot(new SlotItemHandler(tile.inv, 3, 80, 87));
 
-        this.addSlot(new SlotItemHandler(tile.inv, HellfireForgeBlockEntity.GEM_SLOT, 152, 51) {
+        this.addSlot(new SlotItemHandler(tile.inv, HellfireForgeBlockEntity.GEM_SLOT, 143, 24) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.has(NVDataComponents.SPIRITUS_AMOUNT);
@@ -91,5 +92,16 @@ public class HellfireForgeMenu extends AbstractBlockEntityMenu<HellfireForgeBloc
     @Override
     public boolean stillValid(Player player) {
         return AbstractContainerMenu.stillValid(ContainerLevelAccess.create(tile.getLevel(), tile.getBlockPos()), player, NVBlocks.HELLFIRE_FORGE.block().get());
+    }
+
+    @Override
+    public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
+        if (slotId >= 0 && slotId <= HellfireForgeBlockEntity.OUTPUT_SLOT) {
+            Slot slot = this.getSlot(slotId);
+            if (!slot.hasItem() && this.getCarried().isEmpty()) {
+                tile.activeSlot = (tile.activeSlot == slotId) ? -1 : slotId;
+            }
+        }
+        super.clicked(slotId, dragType, clickType, player);
     }
 }

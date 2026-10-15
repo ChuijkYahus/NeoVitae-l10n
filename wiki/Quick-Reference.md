@@ -32,7 +32,7 @@ A glossary of every term, resource, and abbreviation you'll encounter.
 | **0** | Basic altar, Sacrificial Knife, Tabula Vitae, Hellfire Forge, Throwing Daggers |
 | **I** | Upgrade Runes, sigil expansion, potioncrafting, off-hand orb harvesting |
 | **II** | Rituals, Sentient Armor, Demon Realm peek (Breaching the Edge of Demon Realm) |
-| **III** | Tenebrae Diviner, Sentient Evolution, Aspected Spiritus, permanent Endless Realm gate |
+| **III** | Tenebrae Diviner, Sentient Evolution, Aspected Spiritus, permanent Endless Realm gate, Sanguine Crafter |
 | **IV** | Most devastating rituals, Hellforged Parts double rune power |
 | **V** | The pinnacle. Crystal Cluster capstones, nineteen runes per side, unlimited capacity |
 

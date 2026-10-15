@@ -2,6 +2,20 @@
   "values": [
     "minecraft:glowstone",
     "minecraft:bone_block",
-    "#c:ores"
+    "minecraft:quartz_block",
+    "minecraft:gilded_blackstone",
+    "#c:ores",
+    {
+      "id": "#neovitae:generative_ores",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/certus_quartz",
+      "required": false
+    },
+    {
+      "id": "ae2:fluix_block",
+      "required": false
+    }
   ]
 }

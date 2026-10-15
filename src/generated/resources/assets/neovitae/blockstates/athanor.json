@@ -1,153 +1,33 @@
 {
   "variants": {
-    "facing=east,lit=false,type=invictus": {
+    "facing=east,lit=false": {
       "model": "neovitae:block/athanor",
       "y": 90
     },
-    "facing=east,lit=false,type=nihilum": {
-      "model": "neovitae:block/athanor",
+    "facing=east,lit=true": {
+      "model": "neovitae:block/athanor_lit",
       "y": 90
     },
-    "facing=east,lit=false,type=raw": {
-      "model": "neovitae:block/athanor",
-      "y": 90
-    },
-    "facing=east,lit=false,type=ruina": {
-      "model": "neovitae:block/athanor",
-      "y": 90
-    },
-    "facing=east,lit=false,type=vindicta": {
-      "model": "neovitae:block/athanor",
-      "y": 90
-    },
-    "facing=east,lit=true,type=invictus": {
-      "model": "neovitae:block/athanor",
-      "y": 90
-    },
-    "facing=east,lit=true,type=nihilum": {
-      "model": "neovitae:block/athanor",
-      "y": 90
-    },
-    "facing=east,lit=true,type=raw": {
-      "model": "neovitae:block/athanor",
-      "y": 90
-    },
-    "facing=east,lit=true,type=ruina": {
-      "model": "neovitae:block/athanor",
-      "y": 90
-    },
-    "facing=east,lit=true,type=vindicta": {
-      "model": "neovitae:block/athanor",
-      "y": 90
-    },
-    "facing=north,lit=false,type=invictus": {
+    "facing=north,lit=false": {
       "model": "neovitae:block/athanor"
     },
-    "facing=north,lit=false,type=nihilum": {
-      "model": "neovitae:block/athanor"
+    "facing=north,lit=true": {
+      "model": "neovitae:block/athanor_lit"
     },
-    "facing=north,lit=false,type=raw": {
-      "model": "neovitae:block/athanor"
-    },
-    "facing=north,lit=false,type=ruina": {
-      "model": "neovitae:block/athanor"
-    },
-    "facing=north,lit=false,type=vindicta": {
-      "model": "neovitae:block/athanor"
-    },
-    "facing=north,lit=true,type=invictus": {
-      "model": "neovitae:block/athanor"
-    },
-    "facing=north,lit=true,type=nihilum": {
-      "model": "neovitae:block/athanor"
-    },
-    "facing=north,lit=true,type=raw": {
-      "model": "neovitae:block/athanor"
-    },
-    "facing=north,lit=true,type=ruina": {
-      "model": "neovitae:block/athanor"
-    },
-    "facing=north,lit=true,type=vindicta": {
-      "model": "neovitae:block/athanor"
-    },
-    "facing=south,lit=false,type=invictus": {
+    "facing=south,lit=false": {
       "model": "neovitae:block/athanor",
       "y": 180
     },
-    "facing=south,lit=false,type=nihilum": {
-      "model": "neovitae:block/athanor",
+    "facing=south,lit=true": {
+      "model": "neovitae:block/athanor_lit",
       "y": 180
     },
-    "facing=south,lit=false,type=raw": {
-      "model": "neovitae:block/athanor",
-      "y": 180
-    },
-    "facing=south,lit=false,type=ruina": {
-      "model": "neovitae:block/athanor",
-      "y": 180
-    },
-    "facing=south,lit=false,type=vindicta": {
-      "model": "neovitae:block/athanor",
-      "y": 180
-    },
-    "facing=south,lit=true,type=invictus": {
-      "model": "neovitae:block/athanor",
-      "y": 180
-    },
-    "facing=south,lit=true,type=nihilum": {
-      "model": "neovitae:block/athanor",
-      "y": 180
-    },
-    "facing=south,lit=true,type=raw": {
-      "model": "neovitae:block/athanor",
-      "y": 180
-    },
-    "facing=south,lit=true,type=ruina": {
-      "model": "neovitae:block/athanor",
-      "y": 180
-    },
-    "facing=south,lit=true,type=vindicta": {
-      "model": "neovitae:block/athanor",
-      "y": 180
-    },
-    "facing=west,lit=false,type=invictus": {
+    "facing=west,lit=false": {
       "model": "neovitae:block/athanor",
       "y": 270
     },
-    "facing=west,lit=false,type=nihilum": {
-      "model": "neovitae:block/athanor",
-      "y": 270
-    },
-    "facing=west,lit=false,type=raw": {
-      "model": "neovitae:block/athanor",
-      "y": 270
-    },
-    "facing=west,lit=false,type=ruina": {
-      "model": "neovitae:block/athanor",
-      "y": 270
-    },
-    "facing=west,lit=false,type=vindicta": {
-      "model": "neovitae:block/athanor",
-      "y": 270
-    },
-    "facing=west,lit=true,type=invictus": {
-      "model": "neovitae:block/athanor",
-      "y": 270
-    },
-    "facing=west,lit=true,type=nihilum": {
-      "model": "neovitae:block/athanor",
-      "y": 270
-    },
-    "facing=west,lit=true,type=raw": {
-      "model": "neovitae:block/athanor",
-      "y": 270
-    },
-    "facing=west,lit=true,type=ruina": {
-      "model": "neovitae:block/athanor",
-      "y": 270
-    },
-    "facing=west,lit=true,type=vindicta": {
-      "model": "neovitae:block/athanor",
+    "facing=west,lit=true": {
+      "model": "neovitae:block/athanor_lit",
       "y": 270
     }
   }

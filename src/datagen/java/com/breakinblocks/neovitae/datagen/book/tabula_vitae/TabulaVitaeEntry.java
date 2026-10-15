@@ -73,6 +73,15 @@ public class TabulaVitaeEntry extends EntryProvider {
                 + "Tabula Vitae to conjure [#](8B0000)Lava Buckets[#]() or [#](8B0000)Water Buckets[#]() without consuming the sigil. "
                 + "Furthermore, a [#](8B0000)Water Sigil[#]() may substitute for a [#](8B0000)Water Bucket[#]() in any recipe the "
                 + "table accepts, a small convenience that saves many trips to the well.");
+
+        this.page("automation", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("Automating the Table");
+        this.pageText("Every slot of the table can be opened to any side for hoppers and pipes. Click an empty slot, "
+                + "then toggle the side buttons that appear: green sides reach that slot, red sides do not. "
+                + "With the output slot chosen, right-click a side to push finished items out of it.\\\n\\\n"
+                + "[#](2E8B57)The Sanguine Crafter can also work Tabula Vitae recipes, many at a time.[#]()");
     }
 
     @Override

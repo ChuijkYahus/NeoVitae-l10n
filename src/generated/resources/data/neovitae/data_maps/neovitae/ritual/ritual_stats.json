@@ -11,6 +11,11 @@
       "refresh_cost": 25,
       "refresh_time": 40
     },
+    "neovitae:celerity": {
+      "activation_cost": 25000,
+      "crystal_level": 1,
+      "refresh_cost": 5
+    },
     "neovitae:condor": {
       "activation_cost": 10000,
       "crystal_level": 1,
@@ -20,12 +25,6 @@
       "activation_cost": 2000,
       "refresh_cost": 5,
       "refresh_time": 5
-    },
-    "neovitae:crafting": {
-      "activation_cost": 25000,
-      "crystal_level": 1,
-      "refresh_cost": 100,
-      "refresh_time": 40
     },
     "neovitae:crystallum_fractura": {
       "activation_cost": 100000,
@@ -38,6 +37,11 @@
       "crystal_level": 2,
       "per_operation": true,
       "refresh_cost": 250000
+    },
+    "neovitae:deus_celerity": {
+      "activation_cost": 250000,
+      "crystal_level": 2,
+      "refresh_cost": 25
     },
     "neovitae:deus_crystallum_fractura": {
       "activation_cost": 400000,

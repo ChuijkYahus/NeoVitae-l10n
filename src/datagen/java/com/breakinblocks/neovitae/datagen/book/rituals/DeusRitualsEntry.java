@@ -92,11 +92,20 @@ public class DeusRitualsEntry extends EntryProvider {
         this.page("deus_felling_stats", () -> BookRitualInfoPageModel.create()
                 .withText(RitualStatsHelper.generateStats("deus_felling")));
 
+        this.page("deus_celerity", () -> BookMultiblockPageModel.create()
+                .withMultiblockId(ResourceLocation.fromNamespaceAndPath(NeoVitae.MODID, "ritual/deus_celerity"))
+                .withMultiblockName("Deus Celerity")
+                .withText(this.context().pageText()));
+        this.pageText("Every Athanor, Hellfire Forge, Tabula Vitae and Sanguine Crafter in a [#](8B0000)27-wide[#]() area works [#](8B0000)ten times[#]() as fast, on top of anything else that hastens it.");
+
+        this.page("deus_celerity_stats", () -> BookRitualInfoPageModel.create()
+                .withText(RitualStatsHelper.generateStats("deus_celerity")));
+
         this.page("deus_meteor", () -> BookMultiblockPageModel.create()
                 .withMultiblockId(ResourceLocation.fromNamespaceAndPath(NeoVitae.MODID, "ritual/deus_meteor"))
                 .withMultiblockName("Deus Meteo")
                 .withText(this.context().pageText()));
-        this.pageText("Calls the same meteors as the Ritual of Meteo, but every outer layer is [#](8B0000)pure ore[#](), with no filler stone at all.");
+        this.pageText("Calls the same meteors as the Ritual of Meteo, but each layer keeps only its [#](8B0000)ores and other valuables[#](), with no filler stone at all.");
 
         this.page("deus_meteor_stats", () -> BookRitualInfoPageModel.create()
                 .withText(RitualStatsHelper.generateStats("deus_meteor")));

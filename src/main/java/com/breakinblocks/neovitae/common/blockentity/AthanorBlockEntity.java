@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -59,7 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider {
+public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider, IRitualAccelerated {
 
     public static final int TOOL_SLOT = 0;
     public static final int INPUT_START = 1;
@@ -71,6 +72,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
     public static final int NUM_OUTPUTS = 5;
 
     private double progress = 0;
+    private final RitualAcceleration ritualAcceleration = new RitualAcceleration();
     public static final double DEFAULT_SPEED = 0.005;
 
     private Map<SpiritusType, Double> currentRecipeSpiritusCost = Map.of();
@@ -297,8 +299,9 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
             inputStacks[s] = athanorTile.athanorInv.getStackInSlot(INPUT_START + s);
         }
         double rawSpiritus = WorldSpiritusHandler.getCurrentSpiritus(level, blockPos, SpiritusType.RAW);
-        double spiritusSpeedMod = 0.5 + 1.5 * Math.min(1.0, rawSpiritus / 100.0);
+        double speedMod = (0.5 + 1.5 * Math.min(1.0, rawSpiritus / 100.0)) * athanorTile.ritualAcceleration.factor(level);
         boolean didProgress = false;
+        int glowMask = 0;
         IAthanorTool.Readiness toolReadiness = IAthanorTool.readinessOf(toolStack);
         if (toolStack.is(NVTags.Items.ATHANOR_TOOL) || toolStack.isEmpty()) {
             if (toolStack.is(NVTags.Items.ATHANOR_FURNACE)) {
@@ -326,7 +329,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
                 } else if (furnaceSlot >= 0) {
                     athanorTile.idleReason = IdleReason.NONE;
                     SingleRecipeInput input = new SingleRecipeInput(inputStacks[furnaceSlot]);
-                    athanorTile.progress += DEFAULT_SPEED * ((double) furnaceRecipe.value().getCookingTime() / 200D) * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * spiritusSpeedMod;
+                    athanorTile.progress += DEFAULT_SPEED * ((double) furnaceRecipe.value().getCookingTime() / 200D) * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * speedMod;
                     didProgress = true;
                     if (athanorTile.progress >= 1) {
                         athanorTile.craftFurnace(furnaceRecipe.value(), input, furnaceSlot, itemOutputHandler);
@@ -353,13 +356,14 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
                         } else {
                             athanorTile.spiritusBlocked = false;
                             athanorTile.idleReason = IdleReason.NONE;
-                            athanorTile.progress += DEFAULT_SPEED * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * spiritusSpeedMod;
+                            athanorTile.progress += DEFAULT_SPEED * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * speedMod;
                             didProgress = true;
+                            glowMask = spiritusMask(athanorRecipe);
                         }
                     } else {
                         athanorTile.spiritusBlocked = false;
                         athanorTile.idleReason = IdleReason.NONE;
-                        athanorTile.progress += DEFAULT_SPEED * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * spiritusSpeedMod;
+                        athanorTile.progress += DEFAULT_SPEED * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * speedMod;
                         didProgress = true;
                     }
 
@@ -372,8 +376,11 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
                         outputChanged = true;
                     }
                 } else if (toolStack.is(NVTags.Items.REVERTER)) {
-                    var dr = athanorTile.tryDisenchant(level, blockPos, inputStacks, itemOutputHandler, toolStack, toolReadiness, spiritusSpeedMod);
-                    if (dr.progressed()) didProgress = true;
+                    var dr = athanorTile.tryDisenchant(level, blockPos, inputStacks, itemOutputHandler, toolStack, toolReadiness, speedMod);
+                    if (dr.progressed()) {
+                        didProgress = true;
+                        glowMask = 1 << SpiritusType.RAW.ordinal();
+                    }
                     if (dr.crafted()) outputChanged = true;
                 } else {
                     athanorTile.currentRecipeSpiritusCost = Map.of();
@@ -383,6 +390,10 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         } else {
             athanorTile.currentRecipeSpiritusCost = Map.of();
             athanorTile.spiritusBlocked = false;
+        }
+
+        if (didProgress) {
+            athanorTile.ritualAcceleration.markWorked(level);
         }
 
         if (didProgress && level.getGameTime() % 6 == 0) {
@@ -400,7 +411,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
                     3, 0.15, 0.0, 0.15, 0.01);
         }
 
-        athanorTile.setLit(didProgress);
+        athanorTile.setLit(didProgress, glowMask);
         if (!didProgress && !athanorTile.spiritusBlocked) {
             athanorTile.progress = 0;
         }
@@ -512,7 +523,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         }
     }
 
-    private DisenchantResult tryDisenchant(Level level, BlockPos pos, ItemStack[] inputStacks, AthanorOutputHandler outputHandler, ItemStack toolStack, IAthanorTool.Readiness toolReadiness, double spiritusSpeedMod) {
+    private DisenchantResult tryDisenchant(Level level, BlockPos pos, ItemStack[] inputStacks, AthanorOutputHandler outputHandler, ItemStack toolStack, IAthanorTool.Readiness toolReadiness, double speedMod) {
         int bookSlot = -1;
         int itemSlot = -1;
         int disenchantableCount = 0;
@@ -590,7 +601,7 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
             return DisenchantResult.NONE;
         }
         idleReason = IdleReason.NONE;
-        progress += DEFAULT_SPEED * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * spiritusSpeedMod;
+        progress += DEFAULT_SPEED * toolStack.getOrDefault(NVDataComponents.ARC_SPEED, 1D) * speedMod;
         if (progress < 1) {
             return new DisenchantResult(true, false);
         }
@@ -632,11 +643,25 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         private static final DisenchantResult NONE = new DisenchantResult(false, false);
     }
 
-    public void setLit(boolean lit) {
+    public void setLit(boolean lit, int glowMask) {
         BlockState state = getBlockState();
-        if (state.getValue(AthanorBlock.LIT) != lit) {
-            level.setBlock(getBlockPos(), state.setValue(AthanorBlock.LIT, lit), Block.UPDATE_ALL);
+        BlockState updated = state.setValue(AthanorBlock.LIT, lit);
+        if (lit) {
+            updated = updated.setValue(AthanorBlock.GLOW, glowMask);
         }
+        if (updated != state) {
+            level.setBlock(getBlockPos(), updated, Block.UPDATE_ALL);
+        }
+    }
+
+    public static int spiritusMask(AthanorRecipe recipe) {
+        int mask = 0;
+        for (Map.Entry<SpiritusType, Double> cost : recipe.getSpiritusCosts().entrySet()) {
+            if (cost.getValue() > 0) {
+                mask |= 1 << cost.getKey().ordinal();
+            }
+        }
+        return mask;
     }
 
     public void updateType() {
@@ -762,5 +787,15 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider 
         for (Map.Entry<SpiritusType, Double> entry : recipe.getSpiritusCosts().entrySet()) {
             WorldSpiritusHandler.drainSpiritusFromChunk(level, pos, entry.getKey(), entry.getValue());
         }
+    }
+
+    @Override
+    public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buffer) {
+        buffer.writeBlockPos(worldPosition);
+    }
+
+    @Override
+    public RitualAcceleration getRitualAcceleration() {
+        return ritualAcceleration;
     }
 }

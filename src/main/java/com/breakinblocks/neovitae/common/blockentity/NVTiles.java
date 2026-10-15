@@ -58,6 +58,9 @@ public class NVTiles {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HellfireForgeBlockEntity>> HELLFIRE_FORGE_TYPE =
             registerTile("hellfire_forge", HellfireForgeBlockEntity::new, NVBlocks.HELLFIRE_FORGE.block());
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SanguineCrafterBlockEntity>> SANGUINE_CRAFTER_TYPE =
+            registerTile("sanguine_crafter", SanguineCrafterBlockEntity::new, NVBlocks.SANGUINE_CRAFTER.block());
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AraVitaeTile>> ARA_VITAE_TYPE =
             registerTile("ara_vitae", AraVitaeTile::new, NVBlocks.ARA_VITAE.block());
 
@@ -197,6 +200,21 @@ public class NVTiles {
                 Capabilities.ItemHandler.BLOCK,
                 HELLFIRE_FORGE_TYPE.get(),
                 HellfireForgeBlockEntity::getInventory
+        );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                SANGUINE_CRAFTER_TYPE.get(),
+                (be, side) -> be.getInventory(side)
+        );
+        event.registerBlock(
+                Capabilities.ItemHandler.BLOCK,
+                (level, pos, state, be, side) -> {
+                    SanguineCrafterBlockEntity crafter = SanguineCrafterBlockEntity.findController(level, pos);
+                    return crafter == null ? null : crafter.getInventory(side);
+                },
+                NVBlocks.SANGUINE_CASING.block().get(),
+                NVBlocks.HELLFORGED_SANGUINE_CASING.block().get(),
+                NVBlocks.SWIFT_SANGUINE_CASING.block().get()
         );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,

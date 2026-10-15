@@ -198,10 +198,10 @@ public class RitualsCategory extends CategoryProvider {
         condor.withCondition(BookEntryReadConditionModel.create().withEntry("neovitae:rituals/activation_crystals"));
         condor.hideWhileLocked(false);
 
-        var crafting = this.add(new RitualCraftingEntry(this).generate('z'));
-        crafting.withParent(this.parent(crystals));
-        crafting.withCondition(BookEntryReadConditionModel.create().withEntry("neovitae:rituals/activation_crystals"));
-        crafting.hideWhileLocked(false);
+        var celerity = this.add(new RitualCelerityEntry(this).generate('z'));
+        celerity.withParent(this.parent(crystals));
+        celerity.withCondition(BookEntryReadConditionModel.create().withEntry("neovitae:rituals/activation_crystals"));
+        celerity.hideWhileLocked(false);
 
         var crystallumFractura = this.add(new RitualCrystallumFracturaEntry(this).generate('1'));
         crystallumFractura.withParent(this.parent(crystals));

@@ -152,6 +152,7 @@ public class MeteorLayer {
 
     public void buildLayer(Level level, BlockPos centerPos, int emptyRadius, boolean oresOnly) {
         recalculateMaxWeight(level.getRandom(), level);
+        boolean keepOresOnly = oresOnly && producesQuarryBlocks(level);
 
         int radius = layerRadius;
         for (int i = -radius; i <= radius; i++) {
@@ -169,7 +170,7 @@ public class MeteorLayer {
                         if (!currentState.canBeReplaced(ctx)) {
                             continue;
                         }
-                        if (oresOnly) {
+                        if (keepOresOnly) {
                             BlockState ore = getRandomOreState(level.getRandom(), level);
                             if (ore != null) {
                                 level.setBlockAndUpdate(pos, ore);
@@ -186,6 +187,15 @@ public class MeteorLayer {
                 }
             }
         }
+    }
+
+    public boolean producesQuarryBlocks(Level level) {
+        for (var entry : weightList) {
+            if (entry.getKey().canProduce(level, NVTags.Blocks.QUARRY_BLOCKS)) {
+                return true;
+            }
+        }
+        return fillBlock.canProduce(level, NVTags.Blocks.QUARRY_BLOCKS);
     }
 
     public void recalculateMaxWeight(RandomSource rand, Level level) {

@@ -27,9 +27,9 @@ import com.breakinblocks.neovitae.common.block.BlockShapedExplosive;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.block.SpiritCacheBlock;
 import com.breakinblocks.neovitae.common.block.dungeon.DungeonBlocks;
+import com.breakinblocks.neovitae.common.block.dungeon.BlockPillarCap;
 import com.breakinblocks.neovitae.common.block.dungeon.DungeonVariant;
 import com.breakinblocks.neovitae.common.block.type.PillarCapType;
-import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.util.helper.BlockWithItemHolder;
 
 public class NVBlockStateProvider extends BlockStateProvider {
@@ -79,13 +79,12 @@ public class NVBlockStateProvider extends BlockStateProvider {
 
         VariantBlockStateBuilder builder = getVariantBuilder(NVBlocks.ATHANOR_BLOCK.block().get());
         ModelFile athanorModel = models().getExistingFile(bm("block/athanor"));
+        ModelFile athanorLitModel = models().getExistingFile(bm("block/athanor_lit"));
         simpleBlockItem(NVBlocks.ATHANOR_BLOCK.block().get(), athanorModel);
-        for (SpiritusType type : SpiritusType.values()) {
-            for (Direction facing : Direction.Plane.HORIZONTAL) {
-                int yRot = (int) facing.getOpposite().toYRot();
-                builder.partialState().with(AthanorBlock.LIT, false).with(AthanorBlock.FACING, facing).with(AthanorBlock.TYPE, type).modelForState().modelFile(athanorModel).rotationY(yRot).addModel();
-                builder.partialState().with(AthanorBlock.LIT, true).with(AthanorBlock.FACING, facing).with(AthanorBlock.TYPE, type).modelForState().modelFile(athanorModel).rotationY(yRot).addModel();
-            }
+        for (Direction facing : Direction.Plane.HORIZONTAL) {
+            int yRot = (int) facing.getOpposite().toYRot();
+            builder.partialState().with(AthanorBlock.LIT, false).with(AthanorBlock.FACING, facing).modelForState().modelFile(athanorModel).rotationY(yRot).addModel();
+            builder.partialState().with(AthanorBlock.LIT, true).with(AthanorBlock.FACING, facing).modelForState().modelFile(athanorLitModel).rotationY(yRot).addModel();
         }
 
         // Dungeon blocks
@@ -348,7 +347,6 @@ public class NVBlockStateProvider extends BlockStateProvider {
             dungeonSimpleBlock("dungeon_brick2" + suffix, "dungeon_brick2" + suffix, variant);
             dungeonSimpleBlock("dungeon_brick3" + suffix, "dungeon_brick3" + suffix, variant);
             dungeonSimpleBlock("dungeon_stone" + suffix, "dungeon_stone" + suffix, variant);
-            dungeonSimpleBlock("dungeon_eye" + suffix, "dungeon_eye" + suffix, variant);
             dungeonSimpleBlock("dungeon_polished" + suffix, "dungeon_polished" + suffix, variant);
             dungeonSimpleBlock("dungeon_tile" + suffix, "dungeon_tile" + suffix, variant);
             dungeonSimpleBlock("dungeon_smallbrick" + suffix, "dungeon_smallbrick" + suffix, variant);
@@ -363,9 +361,28 @@ public class NVBlockStateProvider extends BlockStateProvider {
             dungeonPillarBlock("dungeon_pillar_special" + suffix,
                 "dungeon_pillarspecial" + suffix, "dungeon_pillarheart" + suffix, variant);
 
-            // Pillar cap - simple cube_all using pillartop texture
-            simpleBlockWithItem(DungeonBlocks.DUNGEON_PILLAR_CAP.get(variant).block().get(),
-                models().cubeAll("dungeon_pillar_cap" + suffix, bm("block/dungeon/dungeon_pillartop" + suffix)));
+            RotatedPillarBlock eye = DungeonBlocks.DUNGEON_EYE.get(variant).block().get();
+            ModelFile eyeModel = models().cubeAll("dungeon_eye" + suffix, bm("block/dungeon/dungeon_eye" + suffix));
+            axisBlock(eye, eyeModel, eyeModel);
+            simpleBlockItem(eye, eyeModel);
+
+            BlockPillarCap cap = DungeonBlocks.DUNGEON_PILLAR_CAP.get(variant).block().get();
+            ModelFile capUp = models().cubeBottomTop("dungeon_pillar_cap" + suffix,
+                bm("block/dungeon/dungeon_pillartop" + suffix),
+                bm("block/dungeon/dungeon_pillarheart" + suffix),
+                bm("block/dungeon/dungeon_pillarheart" + suffix));
+            ModelFile capDown = models().cubeBottomTop("dungeon_pillar_cap" + suffix + "_down",
+                bm("block/dungeon/dungeon_pillarbottom" + suffix),
+                bm("block/dungeon/dungeon_pillarheart" + suffix),
+                bm("block/dungeon/dungeon_pillarheart" + suffix));
+            VariantBlockStateBuilder capStates = getVariantBuilder(cap);
+            capStates.partialState().with(BlockPillarCap.FACING, Direction.UP).modelForState().modelFile(capUp).addModel();
+            capStates.partialState().with(BlockPillarCap.FACING, Direction.DOWN).modelForState().modelFile(capDown).addModel();
+            capStates.partialState().with(BlockPillarCap.FACING, Direction.SOUTH).modelForState().modelFile(capUp).rotationX(270).addModel();
+            capStates.partialState().with(BlockPillarCap.FACING, Direction.NORTH).modelForState().modelFile(capDown).rotationX(270).addModel();
+            capStates.partialState().with(BlockPillarCap.FACING, Direction.EAST).modelForState().modelFile(capUp).rotationX(90).rotationY(90).addModel();
+            capStates.partialState().with(BlockPillarCap.FACING, Direction.WEST).modelForState().modelFile(capDown).rotationX(90).rotationY(90).addModel();
+            simpleBlockItem(cap, capUp);
 
             // Stairs
             stairsBlock(DungeonBlocks.DUNGEON_BRICK_STAIRS.get(variant).block().get(),
@@ -463,7 +480,6 @@ public class NVBlockStateProvider extends BlockStateProvider {
             if (name.equals("dungeon_brick2" + suffix)) return DungeonBlocks.DUNGEON_BRICK_2.get(v);
             if (name.equals("dungeon_brick3" + suffix)) return DungeonBlocks.DUNGEON_BRICK_3.get(v);
             if (name.equals("dungeon_stone" + suffix)) return DungeonBlocks.DUNGEON_STONE.get(v);
-            if (name.equals("dungeon_eye" + suffix)) return DungeonBlocks.DUNGEON_EYE.get(v);
             if (name.equals("dungeon_polished" + suffix)) return DungeonBlocks.DUNGEON_POLISHED.get(v);
             if (name.equals("dungeon_tile" + suffix)) return DungeonBlocks.DUNGEON_TILE.get(v);
             if (name.equals("dungeon_smallbrick" + suffix)) return DungeonBlocks.DUNGEON_SMALLBRICK.get(v);

@@ -24,7 +24,8 @@ public class DungeonEyeEntry extends EntryProvider {
                 + "is unclear; what is certain is that they illuminate the darkness with no fuel or flame.\\\n\\\n"
                 + "Variants exist tinted by [#](4A0080)Raw[#](), [#](4A0080)Ruina[#](), "
                 + "[#](4A0080)Nihilum[#](), [#](4A0080)Invictus[#](), and [#](4A0080)Vindicta[#]() Spiritus. "
-                + "Consult JEI for crafting recipes.");
+                + "Consult JEI for crafting recipes.\\\n\\\n"
+                + "Like a log, an eye turns to match the face you place it against.");
     }
 
     @Override

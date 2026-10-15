@@ -34,6 +34,10 @@ public class NVGameTestRegistration {
         event.register(QuarryBackfillTests.class);
         event.register(QuarryThroughputTests.class);
         event.register(MeteorLandingTests.class);
+        event.register(SanguineCrafterTests.class);
+        event.register(SuppressionRitualTests.class);
+        event.register(CelerityRitualTests.class);
+        event.register(DungeonBlockRotationTests.class);
 
         event.register(BloodOrbTests.class);
         event.register(SpiritAccumulatorTests.class);

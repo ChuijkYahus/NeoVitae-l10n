@@ -43,6 +43,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.client.screen.RoutingNodeScreen;
+import com.breakinblocks.neovitae.client.screen.SanguineCrafterScreen;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.block.dungeon.DungeonBlocks;
 import com.breakinblocks.neovitae.common.block.dungeon.DungeonVariant;
@@ -72,6 +73,7 @@ import com.breakinblocks.neovitae.compat.jei.dungeon.DungeonStoneSpreadJEIRecipe
 import com.breakinblocks.neovitae.compat.jei.tabulavitae.TabulaVitaeRecipeCategory;
 import com.breakinblocks.neovitae.compat.jei.altar.AraVitaeRecipeCategory;
 import com.breakinblocks.neovitae.common.blockentity.AthanorBlockEntity;
+import com.breakinblocks.neovitae.common.blockentity.SanguineCrafterBlockEntity;
 import com.breakinblocks.neovitae.common.menu.AthanorMenu;
 import com.breakinblocks.neovitae.common.menu.HellfireForgeMenu;
 import com.breakinblocks.neovitae.common.menu.NVMenus;
@@ -137,6 +139,7 @@ public class NeoVitaeJEIPlugin implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGhostIngredientHandler(RoutingNodeScreen.class, new RoutingNodeGhostHandler());
+        registration.addGhostIngredientHandler(SanguineCrafterScreen.class, new SanguineCrafterGhostHandler());
     }
 
     @Override
@@ -198,6 +201,13 @@ public class NeoVitaeJEIPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(HellfireForgeMenu.class, NVMenus.HELLFIRE_FORGE.get(),
                 HellfireForgeRecipeCategory.RECIPE_TYPE, 0, 4, 6, 36);
 
+        registration.addRecipeTransferHandler(new SanguineCrafterTransferHandler<>(RecipeTypes.CRAFTING,
+                SanguineCrafterBlockEntity.Mode.CRAFTING), RecipeTypes.CRAFTING);
+        registration.addRecipeTransferHandler(new SanguineCrafterTransferHandler<>(TabulaVitaeRecipeCategory.RECIPE_TYPE,
+                SanguineCrafterBlockEntity.Mode.TABULA), TabulaVitaeRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new SanguineCrafterTransferHandler<>(HellfireForgeRecipeCategory.RECIPE_TYPE,
+                SanguineCrafterBlockEntity.Mode.FORGE), HellfireForgeRecipeCategory.RECIPE_TYPE);
+
         int athanorInventoryStart = 1 + AthanorBlockEntity.NUM_INPUTS + 2 + AthanorBlockEntity.NUM_OUTPUTS;
         registration.addRecipeTransferHandler(AthanorMenu.class, NVMenus.ARC.get(),
                 AthanorRecipeCategory.RECIPE_TYPE, AthanorBlockEntity.INPUT_START, AthanorBlockEntity.NUM_INPUTS,
@@ -254,6 +264,8 @@ public class NeoVitaeJEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(NVBlocks.CRYSTALLARIUM_MALEFICUM.block().get()), CrystalGrowthCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(NVBlocks.VAS_MALEFICUM.block().get()), CrystalGrowthCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(Items.CRAFTING_TABLE), DungeonStoneSpreadCategory.RECIPE_TYPE);
+        ItemStack crafter = new ItemStack(NVBlocks.SANGUINE_CRAFTER.block().get());
+        registration.addRecipeCatalyst(crafter, RecipeTypes.CRAFTING, TabulaVitaeRecipeCategory.RECIPE_TYPE, HellfireForgeRecipeCategory.RECIPE_TYPE);
     }
 
     private static ItemStack bloodTankStack(int tier) {

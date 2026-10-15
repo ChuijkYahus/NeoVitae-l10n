@@ -20,6 +20,7 @@ import com.breakinblocks.neovitae.client.render.stream.StreamManager;
 import com.breakinblocks.neovitae.common.blockentity.routing.FilteredRoutingNodeBlockEntity;
 import com.breakinblocks.neovitae.common.blockentity.routing.OutputRoutingNodeBlockEntity;
 import com.breakinblocks.neovitae.common.blockentity.routing.MasterRoutingNodeBlockEntity;
+import com.breakinblocks.neovitae.common.blockentity.SanguineCrafterBlockEntity;
 import net.minecraft.network.chat.Component;
 import com.breakinblocks.neovitae.common.item.ExperienceTomeItem;
 import com.breakinblocks.neovitae.common.item.NVItems;
@@ -37,6 +38,10 @@ import com.breakinblocks.neovitae.common.menu.AlternatorMenu;
 import com.breakinblocks.neovitae.common.menu.ExperienceTomeMenu;
 import com.breakinblocks.neovitae.common.menu.MasterRoutingNodeMenu;
 import com.breakinblocks.neovitae.common.menu.RoutingNodeMenu;
+import com.breakinblocks.neovitae.common.menu.SanguineCrafterMenu;
+import com.breakinblocks.neovitae.common.menu.ExperienceTomeMenu;
+import com.breakinblocks.neovitae.common.menu.SigilHoldingMenu;
+import com.breakinblocks.neovitae.common.sideconfig.OutputFaceConfigurable;
 import com.breakinblocks.neovitae.common.sideconfig.SideConfigurable;
 import net.minecraft.core.Direction;
 import com.breakinblocks.neovitae.compat.curios.CuriosCompat;
@@ -44,6 +49,10 @@ import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.menu.SigilHoldingMenu;
 import com.breakinblocks.neovitae.util.helper.BloodLightHelper;
 import com.breakinblocks.neovitae.spiritus.WorldSpiritusHandler;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerLevel;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashSet;
 
@@ -161,6 +170,24 @@ public class NVPayloads {
         );
 
         registrar.playToServer(
+                SetOutputFacePayload.TYPE,
+                SetOutputFacePayload.STREAM_CODEC,
+                NVPayloads::handleSetOutputFace
+        );
+
+        registrar.playToServer(
+                SanguineCrafterTemplatePayload.TYPE,
+                SanguineCrafterTemplatePayload.STREAM_CODEC,
+                NVPayloads::handleSanguineCrafterTemplate
+        );
+
+        registrar.playToServer(
+                SanguineCrafterSettingPayload.TYPE,
+                SanguineCrafterSettingPayload.STREAM_CODEC,
+                NVPayloads::handleSanguineCrafterSetting
+        );
+
+        registrar.playToServer(
                 LexBeamPayload.TYPE,
                 LexBeamPayload.STREAM_CODEC,
                 NVPayloads::handleLexBeam
@@ -249,6 +276,51 @@ public class NVPayloads {
             if (!(be instanceof SideConfigurable configurable)) return;
             if (payload.direction() < 0 || payload.direction() >= Direction.values().length) return;
             configurable.getSideConfig().setAllowed(payload.slot(), Direction.from3DDataValue(payload.direction()), payload.enabled());
+            be.setChanged();
+        });
+    }
+
+    @Nullable
+    private static SanguineCrafterBlockEntity openCrafter(Player player, BlockPos pos) {
+        if (player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > 64.0) return null;
+        if (!(player.containerMenu instanceof SanguineCrafterMenu menu)) return null;
+        SanguineCrafterBlockEntity crafter = menu.getTile();
+        return crafter != null && crafter.getBlockPos().equals(pos) ? crafter : null;
+    }
+
+    private static void handleSanguineCrafterTemplate(SanguineCrafterTemplatePayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            SanguineCrafterBlockEntity crafter = openCrafter(context.player(), payload.pos());
+            if (crafter == null) return;
+            crafter.setTemplate(SanguineCrafterBlockEntity.Mode.byIndex(payload.mode()), payload.stacks());
+        });
+    }
+
+    private static void handleSanguineCrafterSetting(SanguineCrafterSettingPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            SanguineCrafterBlockEntity crafter = openCrafter(context.player(), payload.pos());
+            if (crafter == null) return;
+            switch (payload.setting()) {
+                case SanguineCrafterSettingPayload.MODE -> crafter.setMode(SanguineCrafterBlockEntity.Mode.byIndex(payload.value()));
+                case SanguineCrafterSettingPayload.REDSTONE -> crafter.setRedstoneMode(SanguineCrafterBlockEntity.RedstoneMode.byIndex(payload.value()));
+                case SanguineCrafterSettingPayload.LIMIT -> crafter.setOutputLimit(payload.value());
+                default -> { }
+            }
+        });
+    }
+
+    private static void handleSetOutputFace(SetOutputFacePayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Player player = context.player();
+            if (player.distanceToSqr(payload.pos().getX() + 0.5, payload.pos().getY() + 0.5, payload.pos().getZ() + 0.5) > 64.0) {
+                return;
+            }
+            if (!(player.containerMenu instanceof AbstractBlockEntityMenu<?> menu)) return;
+            BlockEntity be = menu.getTile();
+            if (be == null || !be.getBlockPos().equals(payload.pos())) return;
+            if (!(be instanceof OutputFaceConfigurable configurable)) return;
+            if (payload.face() >= Direction.values().length) return;
+            configurable.setOutputFace(payload.face() < 0 ? null : Direction.from3DDataValue(payload.face()));
             be.setChanged();
         });
     }

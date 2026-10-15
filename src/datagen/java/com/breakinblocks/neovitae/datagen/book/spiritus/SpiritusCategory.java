@@ -20,7 +20,7 @@ public class SpiritusCategory extends CategoryProvider {
                 "_____________a_____________",
                 "___b___c_y_j___m_n_A_______",
                 "___d_z_o___k_______O_______",
-                "___e___p___l_______B_______",
+                "___e___p_S_l_______B_______",
                 "___f___q___x_______________",
                 "___g_i_t_u_v_w_____________",
                 "___h_______________________",
@@ -110,6 +110,11 @@ public class SpiritusCategory extends CategoryProvider {
         spiritAccumulator.withParent(this.parent(routingNodes));
         spiritAccumulator.withCondition(BookEntryReadConditionModel.create().withEntry("neovitae:spiritus/routing_nodes"));
         spiritAccumulator.hideWhileLocked(false);
+
+        var sanguineCrafter = this.add(new SanguineCrafterEntry(this).generate('S'));
+        sanguineCrafter.withParent(this.parent(routingNodes));
+        sanguineCrafter.withCondition(BookEntryReadConditionModel.create().withEntry("neovitae:spiritus/routing_nodes"));
+        sanguineCrafter.hideWhileLocked(false);
 
         var upgrades = this.add(new UpgradesEntry(this).generate('x'));
         upgrades.withParent(this.parent(routingNodes));

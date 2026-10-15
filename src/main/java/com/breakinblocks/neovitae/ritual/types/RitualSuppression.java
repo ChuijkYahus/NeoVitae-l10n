@@ -13,12 +13,14 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.api.ritual.AreaDescriptor;
 import com.breakinblocks.neovitae.api.stream.StreamPresets;
+import com.breakinblocks.neovitae.common.block.NVBlocks;
+import com.breakinblocks.neovitae.common.blockentity.SpectralBlockEntity;
 import com.breakinblocks.neovitae.ritual.*;
 import com.breakinblocks.neovitae.ritual.RitualHelper.RitualContext;
 import com.breakinblocks.neovitae.util.helper.BlockProtectionHelper;
@@ -29,15 +31,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-/**
- * Ritual that suppresses (temporarily removes) fluids in an area.
- * Fluids are replaced with air while the ritual is active.
- */
 public class RitualSuppression extends Ritual {
 
     public static final String SUPPRESS_RANGE = "suppressRange";
+    private static final int HOLD_TICKS = 40;
+    private static final int HOLD_JITTER = 10;
+    private static final int MAX_STREAMS_PER_REFRESH = 2;
 
-    // Track suppressed blocks to restore them when ritual stops
     private final Map<BlockPos, BlockState> suppressedBlocks = new HashMap<>();
 
     public RitualSuppression() {
@@ -51,25 +51,34 @@ public class RitualSuppression extends Ritual {
         RitualContext ctx = RitualHelper.createContext(masterRitualStone, getRefreshCost());
         if (ctx == null) return;
 
+        Level level = ctx.level();
+        convertLegacySuppression(level);
+
         List<BlockPos> positions = RitualHelper.getRangePositions(ctx.master(), this, SUPPRESS_RANGE, ctx.masterPos());
         int fluidsSuppressed = 0;
         int maxFluids = ctx.maxOperations(getRefreshCost());
+        int streams = 0;
         UUID owner = ctx.master().getOwner();
 
         for (BlockPos pos : positions) {
-            if (fluidsSuppressed >= maxFluids) break;
+            if (level.getBlockEntity(pos) instanceof SpectralBlockEntity spectral) {
+                hold(level, spectral);
+                continue;
+            }
+            if (fluidsSuppressed >= maxFluids) continue;
 
-            BlockState state = ctx.level().getBlockState(pos);
-            FluidState fluidState = state.getFluidState();
+            BlockState state = level.getBlockState(pos);
+            if (!canSuppress(state)) continue;
 
-            if (!fluidState.isEmpty() && fluidState.isSource()) {
-                if (BlockProtectionHelper.tryReplaceBlock(ctx.level(), pos, Blocks.AIR.defaultBlockState(), owner)) {
-                    suppressedBlocks.put(pos.immutable(), state);
-                    fluidsSuppressed++;
-                    final BlockPos suppressedAt = pos.immutable();
-                    RitualHelper.chanceStream(ctx.level(), 25, () ->
-                            StreamPresets.voidTendril(suppressedAt, ctx.masterPos()).build()
-                                    .sendToNearby(ctx.serverLevel(), ctx.masterPos(), 64));
+            if (BlockProtectionHelper.tryReplaceBlock(level, pos, NVBlocks.SPECTRAL_BLOCK.get().defaultBlockState(), owner)
+                    && level.getBlockEntity(pos) instanceof SpectralBlockEntity spectral) {
+                spectral.setContainedBlockState(state);
+                hold(level, spectral);
+                fluidsSuppressed++;
+                if (streams < MAX_STREAMS_PER_REFRESH && level.getRandom().nextInt(100) < 25) {
+                    streams++;
+                    StreamPresets.voidTendril(pos.immutable(), ctx.masterPos()).build()
+                            .sendToNearby(ctx.serverLevel(), ctx.masterPos(), 64);
                 }
             }
         }
@@ -77,13 +86,35 @@ public class RitualSuppression extends Ritual {
         ctx.syphon(getRefreshCost() * fluidsSuppressed);
     }
 
+    private static boolean canSuppress(BlockState state) {
+        if (state.getFluidState().isEmpty()) return false;
+        if (state.getBlock() instanceof LiquidBlock) return true;
+        return !state.hasBlockEntity() && !state.hasProperty(BlockStateProperties.WATERLOGGED);
+    }
+
+    private static void hold(Level level, SpectralBlockEntity spectral) {
+        spectral.resetDuration(HOLD_TICKS + level.getRandom().nextInt(HOLD_JITTER));
+    }
+
+    private void convertLegacySuppression(Level level) {
+        if (suppressedBlocks.isEmpty()) return;
+        for (Map.Entry<BlockPos, BlockState> entry : suppressedBlocks.entrySet()) {
+            BlockPos pos = entry.getKey();
+            if (!level.getBlockState(pos).isAir()) continue;
+            level.setBlockAndUpdate(pos, NVBlocks.SPECTRAL_BLOCK.get().defaultBlockState());
+            if (level.getBlockEntity(pos) instanceof SpectralBlockEntity spectral) {
+                spectral.setContainedBlockState(entry.getValue());
+                hold(level, spectral);
+            }
+        }
+        suppressedBlocks.clear();
+    }
+
     @Override
     public void stopRitual(IMasterRitualStone masterRitualStone, BreakType breakType) {
         Level level = masterRitualStone.getLevel();
         if (level == null || level.isClientSide()) return;
 
-        // Restore all suppressed fluids using lighter update flags to avoid
-        // cascading neighbor updates that cause lag with large fluid volumes
         for (Map.Entry<BlockPos, BlockState> entry : suppressedBlocks.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState state = entry.getValue();
@@ -93,8 +124,6 @@ public class RitualSuppression extends Ritual {
         }
         suppressedBlocks.clear();
     }
-
-
 
     @Override
     public void gatherComponents(Consumer<RitualComponent> components) {

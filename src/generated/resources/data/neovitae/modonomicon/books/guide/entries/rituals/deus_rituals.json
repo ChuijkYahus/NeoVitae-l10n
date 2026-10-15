@@ -170,6 +170,26 @@
       "condition": {
         "type": "modonomicon:none"
       },
+      "multiblock_id": "ritual/deus_celerity",
+      "multiblock_name": "Deus Celerity",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.rituals.deus_rituals.deus_celerity.text"
+    },
+    {
+      "type": "neovitae:ritual_info",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "[#](8B0000)Activation Cost:[#]() 250,000 EV\\\n[#](8B0000)Crystal:[#]() Divinus Activation Crystal\\\n[#](8B0000)Upkeep:[#]() 25 EV/sec\\\n\\\n[#](8B0000)Rune Requirements:[#]()\\\n  8x Fire Ritual Stone\\\n  8x Air Ritual Stone\\\n  12x Tenebrae Ritual Stone\\\n  16x Deus Ritual Stone\\\n  [#](8B0000)Total:[#]() 44 runes",
+      "title": ""
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
       "multiblock_id": "ritual/deus_meteor",
       "multiblock_name": "Deus Meteo",
       "show_visualize_button": true,

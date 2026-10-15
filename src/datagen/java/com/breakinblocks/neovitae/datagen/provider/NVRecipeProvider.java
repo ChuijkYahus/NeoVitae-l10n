@@ -141,6 +141,46 @@ public class NVRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_blank_slate", has(NVItems.TABULA_RASA.get()))
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NVBlocks.SANGUINE_CASING.block().get(), 4)
+                .pattern("bdb")
+                .pattern("iTi")
+                .pattern("bib")
+                .define('b', NVBlocks.BLOODSTONE.item().get())
+                .define('d', Tags.Items.GEMS_DIAMOND)
+                .define('i', Tags.Items.INGOTS_IRON)
+                .define('T', NVItems.TABULA_ANIMATA.get())
+                .unlockedBy("has_tabula_animata", has(NVItems.TABULA_ANIMATA.get()))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, NVBlocks.SANGUINE_CRAFTER.block().get())
+                .pattern("cTc")
+                .pattern("cXc")
+                .pattern("ccc")
+                .define('c', NVBlocks.SANGUINE_CASING.item().get())
+                .define('T', NVItems.TABULA_SPIRITUS.get())
+                .define('X', Items.CRAFTER)
+                .unlockedBy("has_sanguine_casing", has(NVBlocks.SANGUINE_CASING.item().get()))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NVBlocks.HELLFORGED_SANGUINE_CASING.block().get())
+                .pattern(" h ")
+                .pattern("hch")
+                .pattern(" h ")
+                .define('h', NVTags.Items.INGOTS_HELLFORGED)
+                .define('c', NVBlocks.SANGUINE_CASING.item().get())
+                .unlockedBy("has_sanguine_casing", has(NVBlocks.SANGUINE_CASING.item().get()))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NVBlocks.SWIFT_SANGUINE_CASING.block().get())
+                .pattern(" T ")
+                .pattern("scs")
+                .pattern(" T ")
+                .define('T', NVItems.TABULA_ANIMATA.get())
+                .define('s', Items.SUGAR)
+                .define('c', NVBlocks.SANGUINE_CASING.item().get())
+                .unlockedBy("has_sanguine_casing", has(NVBlocks.SANGUINE_CASING.item().get()))
+                .save(output);
+
         // Bloodstone
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NVBlocks.BLOODSTONE.block().get(), 8)
                 .pattern("sss")

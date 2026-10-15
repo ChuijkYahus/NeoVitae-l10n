@@ -1,0 +1,163 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "spiritus",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "spiritus/routing_nodes"
+  },
+  "description": "book.neovitae.guide.spiritus.sanguine_crafter.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "neovitae:sanguine_crafter"
+  },
+  "name": "book.neovitae.guide.spiritus.sanguine_crafter.name",
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.intro.text",
+      "title": "book.neovitae.guide.spiritus.sanguine_crafter.intro.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:multiblock",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "multiblock_id": "sanguine_crafter",
+      "multiblock_name": "book.neovitae.guide.spiritus.sanguine_crafter.structure.title",
+      "show_visualize_button": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.structure.text"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "neovitae:sanguine_crafter",
+      "recipe_id_2": "neovitae:sanguine_casing",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.template.text",
+      "title": "book.neovitae.guide.spiritus.sanguine_crafter.template.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.feeding.text",
+      "title": "book.neovitae.guide.spiritus.sanguine_crafter.feeding.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.controls.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.costs.text",
+      "title": "book.neovitae.guide.spiritus.sanguine_crafter.costs.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.shards.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.upgrades.text",
+      "title": "book.neovitae.guide.spiritus.sanguine_crafter.upgrades.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "neovitae:hellforged_sanguine_casing",
+      "recipe_id_2": "neovitae:swift_sanguine_casing",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.storage_networks.text",
+      "title": "book.neovitae.guide.spiritus.sanguine_crafter.storage_networks.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.sanguine_crafter.chunk_loading.text",
+      "title": "book.neovitae.guide.spiritus.sanguine_crafter.chunk_loading.title",
+      "use_markdown_in_title": false
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "spiritus/routing_nodes",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 17,
+  "x": -4,
+  "y": -1
+}

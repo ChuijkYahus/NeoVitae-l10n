@@ -13,7 +13,9 @@ If the table refuses to work, the cause is almost certainly one of these:
 
 ### Side Configuration
 
-Each slot on the Tabula Vitae can be exposed to a specific side of the block for hopper or pipe access. Click an empty slot in the menu and then click the direction buttons that appear; the chosen side will deliver to (or pull from) that slot specifically. This makes the table trivial to automate even when several slots feed different ingredients.
+Each slot on the Tabula Vitae can be exposed to a specific side of the block for hopper or pipe access. Click an empty slot in the menu and then click the direction buttons that appear; the chosen side will deliver to (or pull from) that slot specifically. This makes the table trivial to automate even when several slots feed different ingredients. With the output slot selected, right-click a direction button to push finished items out of that side into the neighboring inventory; the pushing side gets a gold border.
+
+To run many Tabula Vitae recipes at once, see the **[Sanguine Crafter](Sanguine-Crafter)**. To make a Tabula Vitae work faster, build a **[Ritual of Celerity](Rituals#automation-and-resources)** around it; the EV each recipe costs stays the same.
 
 ### Transmutation Catalog
 

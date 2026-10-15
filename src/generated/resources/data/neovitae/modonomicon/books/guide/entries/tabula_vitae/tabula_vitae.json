@@ -74,6 +74,17 @@
       "text": "book.neovitae.guide.tabula_vitae.tabula_vitae.sigil_recipes.text",
       "title": "",
       "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.tabula_vitae.tabula_vitae.automation.text",
+      "title": "book.neovitae.guide.tabula_vitae.tabula_vitae.automation.title",
+      "use_markdown_in_title": false
     }
   ],
   "show_when_any_parent_unlocked": false,

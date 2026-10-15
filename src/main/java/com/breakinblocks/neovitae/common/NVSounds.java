@@ -48,6 +48,7 @@ public class NVSounds {
     // Tabula Vitae
     public static final DeferredHolder<SoundEvent, SoundEvent> TABULA_VITAE_ACTIVATE = sound("tabula_vitae_activate");
     public static final DeferredHolder<SoundEvent, SoundEvent> TABULA_VITAE_CRAFT = sound("tabula_vitae_craft");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SANGUINE_CRAFTER_WORKING = sound("sanguine_crafter_working");
     public static final DeferredHolder<SoundEvent, SoundEvent> TABULA_VITAE_COMPLETE = sound("tabula_vitae_complete");
 
     // Teleposer

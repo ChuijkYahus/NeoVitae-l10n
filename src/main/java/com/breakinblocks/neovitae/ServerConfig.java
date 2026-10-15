@@ -51,6 +51,16 @@ public class ServerConfig {
     public final ModConfigSpec.IntValue TORMENT_NEXUS_MAX_LOOT_ROLLS;
     public final ModConfigSpec.IntValue TORMENT_NEXUS_HORIZONTAL_RANGE;
     public final ModConfigSpec.IntValue TORMENT_NEXUS_VERTICAL_RANGE;
+    public final ModConfigSpec.IntValue SANGUINE_CRAFTER_EV_PER_CRAFT;
+    public final ModConfigSpec.IntValue SANGUINE_CRAFTER_CRAFTS_PER_SHARD;
+    public final ModConfigSpec.IntValue SANGUINE_CRAFTER_CRAFTING_TICKS;
+    public final ModConfigSpec.IntValue SANGUINE_CRAFTER_FORGE_TICKS;
+    public final ModConfigSpec.DoubleValue SANGUINE_CRAFTER_BASE_SPEED;
+    public final ModConfigSpec.DoubleValue SANGUINE_CRAFTER_SPEED_PER_SWIFT_CASING;
+    public final ModConfigSpec.IntValue SANGUINE_CRAFTER_MAX_PARALLEL;
+    public final ModConfigSpec.BooleanValue SANGUINE_CRAFTER_CHUNK_LOADING;
+    public final ModConfigSpec.BooleanValue SANGUINE_CRAFTER_CHUNK_LOADING_OWNER_ONLINE_ONLY;
+    public final ModConfigSpec.IntValue SANGUINE_CRAFTER_CHUNK_LOADING_MAX_PER_PLAYER;
 
     protected ServerConfig(ModConfigSpec.Builder builder) {
         SELF_SACRIFICE_CONVERSION = builder.define("self_sacrifice_conversion", 100);
@@ -235,6 +245,44 @@ public class ServerConfig {
                 .comment("Default vertical radius (in blocks) of the spawner-scan area centered on the Master Ritual Stone.",
                         "5 produces an 11-block-tall area.")
                 .defineInRange("vertical_range", 5, 1, 64);
+
+        builder.pop();
+
+        builder.comment("Sanguine Crafter Configuration");
+        builder.push("sanguine_crafter");
+
+        SANGUINE_CRAFTER_EV_PER_CRAFT = builder
+                .comment("EV drawn from the owner's network for every item crafted, on top of any Tabula Vitae recipe cost.")
+                .defineInRange("ev_per_craft", 20, 0, 1000000);
+        SANGUINE_CRAFTER_CRAFTS_PER_SHARD = builder
+                .comment("Tabula Vitae or Hellfire Forge crafts powered by one Spiritus Ruina or Spiritus Invictus shard.")
+                .defineInRange("crafts_per_shard", 8, 1, 1024);
+        SANGUINE_CRAFTER_CRAFTING_TICKS = builder
+                .comment("Ticks one crafting table recipe takes before Swift Sanguine Casings are applied.")
+                .defineInRange("crafting_ticks", 20, 1, 72000);
+        SANGUINE_CRAFTER_FORGE_TICKS = builder
+                .comment("Ticks one Hellfire Forge recipe takes before Swift Sanguine Casings are applied.",
+                        "Tabula Vitae recipes use their own crafting time.")
+                .defineInRange("forge_ticks", 100, 1, 72000);
+        SANGUINE_CRAFTER_BASE_SPEED = builder
+                .comment("Speed multiplier on every craft. 5.0 crafts five times faster than the base times above.")
+                .defineInRange("base_speed", 5.0, 0.1, 100.0);
+        SANGUINE_CRAFTER_SPEED_PER_SWIFT_CASING = builder
+                .comment("Extra crafting speed per Swift Sanguine Casing. 0.25 means each casing adds 25% speed.")
+                .defineInRange("speed_per_swift_casing", 0.25, 0.0, 10.0);
+        SANGUINE_CRAFTER_MAX_PARALLEL = builder
+                .comment("Most crafts one Sanguine Crafter performs at once. Each Hellforged Sanguine Casing adds one, up to this cap.")
+                .defineInRange("max_parallel", 16, 1, 64);
+        SANGUINE_CRAFTER_CHUNK_LOADING = builder
+                .comment("Whether a formed, running Sanguine Crafter keeps the chunks it stands in loaded.")
+                .define("chunk_loading", true);
+        SANGUINE_CRAFTER_CHUNK_LOADING_OWNER_ONLINE_ONLY = builder
+                .comment("Only keep a crafter's chunks loaded while the player who built it is online.",
+                        "Set to false to let crafters keep their chunks loaded while their owner is offline.")
+                .define("chunk_loading_owner_online_only", true);
+        SANGUINE_CRAFTER_CHUNK_LOADING_MAX_PER_PLAYER = builder
+                .comment("Most Sanguine Crafters a single player may have keeping chunks loaded at once. 0 removes the limit.")
+                .defineInRange("chunk_loading_max_per_player", 10, 0, 1024);
 
         builder.pop();
     }

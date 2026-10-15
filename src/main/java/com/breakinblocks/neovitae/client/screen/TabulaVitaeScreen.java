@@ -2,34 +2,27 @@ package com.breakinblocks.neovitae.client.screen;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import com.breakinblocks.neovitae.NeoVitae;
-import com.breakinblocks.neovitae.client.widgets.SideToggleButton;
+import com.breakinblocks.neovitae.client.widgets.SideConfigPanel;
 import com.breakinblocks.neovitae.common.blockentity.TabulaVitaeBlockEntity;
 import com.breakinblocks.neovitae.common.menu.TabulaVitaeMenu;
-import com.breakinblocks.neovitae.common.network.NVPayloads;
-import com.breakinblocks.neovitae.common.network.SetSideConfigPayload;
-import com.breakinblocks.neovitae.common.sideconfig.SlotSideConfig;
 import com.breakinblocks.neovitae.compat.jei.NeoVitaeJEIPlugin;
 import com.breakinblocks.neovitae.compat.jei.tabulavitae.TabulaVitaeRecipeCategory;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Optional;
 
 public class TabulaVitaeScreen extends AbstractContainerScreen<TabulaVitaeMenu> {
     private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(NeoVitae.MODID, "textures/gui/alchemytable.png");
 
-    private final Map<Direction, SideToggleButton> sideButtons = new EnumMap<>(Direction.class);
+    private SideConfigPanel sidePanel;
 
     public TabulaVitaeScreen(TabulaVitaeMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -39,90 +32,26 @@ public class TabulaVitaeScreen extends AbstractContainerScreen<TabulaVitaeMenu> 
         this.inventoryLabelY = 111;
     }
 
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
     @Override
     protected void init() {
         super.init();
-        sideButtons.clear();
-
-        int left = (this.width - this.imageWidth) / 2;
-        int top = (this.height - this.imageHeight) / 2;
-
-        addSideButton(left + 133, top + 50, Direction.DOWN, "D");
-        addSideButton(left + 151, top + 50, Direction.UP, "U");
-        addSideButton(left + 133, top + 68, Direction.NORTH, "N");
-        addSideButton(left + 151, top + 68, Direction.SOUTH, "S");
-        addSideButton(left + 133, top + 86, Direction.WEST, "W");
-        addSideButton(left + 151, top + 86, Direction.EAST, "E");
-
-        refreshSideButtons();
-    }
-
-    private void addSideButton(int x, int y, Direction direction, String label) {
-        SideToggleButton button = new SideToggleButton(
-                x, y, direction, Component.literal(label),
-                () -> sideAllowed(direction),
-                btn -> onDirectionButton(direction));
-        button.visible = false;
-        sideButtons.put(direction, button);
-        this.addRenderableWidget(button);
-    }
-
-    private boolean sideAllowed(Direction direction) {
-        int slot = menu.tile.activeSlot;
-        return slot >= 0 && menu.tile.getSideConfig().isAllowed(slot, direction);
-    }
-
-    private void onDirectionButton(Direction direction) {
         TabulaVitaeBlockEntity tile = menu.tile;
-        int slot = tile.activeSlot;
-        if (slot < 0) return;
-        SlotSideConfig config = tile.getSideConfig();
-        boolean newState = !config.isAllowed(slot, direction);
-        config.setAllowed(slot, direction, newState);
-        NVPayloads.sendToServer(new SetSideConfigPayload(tile.getBlockPos(), slot, direction.get3DDataValue(), newState));
-        refreshSideButtonTooltips();
+        sidePanel = new SideConfigPanel(tile.getBlockPos(), tile.getSideConfig(), () -> tile.activeSlot,
+                TabulaVitaeScreen::slotName, TabulaVitaeBlockEntity.OUTPUT_SLOT, tile);
+        sidePanel.create(this::addRenderableWidget, leftPos + 133, topPos + 50);
     }
 
     @Override
     protected void containerTick() {
         super.containerTick();
-        refreshSideButtons();
-    }
-
-    private void refreshSideButtons() {
-        boolean active = menu.tile.activeSlot >= 0;
-        for (SideToggleButton button : sideButtons.values()) {
-            button.visible = active;
-        }
-        if (active) refreshSideButtonTooltips();
-    }
-
-    private void refreshSideButtonTooltips() {
-        int slot = menu.tile.activeSlot;
-        if (slot < 0) return;
-        Component slotName = slotName(slot);
-        for (Map.Entry<Direction, SideToggleButton> entry : sideButtons.entrySet()) {
-            Direction dir = entry.getKey();
-            boolean allowed = menu.tile.getSideConfig().isAllowed(slot, dir);
-            MutableComponent header = Component.translatable(
-                    "gui.neovitae.tabula_vitae.side_button",
-                    Component.translatable("gui.neovitae.side." + dir.getName()).withStyle(ChatFormatting.WHITE),
-                    slotName);
-            Component state = allowed
-                    ? Component.translatable("gui.neovitae.tabula_vitae.side_allowed").withStyle(ChatFormatting.GREEN)
-                    : Component.translatable("gui.neovitae.tabula_vitae.side_blocked").withStyle(ChatFormatting.RED);
-            Component hint = Component.translatable("gui.neovitae.tabula_vitae.side_hint").withStyle(ChatFormatting.GRAY);
-            entry.getValue().setTooltip(Tooltip.create(joinLines(header, state, hint)));
-        }
-    }
-
-    private static Component joinLines(Component... lines) {
-        MutableComponent root = Component.empty();
-        for (int i = 0; i < lines.length; i++) {
-            if (i > 0) root.append("\n");
-            root.append(lines[i]);
-        }
-        return root;
+        sidePanel.tick();
     }
 
     private static Component slotName(int slot) {
@@ -138,12 +67,6 @@ public class TabulaVitaeScreen extends AbstractContainerScreen<TabulaVitaeMenu> 
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
         if (isOverProgress(mouseX, mouseY)) {
@@ -154,15 +77,17 @@ public class TabulaVitaeScreen extends AbstractContainerScreen<TabulaVitaeMenu> 
                         .withStyle(ChatFormatting.RED));
             }
             lines.add(Component.translatable("gui.neovitae.show_recipes").withStyle(ChatFormatting.YELLOW));
-            guiGraphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, lines, Optional.empty(), mouseX, mouseY);
             return;
         }
         if (isOverActiveSlot(mouseX, mouseY)) {
             int slot = menu.tile.activeSlot;
+            Component line1 = Component.translatable("gui.neovitae.tabula_vitae.active_slot", slotName(slot)).withStyle(ChatFormatting.WHITE);
+            Component line2 = Component.translatable("gui.neovitae.tabula_vitae.active_hint").withStyle(ChatFormatting.GRAY);
             List<Component> lines = new ArrayList<>();
-            lines.add(Component.translatable("gui.neovitae.tabula_vitae.active_slot", slotName(slot)).withStyle(ChatFormatting.WHITE));
-            lines.add(Component.translatable("gui.neovitae.tabula_vitae.active_hint").withStyle(ChatFormatting.GRAY));
-            guiGraphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
+            lines.add(line1);
+            lines.add(line2);
+            guiGraphics.renderTooltip(this.font, lines, Optional.empty(), mouseX, mouseY);
         }
     }
 
@@ -177,24 +102,24 @@ public class TabulaVitaeScreen extends AbstractContainerScreen<TabulaVitaeMenu> 
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0xFF404040, false);
+        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0xFF404040, false);
     }
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(BACKGROUND, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(BACKGROUND, i, j, 0f, 0f, this.imageWidth, this.imageHeight, 256, 256);
 
         int progress = getCookProgressScaled(90);
-        guiGraphics.blit(BACKGROUND, i + 106, j + 14 + 90 - progress, 176, 90 - progress, 18, progress);
+        guiGraphics.blit(BACKGROUND, i + 106, j + 14 + 90 - progress, 176f, (90 - progress), 18, progress, 256, 256);
 
         int activeSlot = menu.tile.activeSlot;
         if (activeSlot != -1) {
             Slot slot = this.getMenu().getSlot(activeSlot);
-            int highlightV = (activeSlot == TabulaVitaeBlockEntity.OUTPUT_SLOT) ? 37 : 19;
-            guiGraphics.blit(BACKGROUND, i + slot.x, j + slot.y, 195, highlightV, 16, 16);
+            float highlightV = (activeSlot == TabulaVitaeBlockEntity.OUTPUT_SLOT) ? 37f : 19f;
+            guiGraphics.blit(BACKGROUND, i + slot.x, j + slot.y, 195f, highlightV, 16, 16, 256, 256);
         }
     }
 
@@ -206,6 +131,9 @@ public class TabulaVitaeScreen extends AbstractContainerScreen<TabulaVitaeMenu> 
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (sidePanel.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
         if (button == 0 && isOverProgress(mouseX, mouseY)) {
             var runtime = NeoVitaeJEIPlugin.jeiRuntime;
             if (runtime != null) {

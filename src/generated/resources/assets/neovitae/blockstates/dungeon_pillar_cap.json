@@ -1,7 +1,28 @@
 {
   "variants": {
-    "": {
+    "facing=down": {
+      "model": "neovitae:block/dungeon_pillar_cap_down"
+    },
+    "facing=east": {
+      "model": "neovitae:block/dungeon_pillar_cap",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "neovitae:block/dungeon_pillar_cap_down",
+      "x": 270
+    },
+    "facing=south": {
+      "model": "neovitae:block/dungeon_pillar_cap",
+      "x": 270
+    },
+    "facing=up": {
       "model": "neovitae:block/dungeon_pillar_cap"
+    },
+    "facing=west": {
+      "model": "neovitae:block/dungeon_pillar_cap_down",
+      "x": 90,
+      "y": 90
     }
   }
 }

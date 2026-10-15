@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "neovitae:block/sanguine_casing",
+    "front": "neovitae:block/sanguine_crafter_front",
+    "side": "neovitae:block/sanguine_casing"
+  }
+}

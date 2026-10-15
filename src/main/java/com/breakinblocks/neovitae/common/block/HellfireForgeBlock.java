@@ -54,7 +54,7 @@ public class HellfireForgeBlock extends Block implements EntityBlock {
 
         BlockEntity tile = level.getBlockEntity(pos);
         if (tile instanceof HellfireForgeBlockEntity forgeTile) {
-            serverPlayer.openMenu(forgeTile, buf -> buf.writeBlockPos(pos));
+            serverPlayer.openMenu(forgeTile);
             return InteractionResult.SUCCESS;
         }
 

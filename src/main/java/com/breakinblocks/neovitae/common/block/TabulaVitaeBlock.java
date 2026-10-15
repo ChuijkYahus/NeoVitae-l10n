@@ -101,10 +101,10 @@ public class TabulaVitaeBlock extends BaseEntityBlock {
                 BlockPos masterPos = tableTile.getConnectedPos();
                 BlockEntity masterTile = world.getBlockEntity(masterPos);
                 if (masterTile instanceof TabulaVitaeBlockEntity masterTable) {
-                    serverPlayer.openMenu(masterTable, buf -> buf.writeBlockPos(masterPos));
+                    serverPlayer.openMenu(masterTable);
                 }
             } else {
-                serverPlayer.openMenu(tableTile, buf -> buf.writeBlockPos(pos));
+                serverPlayer.openMenu(tableTile);
             }
             return InteractionResult.SUCCESS;
         }

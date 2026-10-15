@@ -45,7 +45,7 @@ public class BlockInputRoutingNode extends BlockRoutingNode {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             BlockEntity tile = level.getBlockEntity(pos);
             if (tile instanceof InputRoutingNodeBlockEntity menuProvider) {
-                serverPlayer.openMenu(menuProvider, buf -> buf.writeBlockPos(pos));
+                serverPlayer.openMenu(menuProvider);
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);

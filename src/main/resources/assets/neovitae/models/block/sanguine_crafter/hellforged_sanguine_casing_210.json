@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "neovitae:block/hellforged_sanguine_casing",
+    "north": "neovitae:block/sanguine_crafter/hellforged_sanguine_casing_tl",
+    "south": "neovitae:block/hellforged_sanguine_casing",
+    "east": "neovitae:block/sanguine_crafter/hellforged_sanguine_casing_tr",
+    "west": "neovitae:block/hellforged_sanguine_casing",
+    "up": "neovitae:block/sanguine_crafter/hellforged_sanguine_casing_tr_bl",
+    "down": "neovitae:block/hellforged_sanguine_casing"
+  }
+}

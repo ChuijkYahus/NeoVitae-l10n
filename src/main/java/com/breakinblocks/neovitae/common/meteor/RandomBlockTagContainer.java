@@ -47,6 +47,21 @@ public class RandomBlockTagContainer extends RandomBlockContainer {
     }
 
     @Override
+    public boolean canProduce(Level level, TagKey<Block> filter) {
+        List<Block> list = new ArrayList<>();
+        BuiltInRegistries.BLOCK.getTagOrEmpty(tag).forEach(holder -> list.add(holder.value()));
+        if (index >= 0 && index < list.size()) {
+            return list.get(index).defaultBlockState().is(filter);
+        }
+        for (Block block : list) {
+            if (block.defaultBlockState().is(filter)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String getEntry() {
         ResourceLocation rl = tag.location();
         String entry = "#" + rl.toString();

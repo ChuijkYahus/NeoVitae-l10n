@@ -49,6 +49,14 @@ public class NVBlocks {
     public static final BlockWithItemHolder<SpiritAccumulatorBlock, BlockItem> SPIRIT_ACCUMULATOR = BLOCK_REG.register("spirit_accumulator", SpiritAccumulatorBlock::new, block -> new SpiritAccumulatorBlockItem(block, new Item.Properties()));
     public static final BlockWithItemHolder<VitaeLinkBlock, BlockItem> VITAE_LINK = BLOCK_REG.register("vitae_link", VitaeLinkBlock::new);
     public static final BlockWithItemHolder<OrbFillingLinkBlock, BlockItem> ORB_FILLING_LINK = BLOCK_REG.register("orb_filling_link", OrbFillingLinkBlock::new);
+    public static final BlockWithItemHolder<SanguineCrafterBlock, BlockItem> SANGUINE_CRAFTER = BLOCK_REG.register("sanguine_crafter", () -> new SanguineCrafterBlock(BlockBehaviour.Properties.of()));
+    public static final BlockWithItemHolder<SanguineCasingBlock, BlockItem> SANGUINE_CASING = BLOCK_REG.register("sanguine_casing", () -> new SanguineCasingBlock(sanguineCasingProps()));
+    public static final BlockWithItemHolder<SanguineCasingBlock, BlockItem> HELLFORGED_SANGUINE_CASING = BLOCK_REG.register("hellforged_sanguine_casing", () -> new SanguineCasingBlock(sanguineCasingProps()));
+    public static final BlockWithItemHolder<SanguineCasingBlock, BlockItem> SWIFT_SANGUINE_CASING = BLOCK_REG.register("swift_sanguine_casing", () -> new SanguineCasingBlock(sanguineCasingProps()));
+
+    private static BlockBehaviour.Properties sanguineCasingProps() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(3.0F, 6.0F).sound(SoundType.STONE).requiresCorrectToolForDrops();
+    }
 
     private static final BlockBehaviour.Properties rune_properties = BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(2.0F, 5.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().lightLevel(state -> 10);
     private static final Item.Properties rune_item_properties = new Item.Properties();

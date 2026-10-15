@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import com.breakinblocks.neovitae.api.sigil.SigilEffect;
@@ -52,8 +53,8 @@ public record VoidSigilEffect() implements SigilEffect {
 
         BlockState blockState = level.getBlockState(blockPos);
 
-        if (blockState.getBlock() instanceof BucketPickup bucketPickup) {
-            bucketPickup.pickupBlock(player, level, blockPos, blockState);
+        if (blockState.getBlock() instanceof BucketPickup bucketPickup
+                && !bucketPickup.pickupBlock(player, level, blockPos, blockState).isEmpty()) {
             return true;
         }
 
@@ -66,5 +67,10 @@ public record VoidSigilEffect() implements SigilEffect {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean useOnBlock(Level level, Player player, ItemStack stack, BlockPos blockPos, Direction side, Vec3 hitVec) {
+        return useOnAir(level, player, stack);
     }
 }

@@ -27,6 +27,7 @@
 - [Routing Network](Routing-Network)
 - [Automating the Ara Vitae](Automating-the-Ara-Vitae)
 - [Automating the Athanor and Tabula Vitae](Automating-the-Athanor-and-Tabula-Vitae)
+- [Sanguine Crafter](Sanguine-Crafter)
 - [Automating Spiritus](Automating-Spiritus)
 - [Teleposer](Teleposer)
 

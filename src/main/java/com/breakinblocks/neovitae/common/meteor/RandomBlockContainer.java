@@ -24,6 +24,11 @@ public abstract class RandomBlockContainer {
 
     public abstract Block getRandomBlock(RandomSource rand, Level level);
 
+    public boolean canProduce(Level level, TagKey<Block> filter) {
+        Block block = getRandomBlock(RandomSource.create(0L), level);
+        return block != null && block.defaultBlockState().is(filter);
+    }
+
     public abstract String getEntry();
 
     /**

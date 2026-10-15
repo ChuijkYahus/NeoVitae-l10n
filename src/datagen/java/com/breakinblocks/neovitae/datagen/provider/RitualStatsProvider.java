@@ -76,7 +76,6 @@ public class RitualStatsProvider implements DataProvider {
         out.accept(NVRituals.SPHERE, RitualStats.timed(20000, 10, 1, 0));
         out.accept(NVRituals.ARMOUR_EVOLVE, RitualStats.timed(50000, 25000, 20, 1).withPerOperation());
         out.accept(NVRituals.UPGRADE_REMOVE, RitualStats.timed(20000, 10000, 20, 1).withPerOperation());
-        out.accept(NVRituals.CRAFTING, RitualStats.timed(25000, 100, 40, 1));
         out.accept(NVRituals.YAWNING_VOID, RitualStats.timed(5000, 10, 10, 0));
 
         // ==================== Utility Rituals ====================
@@ -84,6 +83,7 @@ public class RitualStatsProvider implements DataProvider {
         out.accept(NVRituals.GROUNDING, RitualStats.timed(2000, 10, 1, 0));
         out.accept(NVRituals.TORMENT_NEXUS, RitualStats.timed(25000, 0, 20, 1));
         out.accept(NVRituals.ENCHANTED_VITAE, RitualStats.timed(10000, 0, 4, 1));
+        out.accept(NVRituals.CELERITY, RitualStats.timed(25000, 5, 20, 1));
 
         // ==================== Deus Tier Rituals ====================
         out.accept(NVRituals.DEUS_WELL_OF_SUFFERING, RitualStats.timed(200000, 4, 20, 2));
@@ -94,6 +94,7 @@ public class RitualStatsProvider implements DataProvider {
                 .withAmbientSound(NeoVitae.rl("overgrowth")));
         out.accept(NVRituals.DEUS_PLACER, RitualStats.timed(20000, 10, 5, 2));
         out.accept(NVRituals.DEUS_FELLING, RitualStats.timed(8000, 10, 20, 2));
+        out.accept(NVRituals.DEUS_CELERITY, RitualStats.timed(250000, 25, 20, 2));
         out.accept(NVRituals.DEUS_METEOR, RitualStats.timed(1000000, 0, 20, 2));
         out.accept(NVRituals.DEUS_ARMOUR_EVOLVE, RitualStats.timed(500000, 250000, 20, 2).withPerOperation());
     }

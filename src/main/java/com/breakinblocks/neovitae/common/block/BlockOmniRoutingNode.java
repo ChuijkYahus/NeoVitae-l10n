@@ -102,7 +102,7 @@ public class BlockOmniRoutingNode extends BaseEntityBlock implements IRoutingNod
                                                Player player, BlockHitResult hitResult) {
         if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             if (level.getBlockEntity(pos) instanceof OmniRoutingNodeBlockEntity menuProvider) {
-                serverPlayer.openMenu(menuProvider, buf -> buf.writeBlockPos(pos));
+                serverPlayer.openMenu(menuProvider);
             }
         }
         return InteractionResult.SUCCESS;

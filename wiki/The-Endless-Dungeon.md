@@ -87,7 +87,11 @@ The Mine Dungeon Key and the Boss Key cannot be crafted; they are only wrested f
 
 Set into the walls of the Endless Realm and gleaming with a pale, unwavering light, **Dungeon Eyes** illuminate the corridors with no fuel or flame. Whether they are sentinels or mere decoration is unclear; what is certain is that they are valid light sources you can claim and place yourself.
 
-Variants exist tinted by **Raw**, **Ruina**, **Nihilum**, **Invictus**, and **Vindicta** [Spiritus](Spiritus-Aspects-and-Crystals). Consult JEI for crafting recipes.
+Variants exist tinted by **Raw**, **Ruina**, **Nihilum**, **Invictus**, and **Vindicta** [Spiritus](Spiritus-Aspects-and-Crystals). Consult JEI for crafting recipes. Like a log, an eye turns to match the face you place it against, so it can lie along a horizontal pillar.
+
+## Dungeon Pillars
+
+**Dungeon Pillars** turn like logs, so they can stand upright or run along a wall or ceiling. A **Pillar Cap** finishes either end. Set on the end of a pillar, the cap points away from it. Set on a floor, ceiling or wall, it points into that surface, ready for the pillar to grow out of it, so a cap on the floor becomes a base and a cap under a ceiling becomes a crown. Sneak while placing a cap to flip it.
 
 ## Rare Spoils: Intricate Hellforged Parts
 

@@ -14,6 +14,8 @@ It accepts only two fuel sources, the **Primitive Fuel Cell** (a Block of Coal w
 
 The Athanor is sensitive to the **Raw [Spiritus](Spiritus-Aspects-and-Crystals)** saturating the surrounding chunk. With no spiritus present, the vessel operates at **half speed**; as raw spiritus builds toward 100, the Athanor accelerates to **double speed** at full saturation. While crafting, there is a **5% chance per second** that the Athanor consumes 1 raw spiritus from the chunk; keep Spiritus Crystals growing nearby to replenish what it consumes.
 
+For more speed, the **[Ritual of Celerity](Rituals#automation-and-resources)** doubles the pace of every Athanor in its area, and its Deus form multiplies it tenfold. This stacks with the tool and the Aura.
+
 Some advanced recipes require a specific amount of spiritus in the chunk to craft. The Athanor's interface shows a gauge with current spiritus levels and a red overlay marking how much is needed. If the chunk lacks sufficient spiritus, the Athanor stalls and emits dark particles until the deficit is replenished. Spiritus costs are consumed on craft completion, not during progress.
 
 ### The Sanguine Reverter

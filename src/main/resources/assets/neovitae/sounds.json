@@ -75,6 +75,10 @@
     "category": "block",
     "sounds": [{"name": "neovitae:tabula_vitae_craft"}]
   },
+  "sanguine_crafter_working": {
+    "category": "block",
+    "sounds": [{"name": "minecraft:block/beacon/ambient", "pitch": 0.7, "volume": 0.6}]
+  },
   "tabula_vitae_complete": {
     "category": "block",
     "sounds": [{"name": "neovitae:tabula_vitae_complete"}]

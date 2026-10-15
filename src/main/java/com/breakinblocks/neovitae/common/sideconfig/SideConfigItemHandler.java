@@ -5,17 +5,26 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.IntUnaryOperator;
+
 public class SideConfigItemHandler implements IItemHandler {
 
     private final IItemHandler delegate;
     private final SlotSideConfig config;
     @Nullable
     private final Direction side;
+    private final IntUnaryOperator slotToGroup;
 
     public SideConfigItemHandler(IItemHandler delegate, SlotSideConfig config, @Nullable Direction side) {
+        this(delegate, config, side, IntUnaryOperator.identity());
+    }
+
+    public SideConfigItemHandler(IItemHandler delegate, SlotSideConfig config, @Nullable Direction side,
+                                 IntUnaryOperator slotToGroup) {
         this.delegate = delegate;
         this.config = config;
         this.side = side;
+        this.slotToGroup = slotToGroup;
     }
 
     @Override
@@ -52,6 +61,6 @@ public class SideConfigItemHandler implements IItemHandler {
 
     private boolean isAllowed(int slot) {
         if (side == null) return true;
-        return config.isAllowed(slot, side);
+        return config.isAllowed(slotToGroup.applyAsInt(slot), side);
     }
 }

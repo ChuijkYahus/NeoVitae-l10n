@@ -44,7 +44,8 @@ public class DeusRitualTests {
             "deus_placer", "placer",
             "deus_felling", "felling",
             "deus_meteor", "meteor",
-            "deus_armour_evolve", "armour_evolve");
+            "deus_armour_evolve", "armour_evolve",
+            "deus_celerity", "celerity");
 
     private static final UUID OWNER = UUID.fromString("5d1e8b2a-93c4-4f7e-a6b1-0e2f4c8d9a37");
 

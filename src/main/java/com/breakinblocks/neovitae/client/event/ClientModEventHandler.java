@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import com.breakinblocks.neovitae.client.color.RoutingNodeColor;
 import com.breakinblocks.neovitae.client.render.item.SpiritAccumulatorItemRenderer;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
+import com.breakinblocks.neovitae.client.render.NVFluidClientExtensions;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import com.breakinblocks.neovitae.common.particle.NVParticles;
 import com.breakinblocks.neovitae.client.particle.BloodBubbleParticle;
@@ -77,6 +78,7 @@ import com.breakinblocks.neovitae.client.screen.ExperienceTomeScreen;
 import com.breakinblocks.neovitae.client.screen.SigilHoldingScreen;
 import com.breakinblocks.neovitae.client.screen.HellfireForgeScreen;
 import com.breakinblocks.neovitae.client.screen.SpiritCacheScreen;
+import com.breakinblocks.neovitae.client.screen.SanguineCrafterScreen;
 import com.breakinblocks.neovitae.client.screen.TrainerScreen;
 import com.breakinblocks.neovitae.common.menu.NVMenus;
 import com.breakinblocks.neovitae.client.render.entity.layer.SentientElytraLayer;
@@ -89,6 +91,7 @@ import com.breakinblocks.neovitae.client.screen.RitualLedgerScreen;
 import com.breakinblocks.neovitae.client.screen.TeleposerScreen;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
+import com.breakinblocks.neovitae.client.color.AthanorGlowColor;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.common.item.OrbFluidHandler;
 import com.breakinblocks.neovitae.util.helper.BloodLightHelper;
@@ -189,6 +192,7 @@ public class ClientModEventHandler {
         event.register(NVMenus.TELEPOSER.get(), TeleposerScreen::new);
         event.register(NVMenus.TABULA_VITAE.get(), TabulaVitaeScreen::new);
         event.register(NVMenus.HELLFIRE_FORGE.get(), HellfireForgeScreen::new);
+        event.register(NVMenus.SANGUINE_CRAFTER.get(), SanguineCrafterScreen::new);
         event.register(NVMenus.SIGIL_HOLDING.get(), SigilHoldingScreen::new);
         event.register(NVMenus.EXPERIENCE_TOME.get(), ExperienceTomeScreen::new);
         event.register(NVMenus.ROUTING_NODE.get(), RoutingNodeScreen::new);
@@ -203,6 +207,7 @@ public class ClientModEventHandler {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        NVFluidClientExtensions.register(event);
         event.registerItem(new IClientItemExtensions() {
             private SpiritAccumulatorItemRenderer renderer;
 
@@ -222,6 +227,7 @@ public class ClientModEventHandler {
                 NVBlocks.INPUT_ROUTING_NODE.block().get(),
                 NVBlocks.OUTPUT_ROUTING_NODE.block().get(),
                 NVBlocks.OMNI_ROUTING_NODE.block().get());
+        event.register(new AthanorGlowColor(), NVBlocks.ATHANOR_BLOCK.block().get());
     }
 
     @SubscribeEvent

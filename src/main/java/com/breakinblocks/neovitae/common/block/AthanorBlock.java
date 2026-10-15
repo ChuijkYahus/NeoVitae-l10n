@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -43,6 +44,7 @@ public class AthanorBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final EnumProperty<SpiritusType> TYPE = EnumProperty.create("type", SpiritusType.class);
+    public static final IntegerProperty GLOW = IntegerProperty.create("glow", 0, (1 << SpiritusType.values().length) - 1);
 
     public AthanorBlock() {
         super(Properties.ofFullCopy(Blocks.FURNACE));
@@ -87,12 +89,12 @@ public class AthanorBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(LIT, false).setValue(TYPE, SpiritusType.RAW).setValue(FACING, context.getHorizontalDirection().getOpposite());
+        return this.defaultBlockState().setValue(LIT, false).setValue(TYPE, SpiritusType.RAW).setValue(GLOW, 0).setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(LIT, FACING, TYPE);
+        builder.add(LIT, FACING, TYPE, GLOW);
     }
 
     /**
@@ -157,7 +159,7 @@ public class AthanorBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.openMenu(state.getMenuProvider(level, pos), buf -> buf.writeBlockPos(pos));
+            serverPlayer.openMenu(state.getMenuProvider(level, pos));
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

@@ -89,8 +89,6 @@ public final class NVRituals {
     public static final DeferredHolder<Ritual, RitualUpgradeRemove> UPGRADE_REMOVE =
             registerRitual("upgrade_remove", RitualUpgradeRemove::new);
 
-    public static final DeferredHolder<Ritual, RitualCrafting> CRAFTING =
-            registerRitual("crafting", RitualCrafting::new);
 
     public static final DeferredHolder<Ritual, RitualYawningVoid> YAWNING_VOID =
             registerRitual("yawning_void", RitualYawningVoid::new);
@@ -116,6 +114,9 @@ public final class NVRituals {
     public static final DeferredHolder<Ritual, RitualEnchantedVitae> ENCHANTED_VITAE =
             registerRitual(RitualEnchantedVitae.NAME, RitualEnchantedVitae::new);
 
+    public static final DeferredHolder<Ritual, RitualCelerity> CELERITY =
+            registerRitual(RitualCelerity.NAME, RitualCelerity::new);
+
     public static final DeferredHolder<Ritual, RitualDeusWellOfSuffering> DEUS_WELL_OF_SUFFERING =
             registerRitual(RitualDeusWellOfSuffering.NAME, RitualDeusWellOfSuffering::new);
 
@@ -136,6 +137,9 @@ public final class NVRituals {
 
     public static final DeferredHolder<Ritual, RitualDeusFelling> DEUS_FELLING =
             registerRitual(RitualDeusFelling.NAME, RitualDeusFelling::new);
+
+    public static final DeferredHolder<Ritual, RitualDeusCelerity> DEUS_CELERITY =
+            registerRitual(RitualDeusCelerity.NAME, RitualDeusCelerity::new);
 
     public static final DeferredHolder<Ritual, RitualDeusMeteor> DEUS_METEOR =
             registerRitual(RitualDeusMeteor.NAME, RitualDeusMeteor::new);

@@ -1,0 +1,112 @@
+{
+  "variants": {
+    "formed=false,px=0,py=0,pz=0": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=0,py=0,pz=1": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=0,py=0,pz=2": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=0,py=1,pz=0": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=0,py=1,pz=1": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=0,py=1,pz=2": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=1,py=0,pz=0": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=1,py=0,pz=1": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=1,py=0,pz=2": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=1,py=1,pz=0": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=1,py=1,pz=1": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=1,py=1,pz=2": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=2,py=0,pz=0": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=2,py=0,pz=1": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=2,py=0,pz=2": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=2,py=1,pz=0": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=2,py=1,pz=1": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=false,px=2,py=1,pz=2": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=true,px=0,py=0,pz=0": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_000"
+    },
+    "formed=true,px=0,py=0,pz=1": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_001"
+    },
+    "formed=true,px=0,py=0,pz=2": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_002"
+    },
+    "formed=true,px=0,py=1,pz=0": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_010"
+    },
+    "formed=true,px=0,py=1,pz=1": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_011"
+    },
+    "formed=true,px=0,py=1,pz=2": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_012"
+    },
+    "formed=true,px=1,py=0,pz=0": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_100"
+    },
+    "formed=true,px=1,py=0,pz=1": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_101"
+    },
+    "formed=true,px=1,py=0,pz=2": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_102"
+    },
+    "formed=true,px=1,py=1,pz=0": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_110"
+    },
+    "formed=true,px=1,py=1,pz=1": {
+      "model": "neovitae:block/swift_sanguine_casing"
+    },
+    "formed=true,px=1,py=1,pz=2": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_112"
+    },
+    "formed=true,px=2,py=0,pz=0": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_200"
+    },
+    "formed=true,px=2,py=0,pz=1": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_201"
+    },
+    "formed=true,px=2,py=0,pz=2": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_202"
+    },
+    "formed=true,px=2,py=1,pz=0": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_210"
+    },
+    "formed=true,px=2,py=1,pz=1": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_211"
+    },
+    "formed=true,px=2,py=1,pz=2": {
+      "model": "neovitae:block/sanguine_crafter/swift_sanguine_casing_212"
+    }
+  }
+}
