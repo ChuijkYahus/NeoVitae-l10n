@@ -83,7 +83,7 @@ public final class RitualHelper {
             return null;
         }
 
-        return new RitualContext(level, network, currentEV, masterRitualStone.getBlockPos(), masterRitualStone);
+        return new RitualContext(level, network, currentEV, masterRitualStone.getOriginPos(), masterRitualStone);
     }
 
     @Nullable

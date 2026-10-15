@@ -350,6 +350,7 @@ public class MaterialRegistry {
                         fragmentId, 5, null, 0, true);
             }
             for (String item : mat.getExtraRawItems()) {
+                if (item.equals(mat.getSmeltTo())) continue;
                 String itemPath = item.contains(":") ? item.substring(item.indexOf(':') + 1) : item;
                 addAthanorRecipeItem("cutting_fluids/fragments_from_" + itemPath + "_" + name,
                         item, "neovitae:athanor_tool/cutting_fluids",
@@ -653,8 +654,7 @@ public class MaterialRegistry {
                 null, null, null,
                 "Ancient Debris",
                 null)
-                .withExtraOreItems(List.of("minecraft:ancient_debris"))
-                .withExtraRawItems(List.of("minecraft:netherite_scrap")));
+                .withExtraOreItems(List.of("minecraft:ancient_debris")));
         defaults.add(new MaterialDefinition("demonite", "#8CBFB5",
                 List.of("fragment", "gravel"),
                 null, 0f,

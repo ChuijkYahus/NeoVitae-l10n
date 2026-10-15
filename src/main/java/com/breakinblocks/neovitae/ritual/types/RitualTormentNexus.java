@@ -257,7 +257,7 @@ public class RitualTormentNexus extends Ritual {
     }
 
     private void scanArea(ServerLevel level, IMasterRitualStone master) {
-        BlockPos masterPos = master.getBlockPos();
+        BlockPos masterPos = master.getOriginPos();
         AreaDescriptor range = RitualHelper.getEffectiveRange(master, this, EFFECT_RANGE);
         if (range == null) return;
         ResourceKey<Level> dim = level.dimension();

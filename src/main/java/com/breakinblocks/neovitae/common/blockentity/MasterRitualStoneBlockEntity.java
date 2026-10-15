@@ -62,6 +62,11 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
 
     private Map<String, AreaDescriptor> blockRanges = new HashMap<>();
     private ResourceLocation rangesConfiguredFor;
+    @Nullable
+    private BlockPos anchorPos;
+    private final long[] spiritusSeen = new long[SpiritusType.values().length];
+    private static final long SPIRIT_MEMORY_TICKS = 200L;
+    private static final int LINK_STREAM_INTERVAL = 100;
 
     public MasterRitualStoneBlockEntity(BlockPos pos, BlockState state) {
         super(NVTiles.MASTER_RITUAL_STONE_TYPE.get(), pos, state);
@@ -87,6 +92,9 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
         }
 
         if (tile.active && tile.currentRitual != null && !isRedstoneSuspended(level, pos, tile)) {
+            if (!tile.isAnchorReady()) {
+                return;
+            }
             long now = System.currentTimeMillis();
             if (now - tile.lastStructureCheckMillis >= STRUCTURE_CHECK_INTERVAL_MILLIS) {
                 tile.lastStructureCheckMillis = now;
@@ -106,6 +114,10 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
                         1, 0.0, 0.0, 0.0, 0);
             }
 
+            if (tile.usesAnchor() && tile.runningTime % LINK_STREAM_INTERVAL == 0) {
+                StreamPresets.bloodTendril(pos, tile.anchorPos).build().sendToNearby((ServerLevel) level, pos, 64);
+            }
+
             if (tile.runningTime % tile.currentRitual.getRefreshTime() == 0) {
                 tile.performRitual();
             }
@@ -118,7 +130,73 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
 
     private static boolean isRedstoneSuspended(Level level, BlockPos pos, MasterRitualStoneBlockEntity tile) {
         boolean powered = level.hasNeighborSignal(pos);
-        return tile.inverted ? !powered : powered;
+        if (tile.inverted ? !powered : powered) return true;
+        return tile.usesAnchor() && level.isLoaded(tile.anchorPos) && level.hasNeighborSignal(tile.anchorPos);
+    }
+
+    private boolean isAnchorReady() {
+        if (!usesAnchor()) return true;
+        if (!level.isLoaded(anchorPos)) return false;
+        if (level.getBlockEntity(anchorPos) instanceof RitualAnchorBlockEntity) return true;
+        anchorRemoved();
+        return false;
+    }
+
+    public void anchorRemoved() {
+        if (isActive()) {
+            stopRitual(Ritual.BreakType.DEACTIVATE);
+        }
+        clearAnchor(true);
+    }
+
+    private boolean usesAnchor() {
+        return anchorPos != null && (currentRitual == null || currentRitual.canUseAnchor());
+    }
+
+    @Nullable
+    public BlockPos getAnchorPos() {
+        return anchorPos;
+    }
+
+    @Override
+    public BlockPos getOriginPos() {
+        return usesAnchor() ? anchorPos : worldPosition;
+    }
+
+    public void linkAnchor(BlockPos pos) {
+        if (pos.equals(anchorPos)) return;
+        clearAnchor(false);
+        anchorPos = pos.immutable();
+        if (level != null && level.getBlockEntity(anchorPos) instanceof RitualAnchorBlockEntity anchor) {
+            anchor.addLink(worldPosition);
+        }
+        setChanged();
+    }
+
+    public void clearAnchor(boolean notify) {
+        if (anchorPos == null) return;
+        BlockPos old = anchorPos;
+        anchorPos = null;
+        if (level != null && level.isLoaded(old) && level.getBlockEntity(old) instanceof RitualAnchorBlockEntity anchor) {
+            anchor.removeLink(worldPosition);
+        }
+        if (notify) {
+            notifyOwner(Component.translatable("chat.neovitae.ritual_anchor.removed",
+                    worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
+        }
+        setChanged();
+    }
+
+    public int getRecentSpiritusMask() {
+        if (level == null) return 0;
+        long now = level.getGameTime();
+        int mask = 0;
+        for (int i = 0; i < spiritusSeen.length; i++) {
+            if (spiritusSeen[i] > 0 && now - spiritusSeen[i] <= SPIRIT_MEMORY_TICKS) {
+                mask |= 1 << i;
+            }
+        }
+        return mask;
     }
 
     @Override
@@ -297,6 +375,7 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
 
         ActiveRituals.track((ServerLevel) level, worldPosition, owner, currentRitualId);
         setChanged();
+        refreshAnchorAura();
         return true;
     }
 
@@ -333,6 +412,7 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
 
         ActiveRituals.track((ServerLevel) level, worldPosition, owner, currentRitualId);
         setChanged();
+        refreshAnchorAura();
     }
 
     @Override
@@ -358,7 +438,18 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
             return;
         }
 
-        currentRitual.performRitual(this);
+        RitualSpiritusTracker.begin();
+        try {
+            currentRitual.performRitual(this);
+        } finally {
+            int drained = RitualSpiritusTracker.end();
+            long now = level.getGameTime();
+            for (int i = 0; i < spiritusSeen.length; i++) {
+                if ((drained & (1 << i)) != 0) {
+                    spiritusSeen[i] = now;
+                }
+            }
+        }
     }
 
     @Override
@@ -380,6 +471,14 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
             ActiveRituals.untrack(serverLevel, worldPosition);
         }
         setChanged();
+        refreshAnchorAura();
+    }
+
+    private void refreshAnchorAura() {
+        if (anchorPos != null && level != null && !level.isClientSide() && level.isLoaded(anchorPos)
+                && level.getBlockEntity(anchorPos) instanceof RitualAnchorBlockEntity anchor) {
+            anchor.refreshNow();
+        }
     }
 
     @Override
@@ -616,6 +715,9 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
         if (rangesConfiguredFor != null) {
             tag.putString("rangesConfiguredFor", rangesConfiguredFor.toString());
         }
+        if (anchorPos != null) {
+            tag.putLong("anchor", anchorPos.asLong());
+        }
     }
 
     @Override
@@ -668,6 +770,7 @@ public class MasterRitualStoneBlockEntity extends BaseBlockEntity implements IMa
         rangesConfiguredFor = tag.contains("rangesConfiguredFor")
                 ? ResourceLocation.parse(tag.getString("rangesConfiguredFor"))
                 : null;
+        anchorPos = tag.contains("anchor") ? BlockPos.of(tag.getLong("anchor")) : null;
 
         blockRanges.clear();
         if (tag.contains("blockRanges")) {

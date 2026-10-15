@@ -582,6 +582,17 @@ public class NVRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_demonic_slate", has(NVItems.TABULA_SPIRITUS.get()))
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, NVBlocks.RITUAL_ANCHOR.block().get())
+                .pattern(" c ")
+                .pattern("sts")
+                .pattern("ooo")
+                .define('c', OrbTierIngredient.of(3))
+                .define('s', NVBlocks.BLANK_RITUAL_STONE.block().get())
+                .define('t', NVItems.TABULA_SPIRITUS.get())
+                .define('o', Tags.Items.OBSIDIANS)
+                .unlockedBy("has_master_ritual_stone", has(NVBlocks.MASTER_RITUAL_STONE.block().get()))
+                .save(output);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, NVItems.RITUAL_LEDGER.get())
                 .pattern(" g ")
                 .pattern("sbs")

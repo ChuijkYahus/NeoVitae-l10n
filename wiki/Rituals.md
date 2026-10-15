@@ -54,6 +54,21 @@ A circle left running in a forgotten corner keeps drawing on your Anima. The **R
 
 Server operators can see any player's active rituals with `/neovitae ritual active <player>`.
 
+## Ritual Anchor
+
+A ritual works around its Master Ritual Stone, which makes it hard to fit several circles around one spot or to keep a circle out of the room it serves. The **Ritual Anchor** is a floating blood crystal on a small plinth that gives a ritual a new center.
+
+Right-click the anchor with the Ritual Configurator, then right-click a Master Ritual Stone within 64 blocks to link them. From then on the ritual works around the anchor: its areas, chest and other zones, the Spiritus it draws from the Aura, and the streams it sends all start from the crystal instead of the stone. Repeat the link with the same anchor to unlink the stone.
+
+- Any number of stones can share one anchor, so you can build the circles on another floor and stack their effects on a single room.
+- A redstone signal on the anchor pauses every ritual linked to it. A signal on one stone still pauses only that ritual.
+- If the anchor's chunk is unloaded, its rituals wait until it loads again. If the anchor is broken, its rituals stop and the owner is told which stone lost its anchor.
+- Dungeon rituals cannot use an anchor.
+- The crystal stays dark until a linked ritual is running. It then pulses in the color of the Spiritus its rituals draw, or blood red when they draw none or more than one kind.
+- Carrying a Seer's Sigil while looking at the anchor shows the areas of every ritual linked to it.
+
+Craft it from a Master Blood Orb or better, two blank Ritual Stones, a Tabula Spiritus and three obsidian. Server operators can change the 64 block reach with the `range` option in the `ritual_anchor` section of the server config.
+
 ## Ritual Catalog
 
 ### Combat and Soul Harvest

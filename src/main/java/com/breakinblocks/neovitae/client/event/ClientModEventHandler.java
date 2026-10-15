@@ -92,6 +92,7 @@ import com.breakinblocks.neovitae.client.screen.TeleposerScreen;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.client.color.AthanorGlowColor;
+import com.breakinblocks.neovitae.client.color.RitualAnchorColor;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.common.item.OrbFluidHandler;
 import com.breakinblocks.neovitae.util.helper.BloodLightHelper;
@@ -228,6 +229,7 @@ public class ClientModEventHandler {
                 NVBlocks.OUTPUT_ROUTING_NODE.block().get(),
                 NVBlocks.OMNI_ROUTING_NODE.block().get());
         event.register(new AthanorGlowColor(), NVBlocks.ATHANOR_BLOCK.block().get());
+        event.register(new RitualAnchorColor(), NVBlocks.RITUAL_ANCHOR.block().get());
     }
 
     @SubscribeEvent

@@ -57,7 +57,7 @@ public class RitualGrounding extends Ritual {
     @Override
     public void performRitual(IMasterRitualStone masterRitualStone) {
         // Volume-based cost: max(1, volume / 10000)
-        AABB aabb = getBlockRange(GROUNDING_RANGE).getAABB(masterRitualStone.getBlockPos());
+        AABB aabb = getBlockRange(GROUNDING_RANGE).getAABB(masterRitualStone.getOriginPos());
         int volume = (int) (aabb.getXsize() * aabb.getYsize() * aabb.getZsize());
         int refreshCost = Math.max(1, volume / 10000);
 

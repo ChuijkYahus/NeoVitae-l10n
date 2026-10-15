@@ -59,6 +59,11 @@ public abstract class DungeonRitualBase extends Ritual {
     }
 
     @Override
+    public boolean canUseAnchor() {
+        return false;
+    }
+
+    @Override
     public boolean canActivate(IMasterRitualStone masterRitualStone, Player player) {
         return getActivationError(masterRitualStone, player) == null;
     }

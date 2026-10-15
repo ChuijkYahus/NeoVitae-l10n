@@ -25,6 +25,7 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.api.ritual.AreaDescriptor;
 import com.breakinblocks.neovitae.common.blockentity.MasterRitualStoneBlockEntity;
+import com.breakinblocks.neovitae.common.blockentity.RitualAnchorBlockEntity;
 import com.breakinblocks.neovitae.common.item.ItemRitualReader;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.common.item.sigil.ItemSigilHolding;
@@ -96,13 +97,14 @@ public class SeerRitualAreaRenderer {
 
     private static List<AABB> boxesFor(MasterRitualStoneBlockEntity mrs, long now) {
         BlockPos pos = mrs.getBlockPos();
+        BlockPos origin = mrs.getOriginPos();
 
         Map<String, AreaDescriptor> configured = mrs.getBlockRanges();
         if (!configured.isEmpty()) {
             RESOLVED.remove(pos);
             List<AABB> boxes = new ArrayList<>();
             for (AreaDescriptor descriptor : configured.values()) {
-                boxes.add(descriptor.getAABB(pos));
+                boxes.add(descriptor.getAABB(origin));
             }
             return boxes;
         }
@@ -116,7 +118,7 @@ public class SeerRitualAreaRenderer {
         Ritual ritual = mrs.findStructureRitual();
         if (ritual != null) {
             for (AreaDescriptor descriptor : ritual.getModifiableRanges().values()) {
-                boxes.add(descriptor.getAABB(pos));
+                boxes.add(descriptor.getAABB(origin));
             }
         }
         if (RESOLVED.size() > 256) RESOLVED.clear();
@@ -130,6 +132,16 @@ public class SeerRitualAreaRenderer {
             return List.of();
         }
         BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
+        if (level.getBlockEntity(pos) instanceof RitualAnchorBlockEntity anchor) {
+            List<MasterRitualStoneBlockEntity> linked = new ArrayList<>();
+            for (BlockPos link : anchor.getLinks()) {
+                if (level.getBlockEntity(link) instanceof MasterRitualStoneBlockEntity stone && pos.equals(stone.getAnchorPos())
+                        && stone.isActive() && stone.getCurrentRitual() != null && !stone.getBlockRanges().isEmpty()) {
+                    linked.add(stone);
+                }
+            }
+            return linked;
+        }
         if (!(level.getBlockEntity(pos) instanceof MasterRitualStoneBlockEntity mrs)) {
             return List.of();
         }

@@ -21,7 +21,7 @@ public class RitualsCategory extends CategoryProvider {
         return new String[]{
                 "_________R_________",
                 "____S__D__C__T__L__",
-                "___________________",
+                "_____________A_____",
                 "__a_b_c_d_e_f_g____",
                 "__h_i_j_k_l_m_n____",
                 "__o_p_q_r_s_8______",
@@ -252,6 +252,11 @@ public class RitualsCategory extends CategoryProvider {
         deusRituals.withParent(this.parent(crystals));
         deusRituals.withCondition(BookEntryReadConditionModel.create().withEntry("neovitae:rituals/activation_crystals"));
         deusRituals.hideWhileLocked(false);
+
+        var anchor = this.add(new RitualAnchorEntry(this).generate('A'));
+        anchor.withParent(this.parent(tinkerer));
+        anchor.withCondition(BookEntryReadConditionModel.create().withEntry("neovitae:rituals/ritual_tinkerer"));
+        anchor.hideWhileLocked(false);
     }
 
     @Override

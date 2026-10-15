@@ -10,6 +10,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import com.breakinblocks.neovitae.common.dataattachment.NVDataAttachments;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.common.network.SpiritusSyncPayload;
+import com.breakinblocks.neovitae.ritual.RitualSpiritusTracker;
 
 import com.breakinblocks.neovitae.client.ClientSpiritusCache;
 
@@ -82,6 +83,7 @@ public class WorldSpiritusHandler {
         double drained = spiritusChunkVar.drainSpiritus(type, amount);
 
         if (drained > 0) {
+            RitualSpiritusTracker.record(type);
             SpiritusChunk newSpiritusChunk = spiritusChunkVar.copy();
             chunk.setData(NVDataAttachments.SPIRITUS_CHUNK, newSpiritusChunk);
             chunk.setUnsaved(true);

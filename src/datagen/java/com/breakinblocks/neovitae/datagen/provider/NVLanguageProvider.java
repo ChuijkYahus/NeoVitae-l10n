@@ -132,6 +132,7 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add(NVBlocks.DEUS_RITUAL_STONE, "Deus Ritual Stone");
         add(NVBlocks.MASTER_RITUAL_STONE, "Master Ritual Stone");
         add(NVBlocks.INVERTED_MASTER_RITUAL_STONE, "Inverted Master Ritual Stone");
+        add(NVBlocks.RITUAL_ANCHOR, "Ritual Anchor");
         add(NVBlocks.IMPERFECT_RITUAL_STONE, "Imperfect Ritual Stone");
         addTooltip("imperfectRitualStone.desc", "Simple ritual stone for quick effects");
         addTooltip("imperfectRitualStone.hint", "Place a block above and right-click to activate");
@@ -819,10 +820,12 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         addTooltip("reader.state.information", "Information");
         addTooltip("reader.state.set_area_corner_1", "Set Area Corner 1");
         addTooltip("reader.state.set_area_corner_2", "Set Area Corner 2");
+        addTooltip("reader.state.link_anchor", "Link Ritual Anchor");
         addTooltip("reader.help.1", "Right-click a Master Ritual Stone to open the configurator");
         addTooltip("reader.help.2", "Pick a working area or chest slot, then choose Edit area in world");
         addTooltip("reader.help.3", "Click two corners to set an area, or one block for a single-block slot");
-        addTooltip("reader.help.4", "Sneak + right-click to cancel an area edit");
+        addTooltip("reader.help.4", "Sneak + right-click to cancel an area edit or anchor link");
+        addTooltip("reader.help.5", "Right-click a Ritual Anchor, then a Master Ritual Stone, to link or unlink them");
         add("chat.neovitae.reader.cancelled", "Area edit cancelled.");
         add("container.neovitae.ritual_configurator", "Ritual Configurator");
         add("gui.neovitae.configurator.aspect", "Aspect");
@@ -861,7 +864,15 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add("chat.neovitae.reader.corner1Set", "Corner 1 set at %d, %d, %d");
         add("chat.neovitae.reader.areaSet", "Area '%s' updated successfully.");
         add("chat.neovitae.reader.areaRetry", " Corner kept; click another block to try again, or Sneak and Use in the air to cancel.");
-        add("chat.neovitae.reader.cornerRejected", " Pick a corner closer to the Master Ritual Stone.");
+        add("chat.neovitae.reader.cornerRejected", " Pick a corner closer to the Master Ritual Stone, or to its Ritual Anchor if it has one.");
+        add("chat.neovitae.reader.anchorSelected", "Ritual Anchor selected at %d, %d, %d. Right-click a Master Ritual Stone to link it.");
+        add("chat.neovitae.reader.anchorMissing", "The selected Ritual Anchor is gone. Right-click an anchor to select it again.");
+        add("chat.neovitae.reader.anchorLinked", "Linked to the Ritual Anchor at %d, %d, %d. The ritual now works around the anchor.");
+        add("chat.neovitae.reader.anchorUnlinked", "Ritual Anchor unlinked. The ritual works around its stone again.");
+        add("chat.neovitae.reader.anchorTooFar", "That Ritual Anchor is too far away. It must be within %d blocks of the Master Ritual Stone.");
+        add("chat.neovitae.reader.anchorUnsupported", "This ritual cannot use a Ritual Anchor.");
+        add("chat.neovitae.ritual_anchor.links", "Linked Master Ritual Stones: %d");
+        add("chat.neovitae.ritual_anchor.removed", "The Ritual Anchor linked to the Master Ritual Stone at %d, %d, %d was removed, so its ritual stopped.");
         add("chat.neovitae.reader.invalidRange", "Invalid range key.");
         add("chat.neovitae.reader.spiritusType", "Spiritus type set to: %s");
         add("chat.neovitae.gem.spawner_no_spiritus", "Not enough Spiritus. Capturing a spawner needs %s.");

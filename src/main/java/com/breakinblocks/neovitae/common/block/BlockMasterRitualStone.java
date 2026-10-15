@@ -214,6 +214,7 @@ public class BlockMasterRitualStone extends Block implements EntityBlock {
                 if (tile.isActive()) {
                     tile.stopRitual(Ritual.BreakType.BREAK_MRS);
                 }
+                tile.clearAnchor(false);
             }
         }
         super.onRemove(state, level, pos, newState, movedByPiston);

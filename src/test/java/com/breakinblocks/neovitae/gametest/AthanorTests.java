@@ -1,21 +1,30 @@
 package com.breakinblocks.neovitae.gametest;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
+import com.breakinblocks.neovitae.common.material.MaterialDefinition;
+import com.breakinblocks.neovitae.common.material.MaterialRegistry;
+import com.breakinblocks.neovitae.common.recipe.athanor.AthanorRecipe;
 import com.breakinblocks.neovitae.common.recipe.NVRecipes;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.common.block.AthanorBlock;
 import com.breakinblocks.neovitae.common.blockentity.AthanorBlockEntity;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @GameTestHolder("neovitae")
 @PrefixGameTestTemplate(false)
@@ -167,6 +176,32 @@ public class AthanorTests {
         helper.assertTrue(mask == (1 << SpiritusType.values().length) - 1,
                 "A recipe using all five Spiritus types should light every bit, got " + Integer.toBinaryString(mask));
         helper.assertTrue(AthanorBlock.GLOW.getPossibleValues().contains(mask), "The glow property should hold every mask");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 20)
+    public void athanorMaterialRecipesNeverMultiplyTheirOwnProduct(GameTestHelper helper) {
+        var recipes = helper.getLevel().getRecipeManager().getAllRecipesFor(NVRecipes.ATHANOR_TYPE.get());
+        for (MaterialDefinition mat : MaterialRegistry.getAllMaterials()) {
+            if (mat.getSmeltTo() == null) continue;
+            ItemStack product = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(mat.getSmeltTo())));
+            if (product.isEmpty()) continue;
+            Set<ResourceLocation> chain = new HashSet<>();
+            for (String stage : mat.getStages()) {
+                chain.add(NeoVitae.rl(mat.getItemId(stage)));
+            }
+            for (var holder : recipes) {
+                AthanorRecipe recipe = holder.value();
+                if (recipe.getInputs().stream().noneMatch(input -> input.test(product))) continue;
+                int yield = 0;
+                for (ItemStack stack : recipe.getGuaranteedOutput()) {
+                    if (chain.contains(BuiltInRegistries.ITEM.getKey(stack.getItem()))) yield += stack.getCount();
+                }
+                if (recipe.isSpiritusBoosted() && yield > 0) yield++;
+                helper.assertTrue(yield <= 1, holder.id() + " turns one " + mat.getSmeltTo()
+                        + " into " + yield + " " + mat.getName() + " pieces, which smelt back into more than it took");
+            }
+        }
         helper.succeed();
     }
 }

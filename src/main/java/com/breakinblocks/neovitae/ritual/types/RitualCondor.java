@@ -60,7 +60,7 @@ public class RitualCondor extends Ritual {
         Level level = masterRitualStone.getLevel();
         if (level == null || level.isClientSide()) return;
 
-        BlockPos masterPos = masterRitualStone.getBlockPos();
+        BlockPos masterPos = masterRitualStone.getOriginPos();
         AreaDescriptor range = RitualHelper.getEffectiveRange(masterRitualStone, this, FLIGHT_RANGE);
 
         AABB aabb = range.getAABB(masterPos);

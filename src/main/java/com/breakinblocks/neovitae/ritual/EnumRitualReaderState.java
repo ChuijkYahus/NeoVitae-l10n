@@ -7,7 +7,8 @@ import java.util.Locale;
 public enum EnumRitualReaderState implements StringRepresentable {
     INFORMATION,
     SET_AREA_CORNER_1,
-    SET_AREA_CORNER_2;
+    SET_AREA_CORNER_2,
+    LINK_ANCHOR;
 
     @Override
     public String getSerializedName() {

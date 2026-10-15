@@ -42,6 +42,7 @@ public class MineBlock extends BlockLootSubProvider {
         addDropSelf(NVBlocks.BLANK_RITUAL_STONE);
         addDropSelf(NVBlocks.MASTER_RITUAL_STONE);
         addDropSelf(NVBlocks.INVERTED_MASTER_RITUAL_STONE);
+        addDropSelf(NVBlocks.RITUAL_ANCHOR);
         addDropSelf(NVBlocks.IMPERFECT_RITUAL_STONE);
         addDropSelf(NVBlocks.BLOOD_BATTERY);
         addDropSelf(NVBlocks.TELEPOSER);

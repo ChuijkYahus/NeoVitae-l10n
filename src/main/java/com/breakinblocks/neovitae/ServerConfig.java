@@ -61,6 +61,7 @@ public class ServerConfig {
     public final ModConfigSpec.BooleanValue SANGUINE_CRAFTER_CHUNK_LOADING;
     public final ModConfigSpec.BooleanValue SANGUINE_CRAFTER_CHUNK_LOADING_OWNER_ONLINE_ONLY;
     public final ModConfigSpec.IntValue SANGUINE_CRAFTER_CHUNK_LOADING_MAX_PER_PLAYER;
+    public final ModConfigSpec.IntValue RITUAL_ANCHOR_RANGE;
 
     protected ServerConfig(ModConfigSpec.Builder builder) {
         SELF_SACRIFICE_CONVERSION = builder.define("self_sacrifice_conversion", 100);
@@ -283,6 +284,15 @@ public class ServerConfig {
         SANGUINE_CRAFTER_CHUNK_LOADING_MAX_PER_PLAYER = builder
                 .comment("Most Sanguine Crafters a single player may have keeping chunks loaded at once. 0 removes the limit.")
                 .defineInRange("chunk_loading_max_per_player", 10, 0, 1024);
+
+        builder.pop();
+
+        builder.comment("Ritual Anchor Configuration");
+        builder.push("ritual_anchor");
+
+        RITUAL_ANCHOR_RANGE = builder
+                .comment("Furthest a Ritual Anchor may be from the Master Ritual Stone it is linked to, in blocks.")
+                .defineInRange("range", 64, 1, 128);
 
         builder.pop();
     }

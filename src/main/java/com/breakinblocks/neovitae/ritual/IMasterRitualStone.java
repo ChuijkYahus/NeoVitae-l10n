@@ -33,6 +33,10 @@ public interface IMasterRitualStone {
         return getBlockPos();
     }
 
+    default BlockPos getOriginPos() {
+        return getBlockPos();
+    }
+
     UUID getOwner();
 
     void setOwner(UUID owner);

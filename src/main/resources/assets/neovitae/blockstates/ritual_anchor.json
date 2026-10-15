@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "aura=dormant": {
+      "model": "neovitae:block/ritual_anchor"
+    },
+    "aura=blood": {
+      "model": "neovitae:block/ritual_anchor_lit"
+    },
+    "aura=raw": {
+      "model": "neovitae:block/ritual_anchor_lit"
+    },
+    "aura=ruina": {
+      "model": "neovitae:block/ritual_anchor_lit"
+    },
+    "aura=nihilum": {
+      "model": "neovitae:block/ritual_anchor_lit"
+    },
+    "aura=vindicta": {
+      "model": "neovitae:block/ritual_anchor_lit"
+    },
+    "aura=invictus": {
+      "model": "neovitae:block/ritual_anchor_lit"
+    }
+  }
+}

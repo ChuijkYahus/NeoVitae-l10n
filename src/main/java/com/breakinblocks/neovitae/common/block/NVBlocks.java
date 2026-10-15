@@ -140,6 +140,7 @@ public class NVBlocks {
     public static final BlockWithItemHolder<BlockRitualStone, BlockItem> DEUS_RITUAL_STONE = BLOCK_REG.register("deus_ritual_stone", () -> new BlockRitualStone(EnumRuneType.DEUS));
     public static final BlockWithItemHolder<BlockMasterRitualStone, BlockItem> MASTER_RITUAL_STONE = BLOCK_REG.register("master_ritual_stone", () -> new BlockMasterRitualStone(false));
     public static final BlockWithItemHolder<BlockMasterRitualStone, BlockItem> INVERTED_MASTER_RITUAL_STONE = BLOCK_REG.register("inverted_master_ritual_stone", () -> new BlockMasterRitualStone(true));
+    public static final BlockWithItemHolder<RitualAnchorBlock, BlockItem> RITUAL_ANCHOR = BLOCK_REG.register("ritual_anchor", () -> new RitualAnchorBlock(BlockBehaviour.Properties.of()));
     public static final BlockWithItemHolder<BlockImperfectRitualStone, BlockItem> IMPERFECT_RITUAL_STONE = BLOCK_REG.register("imperfect_ritual_stone", BlockImperfectRitualStone::new);
 
     public static final BlockWithItemHolder<VasMaleficumBlock, BlockItem> VAS_MALEFICUM = BLOCK_REG.register("vas_maleficum", VasMaleficumBlock::new);

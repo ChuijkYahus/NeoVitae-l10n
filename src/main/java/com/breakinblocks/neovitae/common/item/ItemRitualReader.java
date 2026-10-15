@@ -7,6 +7,7 @@ package com.breakinblocks.neovitae.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +23,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.common.blockentity.MasterRitualStoneBlockEntity;
+import com.breakinblocks.neovitae.common.blockentity.RitualAnchorBlockEntity;
 import com.breakinblocks.neovitae.common.menu.RitualConfiguratorMenu;
 import com.breakinblocks.neovitae.common.menu.RitualConfiguratorMenu.RangeInfo;
 import com.breakinblocks.neovitae.compat.sable.SableCompat;
@@ -106,6 +109,18 @@ public class ItemRitualReader extends Item {
         }
 
         BlockEntity blockEntity = level.getBlockEntity(clickedPos);
+
+        if (blockEntity instanceof RitualAnchorBlockEntity) {
+            return selectAnchor(stack, level, clickedPos, player);
+        }
+
+        if (state == EnumRitualReaderState.LINK_ANCHOR) {
+            if (blockEntity instanceof MasterRitualStoneBlockEntity mrs) {
+                return linkAnchor(stack, level, mrs, player);
+            }
+            return InteractionResult.PASS;
+        }
+
         if (blockEntity instanceof MasterRitualStoneBlockEntity mrs) {
             return openConfigurator(level, mrs, player, context.getHand());
         }
@@ -118,9 +133,11 @@ public class ItemRitualReader extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             EnumRitualReaderState state = getState(stack);
-            if (state == EnumRitualReaderState.SET_AREA_CORNER_1 || state == EnumRitualReaderState.SET_AREA_CORNER_2) {
+            if (state == EnumRitualReaderState.SET_AREA_CORNER_1 || state == EnumRitualReaderState.SET_AREA_CORNER_2
+                    || state == EnumRitualReaderState.LINK_ANCHOR) {
                 if (!level.isClientSide()) {
                     setState(stack, EnumRitualReaderState.INFORMATION);
+                    stack.remove(NVDataComponents.READER_ANCHOR_POS.get());
                     player.displayClientMessage(
                             Component.translatable("chat.neovitae.reader.cancelled").withStyle(ChatFormatting.YELLOW), true);
                 }
@@ -128,6 +145,52 @@ public class ItemRitualReader extends Item {
             }
         }
         return InteractionResultHolder.pass(stack);
+    }
+
+    private InteractionResult selectAnchor(ItemStack stack, Level level, BlockPos anchorPos, Player player) {
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        stack.set(NVDataComponents.READER_ANCHOR_POS.get(), GlobalPos.of(level.dimension(), anchorPos.immutable()));
+        setState(stack, EnumRitualReaderState.LINK_ANCHOR);
+        player.displayClientMessage(Component.translatable("chat.neovitae.reader.anchorSelected",
+                anchorPos.getX(), anchorPos.getY(), anchorPos.getZ()), true);
+        return InteractionResult.SUCCESS;
+    }
+
+    private InteractionResult linkAnchor(ItemStack stack, Level level, MasterRitualStoneBlockEntity mrs, Player player) {
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        GlobalPos selected = stack.get(NVDataComponents.READER_ANCHOR_POS.get());
+        setState(stack, EnumRitualReaderState.INFORMATION);
+        stack.remove(NVDataComponents.READER_ANCHOR_POS.get());
+
+        if (selected == null || !selected.dimension().equals(level.dimension())
+                || !(level.getBlockEntity(selected.pos()) instanceof RitualAnchorBlockEntity)) {
+            player.displayClientMessage(Component.translatable("chat.neovitae.reader.anchorMissing").withStyle(ChatFormatting.RED), true);
+            return InteractionResult.SUCCESS;
+        }
+
+        BlockPos anchorPos = selected.pos();
+        if (anchorPos.equals(mrs.getAnchorPos())) {
+            mrs.clearAnchor(false);
+            player.displayClientMessage(Component.translatable("chat.neovitae.reader.anchorUnlinked"), true);
+            return InteractionResult.SUCCESS;
+        }
+
+        int range = NeoVitae.SERVER_CONFIG.RITUAL_ANCHOR_RANGE.get();
+        if (!anchorPos.closerThan(mrs.getBlockPos(), range + 0.5)) {
+            player.displayClientMessage(Component.translatable("chat.neovitae.reader.anchorTooFar", range).withStyle(ChatFormatting.RED), true);
+            return InteractionResult.SUCCESS;
+        }
+
+        Ritual ritual = resolveRitual(mrs);
+        if (ritual != null && !ritual.canUseAnchor()) {
+            player.displayClientMessage(Component.translatable("chat.neovitae.reader.anchorUnsupported").withStyle(ChatFormatting.RED), true);
+            return InteractionResult.SUCCESS;
+        }
+
+        mrs.linkAnchor(anchorPos);
+        player.displayClientMessage(Component.translatable("chat.neovitae.reader.anchorLinked",
+                anchorPos.getX(), anchorPos.getY(), anchorPos.getZ()), true);
+        return InteractionResult.SUCCESS;
     }
 
     private InteractionResult openConfigurator(Level level, MasterRitualStoneBlockEntity mrs,
@@ -240,7 +303,7 @@ public class ItemRitualReader extends Item {
         if (current == null) current = ritual.getBlockRange(rangeKey);
         if (current == null) return true;
 
-        BlockPos offset = corner.subtract(mrs.getBlockPos());
+        BlockPos offset = corner.subtract(mrs.getOriginPos());
         if (ritual.canBlockRangeBeModified(rangeKey, current.copy(), mrs, offset, offset)
                 == EnumReaderBoundaries.SUCCESS) {
             return true;
@@ -258,7 +321,7 @@ public class ItemRitualReader extends Item {
     private boolean applyArea(ItemStack stack, MasterRitualStoneBlockEntity mrs, Ritual ritual,
                               BlockPos corner1, BlockPos corner2, Player player) {
         String rangeKey = getRangeKey(stack);
-        BlockPos mrsPos = mrs.getBlockPos();
+        BlockPos mrsPos = mrs.getOriginPos();
         BlockPos offset1 = corner1.subtract(mrsPos);
         BlockPos offset2 = corner2.subtract(mrsPos);
 
@@ -362,6 +425,11 @@ public class ItemRitualReader extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         EnumRitualReaderState state = getState(stack);
+        if (state == EnumRitualReaderState.LINK_ANCHOR) {
+            tooltip.add(Component.translatable(TOOLTIP_BASE + "currentState",
+                    Component.translatable(TOOLTIP_BASE + "state." + state.getSerializedName()))
+                    .withStyle(ChatFormatting.GRAY));
+        }
         if (state == EnumRitualReaderState.SET_AREA_CORNER_1 || state == EnumRitualReaderState.SET_AREA_CORNER_2) {
             tooltip.add(Component.translatable(TOOLTIP_BASE + "currentState",
                     Component.translatable(TOOLTIP_BASE + "state." + state.getSerializedName()))
@@ -378,6 +446,7 @@ public class ItemRitualReader extends Item {
         tooltip.add(Component.translatable(TOOLTIP_BASE + "help.2").withStyle(ChatFormatting.BLUE));
         tooltip.add(Component.translatable(TOOLTIP_BASE + "help.3").withStyle(ChatFormatting.BLUE));
         tooltip.add(Component.translatable(TOOLTIP_BASE + "help.4").withStyle(ChatFormatting.BLUE));
+        tooltip.add(Component.translatable(TOOLTIP_BASE + "help.5").withStyle(ChatFormatting.BLUE));
 
         super.appendHoverText(stack, context, tooltip, flag);
     }

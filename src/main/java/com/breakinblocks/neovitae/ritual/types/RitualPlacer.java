@@ -201,7 +201,7 @@ public class RitualPlacer extends Ritual {
 
     private int auraTier(@Nullable IMasterRitualStone master) {
         if (master == null || master.getLevel() == null) return 0;
-        return tierFor(RitualHelper.querySpiritus(master.getLevel(), master.getBlockPos(), 0).getRaw());
+        return tierFor(RitualHelper.querySpiritus(master.getLevel(), master.getOriginPos(), 0).getRaw());
     }
 
     @Override

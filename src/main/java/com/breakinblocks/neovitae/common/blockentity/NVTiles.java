@@ -183,6 +183,8 @@ public class NVTiles {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SpiritAccumulatorBlockEntity>> SPIRIT_ACCUMULATOR_TYPE =
             registerTile("spirit_accumulator", SpiritAccumulatorBlockEntity::new, NVBlocks.SPIRIT_ACCUMULATOR.block());
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RitualAnchorBlockEntity>> RITUAL_ANCHOR_TYPE =
+            registerTile("ritual_anchor", RitualAnchorBlockEntity::new, NVBlocks.RITUAL_ANCHOR.block());
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<VitaeLinkBlockEntity>> VITAE_LINK_TYPE =
             registerTile("vitae_link", VitaeLinkBlockEntity::new, NVBlocks.VITAE_LINK.block());
