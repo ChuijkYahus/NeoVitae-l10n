@@ -231,13 +231,11 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add("gui.neovitae.sanguine_crafter.status.tier_too_low", "Blood Orb tier too low");
         add("gui.neovitae.sanguine_crafter.status.not_enough_ev", "Not enough EV");
         add("gui.neovitae.sanguine_crafter.status.not_enough_spiritus", "Gem lacks Spiritus");
-        add("gui.neovitae.sanguine_crafter.status.no_shards", "Needs an aspect shard");
         add("gui.neovitae.sanguine_crafter.status.output_full", "Output full");
         add("gui.neovitae.sanguine_crafter.status.limit_reached", "Output limit reached");
         add("gui.neovitae.sanguine_crafter.status.crafting", "Crafting");
         add("gui.neovitae.sanguine_crafter.parallel", "Parallel crafts: %s");
         add("gui.neovitae.sanguine_crafter.speed", "Speed: %s%%");
-        add("gui.neovitae.sanguine_crafter.charges", "Shard charge: %s Ruina, %s Invictus");
         add("gui.neovitae.sanguine_crafter.owner", "Owner: %s");
         add("gui.neovitae.sanguine_crafter.chunk_loading.disabled", "Chunk loading: off on this server");
         add("gui.neovitae.sanguine_crafter.chunk_loading.inactive", "Chunk loading: not running");
@@ -248,7 +246,6 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add("gui.neovitae.sanguine_crafter.group.output", "Output buffer");
         add("gui.neovitae.sanguine_crafter.group.orb", "Orb slot");
         add("gui.neovitae.sanguine_crafter.group.gem", "Gem slot");
-        add("gui.neovitae.sanguine_crafter.group.shards", "Shard slots");
 
         add(NVBlocks.BLOOD_TANK, "Blood Tank");
         addTooltip("container_tier_missing", "No Tier found!");
@@ -1005,17 +1002,13 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add(NVItems.BASIC_CUTTING_FLUID.get(), "Basic Cutting Fluid");
         add(NVItems.INTERMEDIATE_CUTTING_FLUID.get(), "Intermediate Cutting Fluid");
         add(NVItems.ADVANCED_CUTTING_FLUID.get(), "Advanced Cutting Fluid");
-        add(NVItems.EXPLOSIVE_POWDER.get(), "Explosive Powder");
         add(NVItems.RESONATOR.get(), "Crystal Resonator");
         add(NVItems.PRIMITIVE_CRYSTALLINE_RESONATOR.get(), "Reinforced Resonator");
         add(NVItems.HELLFORGED_RESONATOR.get(), "Hellforged Resonator");
         add(NVItems.PRIMITIVE_FURNACE_CELL.get(), "Primitive Fuel Cell");
         add(NVItems.PRIMITIVE_HYDRATION_CELL.get(), "Primitive Hydration Cell");
-        add(NVItems.PRIMITIVE_EXPLOSIVE_CELL.get(), "Reinforced Explosive Cell");
-        add(NVItems.HELLFORGED_EXPLOSIVE_CELL.get(), "Hellforged Explosive Cell");
         add(NVItems.SANGUINE_REVERTER.get(), "Sanguine Reverter");
         add(NVItems.DEUS_CUTTING_FLUID.get(), "Deus Cutting Fluid");
-        add(NVItems.DEUS_EXPLOSIVE_CELL.get(), "Deus Explosive Cell");
         add(NVItems.DEUS_RESONATOR.get(), "Deus Resonator");
         add(NVItems.DEUS_HYDRATION_CELL.get(), "Deus Hydration Cell");
         add(NVItems.DEUS_REVERTER.get(), "Deus Reverter");

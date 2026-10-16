@@ -110,8 +110,6 @@ public class NVItemTagProvider extends ItemTagsProvider {
                 .add(NVItems.SANGUINE_REVERTER.get())
                 .add(NVItems.DEUS_REVERTER.get());
 
-        tag(NVTags.Items.EXPLOSIVES);
-
         tag(NVTags.Items.RESONATOR)
                 .add(NVItems.RESONATOR.get())
                 .add(NVItems.PRIMITIVE_CRYSTALLINE_RESONATOR.get())
@@ -141,7 +139,6 @@ public class NVItemTagProvider extends ItemTagsProvider {
 
         tag(NVTags.Items.ATHANOR_TOOL)
                 .addTag(NVTags.Items.REVERTER)
-                .addTag(NVTags.Items.EXPLOSIVES)
                 .addTag(NVTags.Items.RESONATOR)
                 .addTag(NVTags.Items.CUTTING_FLUIDS)
                 .addTag(NVTags.Items.HYDRATION)

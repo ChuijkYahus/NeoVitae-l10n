@@ -164,36 +164,17 @@ public class SanguineCrafterTests {
     }
 
     @GameTest(template = "empty_24x5x24", timeoutTicks = 300)
-    public void sanguineCrafterTabulaModeUsesOrbAndRuinaShard(GameTestHelper helper) {
+    public void sanguineCrafterTabulaModeUsesOrb(GameTestHelper helper) {
         Rig rig = build(helper);
         ItemStack orb = new ItemStack(NVItems.ORB_APPRENTICE.get());
         orb.set(NVDataComponents.BINDING, new Binding(rig.owner().getUUID(), "CrafterOwner"));
         rig.crafter().setTemplate(Mode.TABULA, template(new ItemStack(Items.WHEAT), new ItemStack(Items.SUGAR)));
         rig.crafter().inv.setStackInSlot(SanguineCrafterBlockEntity.ORB_SLOT, orb);
-        rig.crafter().inv.setStackInSlot(SanguineCrafterBlockEntity.RUINA_SLOT, new ItemStack(NVItems.SPIRITUS_RUINA_CRYSTAL_ITEM.get()));
         rig.crafter().inv.setStackInSlot(0, new ItemStack(Items.WHEAT));
         rig.crafter().inv.setStackInSlot(1, new ItemStack(Items.SUGAR));
         helper.succeedWhen(() -> {
             helper.assertTrue(outputCount(rig.crafter(), Items.BREAD) == 1, "Expected bread, status " + rig.crafter().getStatus());
             helper.assertTrue(rig.network().getCurrentEV() == 9880, "Recipe 100 EV plus 20 base, network holds " + rig.network().getCurrentEV());
-            helper.assertTrue(rig.crafter().inv.getStackInSlot(SanguineCrafterBlockEntity.RUINA_SLOT).isEmpty(), "The Ruina shard should be used");
-            helper.assertTrue(rig.crafter().getRuinaCharge() == 7, "One shard powers 8 crafts, 7 should remain, got " + rig.crafter().getRuinaCharge());
-        });
-    }
-
-    @GameTest(template = "empty_24x5x24", timeoutTicks = 120)
-    public void sanguineCrafterTabulaModeWaitsForShard(GameTestHelper helper) {
-        Rig rig = build(helper);
-        ItemStack orb = new ItemStack(NVItems.ORB_APPRENTICE.get());
-        orb.set(NVDataComponents.BINDING, new Binding(rig.owner().getUUID(), "CrafterOwner"));
-        rig.crafter().setTemplate(Mode.TABULA, template(new ItemStack(Items.WHEAT), new ItemStack(Items.SUGAR)));
-        rig.crafter().inv.setStackInSlot(SanguineCrafterBlockEntity.ORB_SLOT, orb);
-        rig.crafter().inv.setStackInSlot(0, new ItemStack(Items.WHEAT));
-        rig.crafter().inv.setStackInSlot(1, new ItemStack(Items.SUGAR));
-        helper.runAfterDelay(60, () -> {
-            helper.assertTrue(outputCount(rig.crafter(), Items.BREAD) == 0, "Nothing should craft without a Ruina shard");
-            helper.assertTrue(rig.crafter().getStatus() == Status.NO_SHARDS, "Status should be NO_SHARDS, got " + rig.crafter().getStatus());
-            helper.succeed();
         });
     }
 
@@ -203,7 +184,6 @@ public class SanguineCrafterTests {
         ItemStack gem = new ItemStack(NVItems.SPIRITUS_GEM_GREATER.get());
         gem.set(NVDataComponents.SPIRITUS_AMOUNT, 600.0);
         rig.crafter().inv.setStackInSlot(SanguineCrafterBlockEntity.GEM_SLOT, gem);
-        rig.crafter().inv.setStackInSlot(SanguineCrafterBlockEntity.INVICTUS_SLOT, new ItemStack(NVItems.SPIRITUS_INVICTUS_CRYSTAL_ITEM.get()));
         rig.crafter().inv.setStackInSlot(0, new ItemStack(NVBlocks.HELLFIRE_FORGE.item().get()));
         rig.crafter().inv.setStackInSlot(1, new ItemStack(Items.DEEPSLATE));
         rig.crafter().inv.setStackInSlot(2, new ItemStack(Items.LAPIS_LAZULI));

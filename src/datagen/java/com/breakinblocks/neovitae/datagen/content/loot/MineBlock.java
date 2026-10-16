@@ -18,12 +18,14 @@ import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
+import com.breakinblocks.neovitae.common.block.BlockShapedExplosive;
 import com.breakinblocks.neovitae.common.block.BlockTau;
 import com.breakinblocks.neovitae.common.block.dungeon.DungeonBlocks;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.util.helper.BlockWithItemHolder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,41 +36,25 @@ public class MineBlock extends BlockLootSubProvider {
         super(Set.of(), FeatureFlags.DEFAULT_FLAGS, registries);
         this.registries = registries;
         NVBlocks.BASIC_BLOCKS.getEntries().forEach(holder -> dropSelfList.add(holder.get()));
-        addDropSelf(NVBlocks.ARA_VITAE);
-        addDropSelf(NVBlocks.HELLFIRE_FORGE);
-        addDropSelf(NVBlocks.BLOOD_LANTERN);
-        addDropSelf(NVBlocks.SANDS_OF_VITAE);
-        addDropSelf(DungeonBlocks.SPIKE_TRAP);
-        addDropSelf(NVBlocks.BLANK_RITUAL_STONE);
-        addDropSelf(NVBlocks.MASTER_RITUAL_STONE);
-        addDropSelf(NVBlocks.INVERTED_MASTER_RITUAL_STONE);
-        addDropSelf(NVBlocks.RITUAL_ANCHOR);
-        addDropSelf(NVBlocks.IMPERFECT_RITUAL_STONE);
-        addDropSelf(NVBlocks.BLOOD_BATTERY);
-        addDropSelf(NVBlocks.TELEPOSER);
-        addDropSelf(NVBlocks.TABULA_VITAE);
-        addDropSelf(NVBlocks.VITAE_LINK);
-        addDropSelf(NVBlocks.ORB_FILLING_LINK);
-        addDropSelf(NVBlocks.CRYSTALLARIUM_MALEFICUM);
-        addDropSelf(NVBlocks.VAS_MALEFICUM);
-        addDropSelf(NVBlocks.SPIRIT_ACCUMULATOR);
-        addDropSelf(NVBlocks.SPIRA_INFERNALIS);
-        addDropSelf(NVBlocks.INPUT_ROUTING_NODE);
-        addDropSelf(NVBlocks.OUTPUT_ROUTING_NODE);
-        addDropSelf(NVBlocks.MASTER_ROUTING_NODE);
-        addDropSelf(NVBlocks.OMNI_ROUTING_NODE);
-        addDropSelf(NVBlocks.ROUTING_CONDUIT);
-        addDropSelf(NVBlocks.INVERSION_PILLAR);
-        addDropSelf(NVBlocks.INVERSION_PILLAR_CAP);
-        addDropSelf(NVBlocks.RAW_SPIRITUS_CRYSTAL);
-        addDropSelf(NVBlocks.SPIRITUS_RUINA_CRYSTAL);
-        addDropSelf(NVBlocks.SPIRITUS_NIHILUM_CRYSTAL);
-        addDropSelf(NVBlocks.SPIRITUS_VINDICTA_CRYSTAL);
-        addDropSelf(NVBlocks.SPIRITUS_INVICTUS_CRYSTAL);
-    }
 
-    private void addDropSelf(BlockWithItemHolder<? extends Block, ? extends BlockItem> toAdd) {
-        dropSelfList.add(toAdd.block().get());
+        Set<Block> skipAuto = new HashSet<>();
+        skipAuto.addAll(specialDropList);
+        skipAuto.addAll(inscribedRitualStones);
+        skipAuto.add(NVBlocks.DUNGEON_CONTROLLER.block().get());
+        skipAuto.add(NVBlocks.DUNGEON_SEAL.block().get());
+        skipAuto.add(NVBlocks.DUNGEON_SEAL_INACCESSIBLE.block().get());
+        skipAuto.add(NVBlocks.SPATIAL_RIFT.block().get());
+        skipAuto.add(NVBlocks.ALCHEMY_ARRAY.get());
+        skipAuto.add(NVBlocks.BLOOD_LIGHT.get());
+        skipAuto.add(NVBlocks.SPECTRAL_BLOCK.get());
+        skipAuto.add(NVBlocks.PHANTOM_BRIDGE_BLOCK.get());
+
+        NVBlocks.BLOCKS.getEntries().forEach(holder -> {
+            Block block = holder.get();
+            if (skipAuto.contains(block) || block instanceof BlockShapedExplosive) return;
+            dropSelfList.add(block);
+        });
+        dropSelfList.add(DungeonBlocks.SPIKE_TRAP.block().get());
     }
 
     private final List<Block> inscribedRitualStones = List.of(

@@ -14,7 +14,6 @@ import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.blockentity.SanguineCrafterBlockEntity;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.item.BloodOrbItem;
-import com.breakinblocks.neovitae.common.item.NVItems;
 
 public class SanguineCrafterMenu extends AbstractBlockEntityMenu<SanguineCrafterBlockEntity> {
 
@@ -26,9 +25,7 @@ public class SanguineCrafterMenu extends AbstractBlockEntityMenu<SanguineCrafter
     public static final int DATA_CHUNK_LOADING = 2;
     public static final int DATA_PARALLEL = 3;
     public static final int DATA_SPEED = 4;
-    public static final int DATA_RUINA_CHARGE = 5;
-    public static final int DATA_INVICTUS_CHARGE = 6;
-    public static final int DATA_COUNT = 7;
+    public static final int DATA_COUNT = 5;
 
     private final ContainerData data = new ContainerData() {
         private final int[] client = new int[DATA_COUNT];
@@ -42,8 +39,6 @@ public class SanguineCrafterMenu extends AbstractBlockEntityMenu<SanguineCrafter
                     case DATA_CHUNK_LOADING -> tile.getChunkLoading().ordinal();
                     case DATA_PARALLEL -> tile.getParallel();
                     case DATA_SPEED -> (int) Math.round(tile.getEffectiveSpeedMultiplier() * 100);
-                    case DATA_RUINA_CHARGE -> tile.getRuinaCharge();
-                    case DATA_INVICTUS_CHARGE -> tile.getInvictusCharge();
                     default -> 0;
                 };
             }
@@ -89,18 +84,6 @@ public class SanguineCrafterMenu extends AbstractBlockEntityMenu<SanguineCrafter
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.has(NVDataComponents.SPIRITUS_AMOUNT);
-            }
-        });
-        this.addSlot(new SlotItemHandler(tile.inv, SanguineCrafterBlockEntity.RUINA_SLOT, 158, 36) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return stack.is(NVItems.SPIRITUS_RUINA_CRYSTAL_ITEM.get());
-            }
-        });
-        this.addSlot(new SlotItemHandler(tile.inv, SanguineCrafterBlockEntity.INVICTUS_SLOT, 176, 36) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return stack.is(NVItems.SPIRITUS_INVICTUS_CRYSTAL_ITEM.get());
             }
         });
 
@@ -179,8 +162,6 @@ public class SanguineCrafterMenu extends AbstractBlockEntityMenu<SanguineCrafter
     private static int targetSlotFor(ItemStack stack) {
         if (stack.getItem() instanceof BloodOrbItem) return SanguineCrafterBlockEntity.ORB_SLOT;
         if (stack.has(NVDataComponents.SPIRITUS_AMOUNT)) return SanguineCrafterBlockEntity.GEM_SLOT;
-        if (stack.is(NVItems.SPIRITUS_RUINA_CRYSTAL_ITEM.get())) return SanguineCrafterBlockEntity.RUINA_SLOT;
-        if (stack.is(NVItems.SPIRITUS_INVICTUS_CRYSTAL_ITEM.get())) return SanguineCrafterBlockEntity.INVICTUS_SLOT;
         return -1;
     }
 

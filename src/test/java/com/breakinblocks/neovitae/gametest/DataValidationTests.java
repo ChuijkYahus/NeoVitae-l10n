@@ -2,6 +2,7 @@ package com.breakinblocks.neovitae.gametest;
 
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
@@ -10,7 +11,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -23,6 +26,7 @@ import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datamap.NVDataMaps;
 import com.breakinblocks.neovitae.common.datamap.RitualStats;
 import com.breakinblocks.neovitae.common.datamap.RoutingNodeStats;
+import com.breakinblocks.neovitae.common.block.BlockShapedExplosive;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.item.soul.SpiritusEssenceItem;
 import com.breakinblocks.neovitae.common.network.StreamPayload;
@@ -38,6 +42,46 @@ import java.util.List;
 @GameTestHolder("neovitae")
 @PrefixGameTestTemplate(false)
 public class DataValidationTests {
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 30)
+    public void sanguineBlocksAndMimicsDropThemselves(GameTestHelper helper) {
+        List<Block> blocks = List.of(
+                NVBlocks.SANGUINE_CRAFTER.block().get(),
+                NVBlocks.SANGUINE_CASING.block().get(),
+                NVBlocks.HELLFORGED_SANGUINE_CASING.block().get(),
+                NVBlocks.SWIFT_SANGUINE_CASING.block().get(),
+                NVBlocks.MIMIC.block().get(),
+                NVBlocks.ETHEREAL_MIMIC.block().get());
+        for (Block block : blocks) {
+            List<ItemStack> drops = dropsWithPickaxe(helper, block);
+            if (drops.size() != 1 || !drops.get(0).is(block.asItem()) || drops.get(0).getCount() != 1) {
+                helper.fail(BuiltInRegistries.BLOCK.getKey(block) + " should drop itself once, dropped " + drops);
+                return;
+            }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 30)
+    public void chargesDropNothingFromLoot(GameTestHelper helper) {
+        for (Block block : BuiltInRegistries.BLOCK) {
+            if (!(block instanceof BlockShapedExplosive)) continue;
+            List<ItemStack> drops = dropsWithPickaxe(helper, block);
+            if (!drops.isEmpty()) {
+                helper.fail(BuiltInRegistries.BLOCK.getKey(block) + " drops itself from code, its loot table must be empty, dropped " + drops);
+                return;
+            }
+        }
+        helper.succeed();
+    }
+
+    private static List<ItemStack> dropsWithPickaxe(GameTestHelper helper, Block block) {
+        BlockPos rel = new BlockPos(1, 1, 1);
+        helper.setBlock(rel, block.defaultBlockState());
+        BlockPos pos = helper.absolutePos(rel);
+        ServerLevel level = helper.getLevel();
+        return Block.getDrops(level.getBlockState(pos), level, pos, level.getBlockEntity(pos), null, new ItemStack(Items.NETHERITE_PICKAXE));
+    }
 
     @GameTest(template = "empty_5x5x7", timeoutTicks = 30)
     public void shippedRitualStatsDoNotConsumeBooks(GameTestHelper helper) {

@@ -144,8 +144,7 @@ public class SanguineCrafterScreen extends AbstractContainerScreen<SanguineCraft
             case SanguineCrafterBlockEntity.GROUP_INPUT -> "input";
             case SanguineCrafterBlockEntity.GROUP_OUTPUT -> "output";
             case SanguineCrafterBlockEntity.GROUP_ORB -> "orb";
-            case SanguineCrafterBlockEntity.GROUP_GEM -> "gem";
-            default -> "shards";
+            default -> "gem";
         };
         return Component.translatable("gui.neovitae.sanguine_crafter.group." + key).withStyle(ChatFormatting.YELLOW);
     }
@@ -221,8 +220,6 @@ public class SanguineCrafterScreen extends AbstractContainerScreen<SanguineCraft
                     .withColor(statusColor(status) & 0xFFFFFF));
             tooltip.add(Component.translatable("gui.neovitae.sanguine_crafter.parallel", menu.getData(SanguineCrafterMenu.DATA_PARALLEL)).withStyle(ChatFormatting.GRAY));
             tooltip.add(Component.translatable("gui.neovitae.sanguine_crafter.speed", menu.getData(SanguineCrafterMenu.DATA_SPEED)).withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("gui.neovitae.sanguine_crafter.charges",
-                    menu.getData(SanguineCrafterMenu.DATA_RUINA_CHARGE), menu.getData(SanguineCrafterMenu.DATA_INVICTUS_CHARGE)).withStyle(ChatFormatting.GRAY));
             ChunkLoading chunkLoading = ChunkLoading.byIndex(menu.getData(SanguineCrafterMenu.DATA_CHUNK_LOADING));
             tooltip.add(Component.translatable("gui.neovitae.sanguine_crafter.chunk_loading." + chunkLoading.name().toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.GRAY));
             if (!menu.tile.getOwnerName().isEmpty()) {

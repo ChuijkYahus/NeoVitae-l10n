@@ -443,7 +443,6 @@ public class NeoVitaeJEIPlugin implements IModPlugin {
                 new ItemStack(NVItems.MONSTER_SOUL_VINDICTA.get()),
                 new ItemStack(NVItems.MONSTER_SOUL_INVICTUS.get())
         ));
-        NVItems.retiredItems().forEach(item -> hidden.add(new ItemStack(item)));
         runtime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, hidden);
     }
 

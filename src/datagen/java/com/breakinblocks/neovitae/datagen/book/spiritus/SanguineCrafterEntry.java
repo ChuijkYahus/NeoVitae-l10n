@@ -79,12 +79,6 @@ public class SanguineCrafterEntry extends EntryProvider {
                 + "and that orb's network pays the recipe's EV. Hellfire Forge recipes draw on the "
                 + "[#](8B0000)Spiritus Gem[#]() in the gem slot, which drinks from the local Aura like the forge's own.");
 
-        this.page("shards", () -> BookTextPageModel.create()
-                .withText(this.context().pageText()));
-        this.pageText("Working another station's craft costs an aspect shard: [#](8B0000)Spiritus Ruina[#]() shards "
-                + "for Tabula Vitae recipes and [#](8B0000)Spiritus Invictus[#]() shards for Hellfire Forge recipes. "
-                + "One shard powers eight crafts by default. Crafting table recipes need no shards.");
-
         this.page("upgrades", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));

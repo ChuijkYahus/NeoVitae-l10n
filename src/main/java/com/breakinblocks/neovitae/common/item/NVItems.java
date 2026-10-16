@@ -43,7 +43,6 @@ import com.breakinblocks.neovitae.common.item.soul.SentientShovelItem;
 import com.breakinblocks.neovitae.common.item.soul.SentientSwordItem;
 import com.breakinblocks.neovitae.ritual.EnumRuneType;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class NVItems {
@@ -175,18 +174,14 @@ public class NVItems {
     public static final DeferredHolder<Item, ItemAthanorToolBase> BASIC_CUTTING_FLUID = BASIC_ITEMS.register("basic_cutting_fluid", () -> new ItemAthanorToolBase(64, 1, SpiritusType.RUINA));
     public static final DeferredHolder<Item, ItemAthanorToolBase> INTERMEDIATE_CUTTING_FLUID = BASIC_ITEMS.register("intermediate_cutting_fluid", () -> new ItemAthanorToolBase(512, 1.5, SpiritusType.RUINA));
     public static final DeferredHolder<Item, ItemAthanorToolBase> ADVANCED_CUTTING_FLUID = BASIC_ITEMS.register("advanced_cutting_fluid", () -> new ItemAthanorToolBase(4096, 2, 2, SpiritusType.RUINA));
-    public static final DeferredHolder<Item, ItemAthanorToolBase> EXPLOSIVE_POWDER = BASIC_ITEMS.register("explosive_powder", () -> new ItemAthanorToolBase(64, 1, SpiritusType.NIHILUM));
     public static final DeferredHolder<Item, ItemAthanorToolBase> RESONATOR = BASIC_ITEMS.register("resonator", () -> new ItemAthanorToolBase(64, 1, SpiritusType.VINDICTA));
     public static final DeferredHolder<Item, NVGuideBookItem> GUIDE_BOOK = BASIC_ITEMS.register("guide_book", NVGuideBookItem::new);
     public static final DeferredHolder<Item, ItemAthanorToolBase> SANGUINE_REVERTER = BASIC_ITEMS.register("sanguine_reverter", () -> new ItemAthanorToolBase(32, 2, SpiritusType.INVICTUS));
     public static final DeferredHolder<Item, ItemAthanorToolBase> PRIMITIVE_FURNACE_CELL = BASIC_ITEMS.register("furnacecell_primitive", () -> new ItemAthanorToolBase(128, 3));
-    public static final DeferredHolder<Item, ItemAthanorToolBase> PRIMITIVE_EXPLOSIVE_CELL = BASIC_ITEMS.register("primitive_explosive_cell", () -> new ItemAthanorToolBase(256, 1.5, SpiritusType.NIHILUM));
     public static final DeferredHolder<Item, ItemAthanorToolBase> PRIMITIVE_HYDRATION_CELL = BASIC_ITEMS.register("primitive_hydration_cell", () -> new ItemAthanorToolBase(128, 1.5));
     public static final DeferredHolder<Item, ItemAthanorToolBase> PRIMITIVE_CRYSTALLINE_RESONATOR = BASIC_ITEMS.register("primitive_crystalline_resonator", () -> new ItemAthanorToolBase(256, 1.5, SpiritusType.VINDICTA));
-    public static final DeferredHolder<Item, ItemAthanorToolBase> HELLFORGED_EXPLOSIVE_CELL = BASIC_ITEMS.register("hellforged_explosive_cell", () -> new ItemAthanorToolBase(1024, 2, SpiritusType.NIHILUM));
     public static final DeferredHolder<Item, ItemAthanorToolBase> HELLFORGED_RESONATOR = BASIC_ITEMS.register("hellforged_resonator", () -> new ItemAthanorToolBase(1024, 2, 2, SpiritusType.VINDICTA));
     public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_CUTTING_FLUID = BASIC_ITEMS.register("deus_cutting_fluid", () -> new ItemDeusAthanorTool(2, 2, SpiritusType.RUINA));
-    public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_EXPLOSIVE_CELL = BASIC_ITEMS.register("deus_explosive_cell", () -> new ItemDeusAthanorTool(2, 1, SpiritusType.NIHILUM));
     public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_RESONATOR = BASIC_ITEMS.register("deus_resonator", () -> new ItemDeusAthanorTool(2, 2, SpiritusType.VINDICTA));
     public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_HYDRATION_CELL = BASIC_ITEMS.register("deus_hydration_cell", () -> new ItemDeusAthanorTool(1.5, 1, SpiritusType.RAW));
     public static final DeferredHolder<Item, ItemDeusAthanorTool> DEUS_REVERTER = BASIC_ITEMS.register("deus_reverter", () -> new ItemDeusAthanorTool(2, 1, SpiritusType.INVICTUS));
@@ -493,10 +488,6 @@ public class NVItems {
     public static final DeferredHolder<Item, ArrayEffectItem> ARRAY_LIQUIFIED_EXPERIENCE = ARRAY_ITEMS.register("array_liquified_experience", () -> new ArrayEffectItem(AlchemyArrayEffectType.LIQUIFIED_EXPERIENCE));
     public static final DeferredHolder<Item, ArrayEffectItem> ARRAY_MINER = ARRAY_ITEMS.register("array_miner", () -> new ArrayEffectItem(AlchemyArrayEffectType.MINER));
     public static final DeferredHolder<Item, ArrayEffectItem> ARRAY_ENDER_SEVER = ARRAY_ITEMS.register("array_ender_sever", () -> new ArrayEffectItem(AlchemyArrayEffectType.ENDER_SEVER));
-
-    public static List<Item> retiredItems() {
-        return List.of(EXPLOSIVE_POWDER.get(), PRIMITIVE_EXPLOSIVE_CELL.get(), HELLFORGED_EXPLOSIVE_CELL.get(), DEUS_EXPLOSIVE_CELL.get());
-    }
 
     public static void register(IEventBus modBus) {
         BASIC_ITEMS.register(modBus);

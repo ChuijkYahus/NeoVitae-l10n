@@ -41,7 +41,6 @@ public class NVTags {
 
         public static final TagKey<Item> REVERTER = withParent(ATHANOR_TOOL, bm("reverter"));
         public static final TagKey<Item> RESONATOR = withParent(ATHANOR_TOOL, bm("resonator"));
-        public static final TagKey<Item> EXPLOSIVES = withParent(ATHANOR_TOOL, bm("explosives"));
         public static final TagKey<Item> CUTTING_FLUIDS = withParent(ATHANOR_TOOL, bm("cutting_fluids"));
         public static final TagKey<Item> HYDRATION = withParent(ATHANOR_TOOL, bm("hydration"));
 

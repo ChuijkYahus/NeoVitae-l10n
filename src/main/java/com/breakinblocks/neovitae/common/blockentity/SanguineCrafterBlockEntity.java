@@ -96,7 +96,7 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
 
     public enum Status {
         NOT_FORMED, NO_OWNER, DISABLED, IDLE, NO_TEMPLATE, NO_RECIPE, MISSING_INGREDIENTS, NO_ORB, TIER_TOO_LOW,
-        NOT_ENOUGH_EV, NOT_ENOUGH_SPIRITUS, NO_SHARDS, OUTPUT_FULL, LIMIT_REACHED, CRAFTING;
+        NOT_ENOUGH_EV, NOT_ENOUGH_SPIRITUS, OUTPUT_FULL, LIMIT_REACHED, CRAFTING;
 
         private static final Status[] VALUES = values();
 
@@ -121,17 +121,14 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
     public static final int OUTPUT_COUNT = 9;
     public static final int ORB_SLOT = 27;
     public static final int GEM_SLOT = 28;
-    public static final int RUINA_SLOT = 29;
-    public static final int INVICTUS_SLOT = 30;
-    public static final int SLOT_COUNT = 31;
+    public static final int SLOT_COUNT = 29;
     public static final int TEMPLATE_SIZE = 9;
 
     public static final int GROUP_INPUT = 0;
     public static final int GROUP_OUTPUT = 1;
     public static final int GROUP_ORB = 2;
     public static final int GROUP_GEM = 3;
-    public static final int GROUP_SHARDS = 4;
-    public static final int GROUP_COUNT = 5;
+    public static final int GROUP_COUNT = 4;
 
     private static final int STRUCTURE_CHECK_INTERVAL = 20;
     private static final int ACTIVE_HOLD_TICKS = 20;
@@ -139,7 +136,6 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
     private static final boolean[][] DEFAULT_SIDE_CONFIG = new boolean[][] {
             { false, true, true, true, true, true },
             { true, false, false, false, false, false },
-            { false, false, false, false, false, false },
             { false, false, false, false, false, false },
             { false, false, false, false, false, false }
     };
@@ -169,14 +165,13 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
     private int progress = 0;
     private final RitualAcceleration ritualAcceleration = new RitualAcceleration();
     private int craftTime = 0;
-    private int ruinaCharge = 0;
-    private int invictusCharge = 0;
     private Status status = Status.NOT_FORMED;
     private ChunkLoading chunkLoading = ChunkLoading.DISABLED;
     private int structureTimer = 0;
     private int activeTicks = 0;
     @Nullable
     private RecipeHolder<CraftingRecipe> cachedCraftingRecipe;
+    private final List<ItemStack> displaced = new ArrayList<>();
 
     public int activeGroup = -1;
 
@@ -190,10 +185,21 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
             return switch (index) {
                 case ORB_SLOT -> stack.getItem() instanceof BloodOrbItem;
                 case GEM_SLOT -> stack.has(NVDataComponents.SPIRITUS_AMOUNT);
-                case RUINA_SLOT -> stack.is(NVItems.SPIRITUS_RUINA_CRYSTAL_ITEM.get());
-                case INVICTUS_SLOT -> stack.is(NVItems.SPIRITUS_INVICTUS_CRYSTAL_ITEM.get());
                 default -> true;
             };
+        }
+
+        @Override
+        public void deserializeNBT(HolderLookup.Provider registries, CompoundTag nbt) {
+            super.deserializeNBT(registries, nbt);
+            if (stacks.size() <= SLOT_COUNT) return;
+            List<ItemStack> loaded = new ArrayList<>(stacks);
+            setSize(SLOT_COUNT);
+            for (int i = 0; i < loaded.size(); i++) {
+                ItemStack stack = loaded.get(i);
+                if (i < SLOT_COUNT) stacks.set(i, stack);
+                else if (!stack.isEmpty()) displaced.add(stack);
+            }
         }
 
         @Override
@@ -206,7 +212,7 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
 
     private record Plan(ItemStack result, List<ItemStack> byproducts, List<Consume> consumes,
                         int recipeEv, @Nullable Anima recipeNetwork, double gemDrain, boolean craftingGem,
-                        @Nullable Mode shardMode, int ticks, @Nullable ItemStack[] eventInputs) {}
+                        @Nullable Mode station, int ticks, @Nullable ItemStack[] eventInputs) {}
 
     public SanguineCrafterBlockEntity(BlockPos pos, BlockState state) {
         super(NVTiles.SANGUINE_CRAFTER_TYPE.get(), pos, state);
@@ -217,8 +223,7 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
         if (slot >= OUTPUT_START && slot < OUTPUT_START + OUTPUT_COUNT) return GROUP_OUTPUT;
         return switch (slot) {
             case ORB_SLOT -> GROUP_ORB;
-            case GEM_SLOT -> GROUP_GEM;
-            default -> GROUP_SHARDS;
+            default -> GROUP_GEM;
         };
     }
 
@@ -250,6 +255,12 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
     }
 
     private void serverTick(ServerLevel level) {
+        if (!displaced.isEmpty()) {
+            displaced.forEach(this::insertOutput);
+            displaced.clear();
+            setChanged();
+        }
+
         if (--structureTimer <= 0) {
             structureTimer = STRUCTURE_CHECK_INTERVAL;
             checkStructure(level);
@@ -685,10 +696,6 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
 
     @Nullable
     private Plan finish(Plan plan) {
-        if (plan.shardMode() != null && chargeFor(plan.shardMode()) <= 0 && inv.getStackInSlot(shardSlotFor(plan.shardMode())).isEmpty()) {
-            status = Status.NO_SHARDS;
-            return null;
-        }
         Anima ownerNetwork = owner == null ? null : AnimaHelper.getAnima(owner);
         int baseEv = NeoVitae.SERVER_CONFIG.SANGUINE_CRAFTER_EV_PER_CRAFT.get();
         if (baseEv > 0 && (ownerNetwork == null || ownerNetwork.getCurrentEV() < baseEv)) {
@@ -714,14 +721,6 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
             return null;
         }
         return plan;
-    }
-
-    private int chargeFor(Mode shardMode) {
-        return shardMode == Mode.TABULA ? ruinaCharge : invictusCharge;
-    }
-
-    private static int shardSlotFor(Mode shardMode) {
-        return shardMode == Mode.TABULA ? RUINA_SLOT : INVICTUS_SLOT;
     }
 
     private int countInOutput(ItemStack result) {
@@ -763,7 +762,7 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
     private void execute(ServerLevel level, Plan plan) {
         ItemStack result = plan.result();
         if (plan.eventInputs() != null) {
-            NeoVitaeCraftedEvent event = plan.shardMode() == Mode.TABULA
+            NeoVitaeCraftedEvent event = plan.station() == Mode.TABULA
                     ? new NeoVitaeCraftedEvent.AlchemyTable(result, plan.eventInputs())
                     : new NeoVitaeCraftedEvent.Forge(result, plan.eventInputs());
             NeoForge.EVENT_BUS.post(event);
@@ -791,17 +790,6 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
             }
         }
 
-        if (plan.shardMode() != null) {
-            if (chargeFor(plan.shardMode()) <= 0) {
-                int slot = shardSlotFor(plan.shardMode());
-                ItemStack shard = inv.getStackInSlot(slot);
-                shard.shrink(1);
-                inv.setStackInSlot(slot, shard);
-                addCharge(plan.shardMode(), NeoVitae.SERVER_CONFIG.SANGUINE_CRAFTER_CRAFTS_PER_SHARD.get());
-            }
-            addCharge(plan.shardMode(), -1);
-        }
-
         int baseEv = NeoVitae.SERVER_CONFIG.SANGUINE_CRAFTER_EV_PER_CRAFT.get();
         if (baseEv > 0 && owner != null) {
             AnimaHelper.getAnima(owner).syphon(AnimaTicket.create(baseEv));
@@ -814,11 +802,6 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
         for (ItemStack byproduct : plan.byproducts()) {
             insertOutput(byproduct);
         }
-    }
-
-    private void addCharge(Mode shardMode, int amount) {
-        if (shardMode == Mode.TABULA) ruinaCharge += amount;
-        else invictusCharge += amount;
     }
 
     private void damageCuttingFluid(int slot, ItemStack stack) {
@@ -980,14 +963,6 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
         return swiftCasings;
     }
 
-    public int getRuinaCharge() {
-        return ruinaCharge;
-    }
-
-    public int getInvictusCharge() {
-        return invictusCharge;
-    }
-
     @Override
     public SlotSideConfig getSideConfig() {
         return sideConfig;
@@ -1021,8 +996,6 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
         swiftCasings = tag.getInt("swiftCasings");
         progress = tag.getInt("progress");
         craftTime = tag.getInt("craftTime");
-        ruinaCharge = tag.getInt("ruinaCharge");
-        invictusCharge = tag.getInt("invictusCharge");
     }
 
     @Override
@@ -1044,8 +1017,6 @@ public class SanguineCrafterBlockEntity extends BaseBlockEntity implements MenuP
         tag.putInt("swiftCasings", swiftCasings);
         tag.putInt("progress", progress);
         tag.putInt("craftTime", craftTime);
-        tag.putInt("ruinaCharge", ruinaCharge);
-        tag.putInt("invictusCharge", invictusCharge);
     }
 
     @Override

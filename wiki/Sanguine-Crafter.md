@@ -21,10 +21,10 @@ Lay a 3x3 floor of casings and build a ring of eight on top of it. The **Sanguin
 | --- | --- |
 | Template grid (left, 3x3) | The recipe to craft. Click an item in, or press **+** on a recipe in JEI. Right-click a cell to clear it. |
 | Output buffer (center, 3x3) | Finished items and leftovers such as empty buckets. |
-| Orb, gem and shard slots (right) | Fuel for Tabula Vitae and Hellfire Forge recipes. |
+| Orb and gem slots (right) | Fuel for Tabula Vitae and Hellfire Forge recipes. |
 | Side buttons | Which faces reach the selected slot group (see [Automation](#automation)). |
 | Mode, redstone and limit buttons | See below. |
-| Status line | Why the crafter is waiting. Hover over it or the arrow for parallel crafts, speed, shard charge and chunk loading. |
+| Status line | Why the crafter is waiting. Hover over it or the arrow for parallel crafts, speed and chunk loading. |
 | Input buffer (18 slots) | Ingredients, in any order. |
 
 ## Modes
@@ -43,10 +43,10 @@ The template pulls the exact items shown in it from the buffer, so put the same 
 | Recipe | Needs | Pays |
 | --- | --- | --- |
 | Crafting table | Nothing extra | 20 EV from the owner's network |
-| Tabula Vitae | A bound Blood Orb of the recipe's tier in the orb slot, and a Spiritus Ruina shard | 20 EV from the owner, plus the recipe's EV from the orb's network |
-| Hellfire Forge | A Spiritus Gem holding the recipe's minimum in the gem slot (or a gem among the ingredients, as in the forge), and a Spiritus Invictus shard | 20 EV from the owner, plus the recipe's drain from the gem |
+| Tabula Vitae | A bound Blood Orb of the recipe's tier in the orb slot | 20 EV from the owner, plus the recipe's EV from the orb's network |
+| Hellfire Forge | A Spiritus Gem holding the recipe's minimum in the gem slot (or a gem among the ingredients, as in the forge) | 20 EV from the owner, plus the recipe's drain from the gem |
 
-One aspect shard powers **8 crafts**. The gem in the gem slot refills from the chunk's Aura at the same rate as the Hellfire Forge's gem. A Cutting Fluid used as a Tabula Vitae ingredient loses a use instead of being consumed, as it does in the table.
+The gem in the gem slot refills from the chunk's Aura at the same rate as the Hellfire Forge's gem. A Cutting Fluid used as a Tabula Vitae ingredient loses a use instead of being consumed, as it does in the table.
 
 ## Upgrades
 
@@ -59,7 +59,7 @@ At the default base speed of 5x, a crafting table recipe takes 4 ticks, a Hellfi
 
 ## Automation
 
-Every casing and the crafter itself expose the crafter's inventory, so pipes and nodes can attach anywhere on the structure. A pipe in the center block reaches the casings around and below it; each casing sees it on the face that touches it, so the casing below the center counts it as its top face, the casing west of it as its east face, and so on. Slots are configured per face in five groups. Click an empty slot to select its group, then toggle the side buttons: green sides reach that group, red sides do not.
+Every casing and the crafter itself expose the crafter's inventory, so pipes and nodes can attach anywhere on the structure. A pipe in the center block reaches the casings around and below it; each casing sees it on the face that touches it, so the casing below the center counts it as its top face, the casing west of it as its east face, and so on. Slots are configured per face in four groups. Click an empty slot to select its group, then toggle the side buttons: green sides reach that group, red sides do not.
 
 | Group | Default faces |
 | --- | --- |
@@ -67,7 +67,6 @@ Every casing and the crafter itself expose the crafter's inventory, so pipes and
 | Output buffer | Bottom |
 | Orb slot | None |
 | Gem slot | None |
-| Shard slots | None |
 
 With the output buffer selected, **right-click** a side button to push results out of that side of the structure into whatever inventory is there. The pushing side gets a gold border. Right-click it again to stop.
 
@@ -78,7 +77,7 @@ The **redstone** button switches between ignoring redstone, running only with a 
 The crafter works as an ordinary machine behind a pattern provider:
 
 1. Use **Auto** mode, so one crafter handles every Tabula Vitae and Hellfire Forge pattern pushed into it.
-2. Keep the orb, gem and shard groups off the provider's face. AE2's blocking mode checks the machine through that face before each push.
+2. Keep the orb and gem groups off the provider's face. AE2's blocking mode checks the machine through that face before each push.
 3. Turn on **blocking mode** on the provider. Recipes only match their exact ingredients, so two patterns pushed at once would stall the crafter.
 4. Push results out of the provider's face. An AE2 pattern provider takes them straight back into the network.
 
@@ -95,7 +94,6 @@ All options are in the `sanguine_crafter` section of the server config.
 | Option | Default | Effect |
 | --- | --- | --- |
 | `ev_per_craft` | 20 | EV taken from the owner's network for every craft |
-| `crafts_per_shard` | 8 | Tabula Vitae or Hellfire Forge crafts powered by one shard |
 | `crafting_ticks` | 20 | Time of a crafting table recipe before speed multipliers |
 | `forge_ticks` | 100 | Time of a Hellfire Forge recipe before speed multipliers |
 | `base_speed` | 5.0 | Speed multiplier on every craft |
@@ -116,6 +114,5 @@ All options are in the `sanguine_crafter` section of the server config.
 | Needs a bound Blood Orb / Blood Orb tier too low | The Tabula Vitae recipe needs a better orb in the orb slot |
 | Not enough EV | The owner's network, or the orb's, cannot pay |
 | Gem lacks Spiritus | The gem holds less than the recipe's minimum |
-| Needs an aspect shard | Out of Ruina or Invictus shards |
 | Output full / Output limit reached | Empty the output buffer, or raise the limit |
 | Stopped by redstone | The redstone setting is holding it |

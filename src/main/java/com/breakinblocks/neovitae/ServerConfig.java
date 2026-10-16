@@ -52,7 +52,6 @@ public class ServerConfig {
     public final ModConfigSpec.IntValue TORMENT_NEXUS_HORIZONTAL_RANGE;
     public final ModConfigSpec.IntValue TORMENT_NEXUS_VERTICAL_RANGE;
     public final ModConfigSpec.IntValue SANGUINE_CRAFTER_EV_PER_CRAFT;
-    public final ModConfigSpec.IntValue SANGUINE_CRAFTER_CRAFTS_PER_SHARD;
     public final ModConfigSpec.IntValue SANGUINE_CRAFTER_CRAFTING_TICKS;
     public final ModConfigSpec.IntValue SANGUINE_CRAFTER_FORGE_TICKS;
     public final ModConfigSpec.DoubleValue SANGUINE_CRAFTER_BASE_SPEED;
@@ -255,9 +254,6 @@ public class ServerConfig {
         SANGUINE_CRAFTER_EV_PER_CRAFT = builder
                 .comment("EV drawn from the owner's network for every item crafted, on top of any Tabula Vitae recipe cost.")
                 .defineInRange("ev_per_craft", 20, 0, 1000000);
-        SANGUINE_CRAFTER_CRAFTS_PER_SHARD = builder
-                .comment("Tabula Vitae or Hellfire Forge crafts powered by one Spiritus Ruina or Spiritus Invictus shard.")
-                .defineInRange("crafts_per_shard", 8, 1, 1024);
         SANGUINE_CRAFTER_CRAFTING_TICKS = builder
                 .comment("Ticks one crafting table recipe takes before Swift Sanguine Casings are applied.")
                 .defineInRange("crafting_ticks", 20, 1, 72000);
