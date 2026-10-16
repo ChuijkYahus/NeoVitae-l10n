@@ -27,6 +27,9 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 /**
  * Handles Blood Siphon and Blood Shield attributes.
  *
@@ -35,6 +38,9 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
  */
 @EventBusSubscriber(modid = NeoVitae.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class BloodSiphonHandler {
+    private static final int STREAM_INTERVAL = 10;
+    private static final int STREAM_RANGE = 32;
+    private static final Map<Player, Long> LAST_STREAM = new WeakHashMap<>();
 
     /**
      * Blood Siphon — on dealing damage, gain LP based on the attribute value.
@@ -72,15 +78,22 @@ public class BloodSiphonHandler {
         }
 
         attackerNetwork.add(AnimaTicket.create(lpAmount), Integer.MAX_VALUE);
-        attacker.level().playSound(null, attacker.blockPosition(), NVSounds.BLOOD_SIPHON.get(), SoundSource.PLAYERS, 0.3f, 1.0f);
-        if (attacker.level() instanceof ServerLevel serverLevel) {
+        if (attacker.level() instanceof ServerLevel serverLevel && streamReady(attacker, serverLevel.getGameTime())) {
+            serverLevel.playSound(null, attacker.blockPosition(), NVSounds.BLOOD_SIPHON.get(), SoundSource.PLAYERS, 0.3f, 1.0f);
             StreamEffect.builder(event.getEntity()).toTracked(attacker)
                     .color(0x990011).scale(0.05f).speed(2.0f).gravity(0.25f)
                     .wobble(0.03f).wobbleFrequency(0.8f)
                     .spiralInto(true).spiralRadius(0.35f).spiralSpeed(0.35f)
                     .approachHeight(1.0f).alphaStart(0.08f).alphaEnd(0.95f)
-                    .build().sendToNearby(serverLevel, attacker.blockPosition(), 128);
+                    .build().sendToNearby(serverLevel, attacker.blockPosition(), STREAM_RANGE);
         }
+    }
+
+    private static boolean streamReady(Player attacker, long time) {
+        Long last = LAST_STREAM.get(attacker);
+        if (last != null && time >= last && time - last < STREAM_INTERVAL) return false;
+        LAST_STREAM.put(attacker, time);
+        return true;
     }
 
     /**
