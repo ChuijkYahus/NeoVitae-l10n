@@ -45,9 +45,9 @@ public class BookHellfireForgeRecipePageRenderer extends BookRecipePageRenderer<
         int rows = (count + 2) / 3;
 
         int slotSize = 18;
-        int gridWidth = cols * slotSize;
-        int totalWidth = gridWidth + 2 + 16 + 2 + 22;
-        int startX = recipeX + (BookEntryScreen.PAGE_WIDTH - totalWidth) / 2;
+        int gridWidth = (cols - 1) * slotSize + 22;
+        int totalWidth = gridWidth + 2 + 18 + 2 + 22;
+        int startX = (BookEntryScreen.PAGE_WIDTH - totalWidth) / 2;
 
         for (int i = 0; i < count; i++) {
             int col = i % 3;

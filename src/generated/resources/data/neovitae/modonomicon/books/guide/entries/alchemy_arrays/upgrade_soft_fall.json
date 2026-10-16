@@ -21,6 +21,17 @@
       },
       "text": "book.neovitae.guide.alchemy_arrays.upgrade_soft_fall.intro.text",
       "title": "book.neovitae.guide.alchemy_arrays.upgrade_soft_fall.intro.title"
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.alchemy_arrays.upgrade_soft_fall.details.text",
+      "title": "",
+      "use_markdown_in_title": false
     }
   ],
   "parents": [

@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -22,8 +23,11 @@ public class GiftOfIgnisUpgradeEntry extends EntryProvider {
         this.pageTitle("Gift of Ignis");
         this.pageText("The armor absorbs the memory of flame and learns to shield you from it. Grants "
                 + "[#](4A0080)Fire Resistance[#](). Higher levels extend the duration and reduce the cooldown "
-                + "between activations.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Being on fire. [#](2E8B57)A Potion of Fire Resistance is "
+                + "between activations.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Being on fire. [#](2E8B57)A Potion of Fire Resistance is "
                 + "highly recommended during training.[#]()\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 5");
     }

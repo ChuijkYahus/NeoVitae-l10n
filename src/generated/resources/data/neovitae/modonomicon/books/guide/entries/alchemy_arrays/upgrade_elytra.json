@@ -29,6 +29,17 @@
         "type": "modonomicon:none"
       },
       "show_title_separator": true,
+      "text": "book.neovitae.guide.alchemy_arrays.upgrade_elytra.details.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
       "text": "book.neovitae.guide.alchemy_arrays.upgrade_elytra.recipe.text",
       "title": "",
       "use_markdown_in_title": false

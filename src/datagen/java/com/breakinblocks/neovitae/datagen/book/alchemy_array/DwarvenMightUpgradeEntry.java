@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -22,8 +23,11 @@ public class DwarvenMightUpgradeEntry extends EntryProvider {
         this.pageTitle("Dwarven Might");
         this.pageText("The armor recognizes the rhythm of the pick. Mining identical blocks in succession "
                 + "accelerates your speed, and at higher levels a surge of [#](4A0080)Haste[#]() follows each "
-                + "broken block.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Mining blocks.\\\n\\\n"
+                + "broken block.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Mining blocks.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 10");
     }
 

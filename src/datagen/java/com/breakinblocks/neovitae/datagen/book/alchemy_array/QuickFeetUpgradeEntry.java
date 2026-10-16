@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -21,8 +22,11 @@ public class QuickFeetUpgradeEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Quick Feet");
         this.pageText("The armor attunes itself to the cadence of your stride, propelling you ever faster. "
-                + "Increases movement speed up to 150%%.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Running.\\\n\\\n"
+                + "Increases movement speed up to 150%%.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Running.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 10");
     }
 

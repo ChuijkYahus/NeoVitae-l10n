@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -21,8 +22,11 @@ public class FierceStrikeUpgradeEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Fierce Strike");
         this.pageText("The armor studies each blow you deliver and sharpens your killing edge in response. "
-                + "Melee attacks deal progressively greater damage.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Performing melee attacks.\\\n\\\n"
+                + "Melee attacks deal progressively greater damage.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Performing melee attacks.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 10");
     }
 

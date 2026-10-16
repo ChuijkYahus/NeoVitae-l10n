@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -21,8 +22,11 @@ public class RepairUpgradeEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Repair");
         this.pageText("The armor develops a regenerative instinct, periodically mending a random piece of "
-                + "worn equipment every 100 ticks.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Repairing the chestplate through any means, anvil, "
+                + "worn equipment every 100 ticks.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Repairing the chestplate through any means, anvil, "
                 + "[#](8B0000)Mending[#]() enchantment, or otherwise.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 1");
     }

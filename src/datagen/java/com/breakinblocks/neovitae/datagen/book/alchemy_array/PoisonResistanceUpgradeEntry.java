@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -21,8 +22,11 @@ public class PoisonResistanceUpgradeEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Poison Resistance");
         this.pageText("The armor develops an antivenom response, automatically purging Poison from your "
-                + "blood. Higher levels shorten the cooldown between cures.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Being poisoned.\\\n\\\n"
+                + "blood. Higher levels shorten the cooldown between cures.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Being poisoned.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 5");
     }
 

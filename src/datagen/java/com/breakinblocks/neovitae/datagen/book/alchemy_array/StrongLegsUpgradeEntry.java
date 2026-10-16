@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -21,8 +22,11 @@ public class StrongLegsUpgradeEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Strong Legs");
         this.pageText("The armor amplifies the power of your legs, propelling you higher with each leap. "
-                + "Grants up to 7.5 additional blocks of jump height and 83%% fall resistance.\\\n\\\n"
-                + "[#](2E8B57)Hold sneak while jumping to suppress the boost.[#]()\\\n\\\n"
+                + "Grants up to 7.5 additional blocks of jump height and 83%% fall resistance.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](2E8B57)Hold sneak while jumping to suppress the boost.[#]()\\\n\\\n"
                 + "[#](B8860B)Trained by[#](): Jumping.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 10");
     }

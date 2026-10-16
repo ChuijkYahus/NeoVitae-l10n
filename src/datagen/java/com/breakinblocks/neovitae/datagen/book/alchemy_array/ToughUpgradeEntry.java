@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -21,8 +22,11 @@ public class ToughUpgradeEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Tough");
         this.pageText("The armor hardens against melee strikes, explosions, and all forms of close-range "
-                + "violence. Protection against non-projectile harm increases with each wound endured.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Taking damage from sources other than projectiles.\\\n\\\n"
+                + "violence. Protection against non-projectile harm increases with each wound endured.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Taking damage from sources other than projectiles.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 10");
     }
 

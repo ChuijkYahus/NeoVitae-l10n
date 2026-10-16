@@ -4,6 +4,7 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProviderBase;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
@@ -22,8 +23,11 @@ public class SkilledUpgradeEntry extends EntryProvider {
         this.pageTitle("Skilled");
         this.pageText("The armor sharpens your fortune, tilting fate itself in your favor. Grants "
                 + "+2 [#](4A0080)Luck[#]() per level, up to +10, improving the loot you pull from "
-                + "chests and the fish you draw from the water.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Never taught through deeds. Apply a [#](8B0000)Skilled "
+                + "chests and the fish you draw from the water.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Never taught through deeds. Apply a [#](8B0000)Skilled "
                 + "Tome[#]() directly to your worn Sentient set; find them in the loot of "
                 + "[#](8B0000)The Mines[#]() or extract them from another chestplate.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 5");

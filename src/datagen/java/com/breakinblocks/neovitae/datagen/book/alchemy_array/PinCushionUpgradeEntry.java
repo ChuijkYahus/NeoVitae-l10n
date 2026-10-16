@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -22,8 +23,11 @@ public class PinCushionUpgradeEntry extends EntryProvider {
         this.pageTitle("Pin Cushion");
         this.pageText("The armor hardens against projectile impacts, blunting the force of arrows and "
                 + "other ranged attacks. Each level absorbs more of the blow, reducing incoming projectile "
-                + "damage by up to [#](4A0080)80%%[#]() at maximum.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Being struck by projectiles.\\\n\\\n"
+                + "damage by up to [#](4A0080)80%%[#]() at maximum.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Being struck by projectiles.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 10");
     }
 

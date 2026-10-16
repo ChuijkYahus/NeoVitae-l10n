@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -21,8 +22,11 @@ public class GildedUpgradeEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Gilded");
         this.pageText("The armor takes on a subtle golden sheen, marking you as an ally to the Piglins "
-                + "of the Nether. They regard you as they would any creature wearing gold.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Handing a [#](8B0000)Gold Ingot[#]() directly to a Piglin. "
+                + "of the Nether. They regard you as they would any creature wearing gold.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Handing a [#](8B0000)Gold Ingot[#]() directly to a Piglin. "
                 + "It must be given by hand, not dropped.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 1");
     }

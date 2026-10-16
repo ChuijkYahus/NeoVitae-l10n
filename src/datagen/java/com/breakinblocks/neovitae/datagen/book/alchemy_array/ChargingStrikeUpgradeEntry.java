@@ -5,6 +5,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.Items;
 
@@ -21,8 +22,11 @@ public class ChargingStrikeUpgradeEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Charging Strike");
         this.pageText("The armor learns to channel your momentum into devastating force. Sprinting attacks "
-                + "deal increased damage and knockback, up to +50%%.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Dealing damage while sprinting.\\\n\\\n"
+                + "deal increased damage and knockback, up to +50%%.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Dealing damage while sprinting.\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 5");
     }
 

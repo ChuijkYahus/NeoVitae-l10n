@@ -43,7 +43,7 @@ public class BookFlaskRecipePageRenderer extends BookRecipePageRenderer<FlaskRec
         List<Ingredient> ingredients = recipe.getInput();
         int count = ingredients.size();
         int totalWidth = (count * 22) + 4 + 18 + 2 + 22;
-        int startX = recipeX + (BookEntryScreen.PAGE_WIDTH - totalWidth) / 2;
+        int startX = (BookEntryScreen.PAGE_WIDTH - totalWidth) / 2;
 
         for (int i = 0; i < count; i++) {
             int slotX = startX + (i * 22);

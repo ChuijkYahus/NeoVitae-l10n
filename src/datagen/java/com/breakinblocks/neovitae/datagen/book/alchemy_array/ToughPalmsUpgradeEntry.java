@@ -6,6 +6,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.neovitae.datagen.book.page.BookSentientUpgradeTablePageModel;
 import com.breakinblocks.neovitae.common.item.NVItems;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.mojang.datafixers.util.Pair;
 
 public class ToughPalmsUpgradeEntry extends EntryProvider {
@@ -22,8 +23,11 @@ public class ToughPalmsUpgradeEntry extends EntryProvider {
         this.pageTitle("Tough Palms");
         this.pageText("The armor toughens your hands against the bite of the sacrificial blade, yielding "
                 + "more [#](4A0080)Essentia Vitae[#]() from each offering. Grants up to 150%% bonus to "
-                + "self-sacrifice.\\\n\\\n"
-                + "[#](B8860B)Trained by[#](): Bleeding into your [#](8B0000)Orb of Vitae[#]().\\\n\\\n"
+                + "self-sacrifice.");
+
+        this.page("details", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("[#](B8860B)Trained by[#](): Bleeding into your [#](8B0000)Orb of Vitae[#]().\\\n\\\n"
                 + "[#](B8860B)Maximum level[#](): 10");
     }
 
