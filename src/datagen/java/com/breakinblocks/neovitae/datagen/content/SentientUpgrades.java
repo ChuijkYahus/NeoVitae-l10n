@@ -383,7 +383,7 @@ public class SentientUpgrades {
                         .level(800, 12)
                         .level(1300, 20)
                         .level(2500, 35)
-                        .level(3800, 29)
+                        .level(3800, 49)
                         .level(5000, 78)
                         .level(7000, 110)
                         .level(9200, 160)
