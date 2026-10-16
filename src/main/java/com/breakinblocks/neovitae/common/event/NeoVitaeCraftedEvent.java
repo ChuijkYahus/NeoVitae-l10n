@@ -37,4 +37,11 @@ public abstract class NeoVitaeCraftedEvent extends Event {
             this.output = output;
         }
     }
+
+    public static class AlchemyTable extends NeoVitaeCraftedEvent {
+        public AlchemyTable(ItemStack output, ItemStack[] inputs) {
+            this.inputs = inputs;
+            this.output = output;
+        }
+    }
 }
