@@ -360,6 +360,15 @@ public class VitaeLinkBlockEntity extends BaseBlockEntity {
         return crafting;
     }
 
+    public int getProgress() {
+        return progress;
+    }
+
+    public int getEssenceRequired() {
+        AraVitaeRecipe recipe = getRecipe();
+        return recipe == null ? 0 : recipe.getTotalBlood() * inv.getStackInSlot(INPUT_SLOT).getCount();
+    }
+
     public static IItemHandler getItemHandler(VitaeLinkBlockEntity tile, @Nullable Direction side) {
         if (side == null) return tile.inv;
         return switch (side) {

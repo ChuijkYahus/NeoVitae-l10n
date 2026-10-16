@@ -44,6 +44,7 @@ If you're new to the mod, read these first:
 | **[Sanguine Crafter](Sanguine-Crafter)** | A multiblock that crafts table, Tabula Vitae and Forge recipes, with AE2 and Refined Storage support |
 | **[Automating Spiritus](Automating-Spiritus)** | The full will life cycle: grow, harvest, burn, route to keep the Aura full |
 | **[Teleposer](Teleposer)** | Spatial exchange between linked stations |
+| **[CC: Tweaked](CC-Tweaked)** | Reading altars, links, rituals and machines from computers and turtles |
 
 ## For Modpack Makers
 

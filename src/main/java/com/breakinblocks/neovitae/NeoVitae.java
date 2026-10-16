@@ -47,6 +47,7 @@ import com.breakinblocks.neovitae.common.particle.NVParticles;
 import com.breakinblocks.neovitae.compat.curios.CuriosCompat;
 import com.breakinblocks.neovitae.compat.ae2.AE2Compat;
 import com.breakinblocks.neovitae.compat.arsnouveau.ArsNouveauCompat;
+import com.breakinblocks.neovitae.compat.computercraft.ComputerCraftCompat;
 import com.breakinblocks.neovitae.compat.apotheosis.ApotheosisCompat;
 import com.breakinblocks.neovitae.compat.occultism.OccultismCompat;
 import com.breakinblocks.neovitae.compat.refinedstorage.RefinedStorageCompat;
@@ -171,6 +172,7 @@ public class NeoVitae {
         event.enqueueWork(ArsNouveauCompat::init);
         event.enqueueWork(OccultismCompat::init);
         event.enqueueWork(ApotheosisCompat::init);
+        event.enqueueWork(ComputerCraftCompat::init);
 
         if (ModList.get().isLoaded("modonomicon")) {
             event.enqueueWork(() -> {

@@ -78,6 +78,13 @@ repositories {
             includeGroup "dev.ftb.mods"
         }
     }
+    maven {
+        name = "SquidDev"
+        url = "https://maven.squiddev.cc"
+        content {
+            includeGroup "cc.tweaked"
+        }
+    }
 }
 
 base {
@@ -209,6 +216,9 @@ dependencies {
 
     compileOnly("curse.maven:sable-1312371:8242682")
     compileOnly("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:${sable_companion_version}")
+
+    compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}")
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

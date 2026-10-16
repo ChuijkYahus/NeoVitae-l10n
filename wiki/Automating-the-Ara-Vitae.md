@@ -48,3 +48,7 @@ To make the most of those idle windows, the Link draws at **5x** the rate an orb
 2. **Keep the altar charged** (orb deposits, an altar leech, or a Well of Suffering); the Link drains the basin to fill your Anima.
 3. **Read the fill** off the Link's **comparator output**, which scales 0-15 with how full the owner's Anima is. Gate your blood generation with redstone, e.g. switch off a Well of Suffering once your network tops out.
 4. **Pause it with redstone.** A redstone signal to the Link stops it charging for as long as it stays powered. A common setup wires the altar's own fill comparator (inverted) into the Link so it only draws once the basin is full, then pauses the instant the altar drops below full, letting the altar refill before the Link sips again.
+
+## CC: Tweaked
+
+With CC: Tweaked installed, a computer or turtle can read the altar's EV, capacity, tier and crafting progress directly instead of through a comparator, and the same goes for the Vitae Link and Orb Vitae Link. See [CC: Tweaked](CC-Tweaked) for the methods.

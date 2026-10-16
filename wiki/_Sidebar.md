@@ -30,6 +30,7 @@
 - [Sanguine Crafter](Sanguine-Crafter)
 - [Automating Spiritus](Automating-Spiritus)
 - [Teleposer](Teleposer)
+- [CC: Tweaked](CC-Tweaked)
 
 **Pack Makers**
 - [Overview](Pack-Makers-Overview)
