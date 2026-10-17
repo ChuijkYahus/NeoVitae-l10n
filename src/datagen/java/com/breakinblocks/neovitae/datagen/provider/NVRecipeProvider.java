@@ -2071,6 +2071,18 @@ public class NVRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_nether_star", has(Items.NETHER_STAR))
                 .save(output, NeoVitae.rl("prismatic_spiritus_gem"));
 
+        AthanorRecipeBuilder.build(NVTags.Items.ATHANOR_ORB)
+                .input(NVBlocks.HELLFORGED_BLOCK.block().get())
+                .fluidInput(NVFluids.ESSENTIA_VITAE_SOURCE.get(), 10000)
+                .spiritusCost(SpiritusType.RAW, 40.0)
+                .spiritusCost(SpiritusType.RUINA, 40.0)
+                .spiritusCost(SpiritusType.NIHILUM, 40.0)
+                .spiritusCost(SpiritusType.VINDICTA, 40.0)
+                .spiritusCost(SpiritusType.INVICTUS, 40.0)
+                .guaranteedOutput(new ItemStack(NVBlocks.SANGUINE_DEUS_BLOCK.block().get()))
+                .unlockedBy("has_hellforged_block", has(NVBlocks.HELLFORGED_BLOCK.block().get()))
+                .save(output, NeoVitae.rl("sanguine_deus_block"));
+
         AthanorRecipeBuilder.build(NVTags.Items.RESONATOR)
                 .input(NVItems.TABULA_ROBUR.get())
                 .input(Ingredient.of(Items.ROTTEN_FLESH))

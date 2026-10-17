@@ -105,6 +105,12 @@ Fitted with a **Primitive Hydration Cell**, the Athanor becomes a font of elemen
 
 Bloodstone Bricks are stone saturated with crystallised life force; dark and warm to the touch. Beyond their unsettling beauty, they serve as the **capstones for the Tier 3 Ara Vitae**. Their creation requires **Weak Blood Shards**, obtained by placing Saturated Tau in the Athanor with the Sanguine Reverter, and the Saturated Tau itself comes from the Demon Realm. See **[Ara Vitae and Runes](Ara-Vitae-and-Runes)** for the tier-construction chart.
 
+## Sanguine Deus Block
+
+A **Hellforged Block** steeped in Essentia Vitae and every Aspect at once. Craft it in the Athanor with a **Divinus Orb of Vitae** in the tool slot (it guides the work and is not spent), a Hellforged Block in the input, **10,000 mB of Essentia Vitae** in the tank, and **40 of every Spiritus** in the chunk: Raw, Ruina, Nihilum, Vindicta and Invictus, all consumed when the block is done.
+
+Placed beneath **[The Endless Quarry](Rituals)**, it gives the widest scan of any foundation: radius 255, a 511×511 footprint down to bedrock. The Hellforged Block it is made from gives radius 127. Both blocks also work as **beacon bases**.
+
 ## Bucket of Essentia Vitae
 
 Essentia Vitae is potent within the Ara Vitae, but it can also be poured into the world. Place an empty **Bucket** in the **[Ara Vitae](Ara-Vitae-and-Runes)** while it holds at least 1,000 EV and the altar fills the vessel in moments. One unit of EV equals one millibucket. Useful for filling a moat around your Incense Altar, or for any working that calls for liquid lifeforce. It is emphatically not blood; blood would have coagulated long ago.

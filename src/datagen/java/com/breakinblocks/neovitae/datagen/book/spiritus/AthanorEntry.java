@@ -141,6 +141,19 @@ public class AthanorEntry extends EntryProvider {
         this.page("deus_recipes_2", () -> BookHellfireForgeRecipePageModel.create()
                 .withRecipeId1(ResourceLocation.fromNamespaceAndPath("neovitae", "hellfire_forge/deus_hydration_cell"))
                 .withRecipeId2(ResourceLocation.fromNamespaceAndPath("neovitae", "hellfire_forge/deus_reverter")));
+
+        this.page("sanguine_deus_block", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("Sanguine Deus Block");
+        this.pageText("A [#](8B0000)Hellforged Block[#]() steeped in [#](8B0000)10,000 mB of Essentia Vitae[#]() and "
+                + "[#](4A0080)40 of every Spiritus[#]() becomes a [#](8B0000)Sanguine Deus Block[#](). The "
+                + "[#](8B0000)Divinus Orb of Vitae[#]() guides the work from the tool slot.\\\n\\\n"
+                + "Beneath the Endless Quarry it gives the widest reach of any foundation, and it serves as a "
+                + "beacon base.");
+
+        this.page("sanguine_deus_block_recipe", () -> BookAthanorRecipePageModel.create()
+                .withRecipeId1(ResourceLocation.fromNamespaceAndPath("neovitae", "athanor/orb/sanguine_deus_block")));
     }
 
     @Override

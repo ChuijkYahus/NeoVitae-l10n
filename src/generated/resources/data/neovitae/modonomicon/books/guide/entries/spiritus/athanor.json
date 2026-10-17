@@ -168,6 +168,28 @@
       "text": "",
       "title1": "",
       "title2": ""
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.athanor.sanguine_deus_block.text",
+      "title": "book.neovitae.guide.spiritus.athanor.sanguine_deus_block.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "neovitae:athanor_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "neovitae:athanor/orb/sanguine_deus_block",
+      "text": "",
+      "title1": "",
+      "title2": ""
     }
   ],
   "parents": [

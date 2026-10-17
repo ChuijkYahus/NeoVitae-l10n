@@ -86,15 +86,16 @@ public class RitualMagneticEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Foundation Stone");
-        this.pageText("The scan radius is set by the [#](8B0000)block placed directly beneath the Master Ritual "
-                + "Stone[#](). The richer the foundation, the wider the ritual's reach:\\\n\\\n"
-                + "- [#](8B0000)Any other block[#](): radius 3 (7x7 footprint, down to bedrock)\\\n"
-                + "- [#](8B0000)Iron Block[#](): radius 7 (15x15 footprint)\\\n"
-                + "- [#](8B0000)Gold Block[#](): radius 15 (31x31 footprint)\\\n"
-                + "- [#](8B0000)Diamond Block[#](): radius 31 (63x63 footprint)\\\n"
-                + "- [#](8B0000)Netherite Block[#](): radius 63 ([#](2E8B57)127x127 footprint[#]())\\\n\\\n"
-                + "With a netherite foundation a single ritual will, given time, hollow an entire chunk-sized "
-                + "column of ore beneath itself.");
+        this.pageText("The scan radius is set by the [#](8B0000)block directly beneath the Master Ritual "
+                + "Stone[#]():\\\n\\\n"
+                + "- [#](8B0000)Any other block[#](): radius 3 (7x7)\\\n"
+                + "- [#](8B0000)Iron Block[#](): radius 7 (15x15)\\\n"
+                + "- [#](8B0000)Gold Block[#](): radius 15 (31x31)\\\n"
+                + "- [#](8B0000)Diamond Block[#](): radius 31 (63x63)\\\n"
+                + "- [#](8B0000)Netherite Block[#](): radius 63 (127x127)\\\n"
+                + "- [#](8B0000)Hellforged Block[#](): radius 127 (255x255)\\\n"
+                + "- [#](8B0000)Sanguine Deus Block[#](): radius 255 ([#](2E8B57)511x511[#]())\\\n\\\n"
+                + "Every footprint reaches down to bedrock.");
     }
 
     @Override

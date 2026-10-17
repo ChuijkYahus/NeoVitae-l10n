@@ -24,6 +24,7 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.api.ritual.AreaDescriptor;
 import com.breakinblocks.neovitae.api.spiritus.SpiritusState;
+import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.tag.NVTags;
 import com.breakinblocks.neovitae.ritual.*;
 import com.breakinblocks.neovitae.ritual.RitualHelper.RitualContext;
@@ -259,6 +260,8 @@ public class RitualMagnetism extends Ritual {
         if (foundation == Blocks.GOLD_BLOCK) return 15;
         if (foundation == Blocks.DIAMOND_BLOCK) return 31;
         if (foundation == Blocks.NETHERITE_BLOCK) return 63;
+        if (foundation == NVBlocks.HELLFORGED_BLOCK.block().get()) return 127;
+        if (foundation == NVBlocks.SANGUINE_DEUS_BLOCK.block().get()) return 255;
         return 3;
     }
 
