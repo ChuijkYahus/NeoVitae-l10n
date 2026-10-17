@@ -91,6 +91,7 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
     private int outputTank = 0;
     private int mainTank = 0;
     private int chargingTank = 0;
+    private int reserveTank = 0;
     private volatile boolean isSignaling = false;
     private boolean orbDepleted = false;
 
@@ -224,6 +225,8 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
             tile.tickFluidTransfer();
         }
 
+        tile.tickReserve();
+
         // Ambient blood drip when altar has LP
         if (tile.getMainTank() > 0 && tile.getTicks() % 10 == 0) {
             ((ServerLevel) level).sendParticles(
@@ -278,6 +281,7 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
             setInputTank(Math.min(getInputTank(), newIOCapacity));
             setOutputTank(Math.min(getOutputTank(), newIOCapacity));
             setChargingTank(Math.min(getChargingTank(), newChargingCapacity));
+            setReserveTank(Math.min(getReserveTank(), getReserveCapacity()));
         }
 
         setChanged();
@@ -667,10 +671,25 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
     public int addSacrificeEV(int evAdded, boolean isSacrifice) {
         double mult = isSacrifice ? 1 + modifiers.getSacrificeMod() : 1 + modifiers.getSelfSacrificeMod();
         int boosted = (int) (mult * evAdded);
-        int deposited = Math.min(getMainCapacity() - getMainTank(), boosted);
+        int deposited = Math.max(0, Math.min(getMainCapacity() - getMainTank(), boosted));
         setMainTank(getMainTank() + deposited);
+        int overflow = boosted - deposited;
+        int reserved = 0;
+        if (overflow > 0) {
+            reserved = (int) Math.min(overflow, (long) getReserveCapacity() - getReserveTank());
+            setReserveTank(getReserveTank() + reserved);
+        }
         setChanged();
-        return boosted - deposited;
+        return overflow - reserved;
+    }
+
+    private void tickReserve() {
+        if (getReserveTank() <= 0) return;
+        int moved = Math.min(getReserveTank(), getMainCapacity() - getMainTank());
+        if (moved <= 0) return;
+        setReserveTank(getReserveTank() - moved);
+        setMainTank(getMainTank() + moved);
+        setChanged();
     }
 
     public void checkAction() {
@@ -729,6 +748,10 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
         return (int) ((float) FluidType.BUCKET_VOLUME * modifiers.getChargeCapacityMod());
     }
 
+    public int getReserveCapacity() {
+        return (int) Math.min((long) getMainCapacity() * AltarConstants.RESERVE_CAPACITY_FACTOR, Integer.MAX_VALUE);
+    }
+
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
@@ -753,6 +776,7 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
         outputTank = tanks.getInt("output");
         mainTank = tanks.getInt("main");
         chargingTank = tanks.getInt("charging");
+        reserveTank = tanks.getInt("reserve");
         progress = tanks.getInt("progress");
         syncedRequired = tanks.getInt("craftRequired");
         syncedConsumption = tanks.getInt("craftConsumption");
@@ -789,6 +813,7 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
         tanks.putInt("output", outputTank);
         tanks.putInt("main", mainTank);
         tanks.putInt("charging", chargingTank);
+        tanks.putInt("reserve", reserveTank);
         tanks.putInt("progress", progress);
         tanks.putInt("craftRequired", syncedRequired);
         tanks.putInt("craftConsumption", syncedConsumption);
@@ -886,6 +911,7 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
     public int getOutputTank() { return outputTank; }
     public int getMainTank() { return mainTank; }
     public int getChargingTank() { return chargingTank; }
+    public int getReserveTank() { return reserveTank; }
     public boolean isSignaling() { return isSignaling; }
     public int getCapacityGraceTicks() { return capacityGraceTicks; }
     public int getPreviousMainCapacity() { return previousMainCapacity; }
@@ -917,6 +943,7 @@ public class AraVitaeTile extends BaseBlockEntity implements IFluidHandler, IAra
     private void setInputTank(int inputTank) { this.inputTank = inputTank; }
     private void setOutputTank(int outputTank) { this.outputTank = outputTank; }
     private void setChargingTank(int chargingTank) { this.chargingTank = chargingTank; }
+    private void setReserveTank(int reserveTank) { this.reserveTank = reserveTank; }
     private void setProgress(int progress) { this.progress = progress; }
     private void setCurrentRecipe(AraVitaeRecipe recipe) { this.currentRecipe = recipe; }
     public void setActive(boolean active) { this.isActive = active; }

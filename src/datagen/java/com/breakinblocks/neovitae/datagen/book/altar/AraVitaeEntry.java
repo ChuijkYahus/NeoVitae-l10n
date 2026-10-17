@@ -70,6 +70,15 @@ public class AraVitaeEntry extends EntryProvider {
         this.pageText("[#](2E8B57)Be aware:[#]() 10%% of the Ara Vitae's total capacity seeps into a hidden internal reservoir, "
                 + "used for fluid transfer operations. If your numbers seem off, this unseen vessel is likely the cause.");
 
+        this.page("overflow", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("Sacrificed blood that arrives faster than the basin can hold is not lost. It pools in an "
+                + "[#](8B0000)overflow reserve[#]() holding up to [#](8B0000)twenty times[#]() the basin's capacity, "
+                + "and flows back into the basin each tick as room opens.\\\n\\\nA great offering from a "
+                + "[#](8B0000)Well of Suffering[#]() or a [#](8B0000)Torment Nexus[#]() can therefore feed an altar whose "
+                + "basin is far smaller than the offering itself. A [#](8B0000)Seer's Sigil[#]() reveals what waits in "
+                + "the reserve.");
+
         this.page("crafting_process", () -> BookTextPageModel.create()
                 .withText(this.context().pageText()));
         this.pageText("The moment an item is laid upon the Ara Vitae, the [#](4A0080)transmutation[#]() begins. "

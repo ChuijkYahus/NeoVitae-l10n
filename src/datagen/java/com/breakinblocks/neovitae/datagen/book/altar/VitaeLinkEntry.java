@@ -91,6 +91,14 @@ public class VitaeLinkEntry extends EntryProvider {
                 + "Feed it a [#](8B0000)redstone signal[#]() to pause it: while powered, the Link stops charging until "
                 + "the signal drops, letting you gate it off your altar's own comparator.");
 
+        this.page("orb_link_flow", () -> BookTextPageModel.create()
+                .withText(this.context().pageText()));
+        this.pageText("The Link can only draw what the basin holds, so it never moves more in a tick than the altar's "
+                + "[#](8B0000)capacity[#](). The swiftest charging altars balance the two: enough "
+                + "[#](8B0000)Speed Runes[#]() for a strong draw, and enough [#](8B0000)Capacity Runes[#]() that the "
+                + "basin can keep pace with it.\\\n\\\nThe [#](8B0000)Divinus Orb of Vitae[#]() draws far faster than "
+                + "any lesser orb.");
+
         this.page("orb_link_recipe", () -> BookCraftingRecipePageModel.create()
                 .withRecipeId1(ResourceLocation.fromNamespaceAndPath("neovitae", "orb_filling_link"))
                 .withText(this.context().pageText()));

@@ -35,7 +35,7 @@ public final class NVHudElements {
                 }, new Vec2(0.01f, 0.30f));
 
         ElementRegistry.registerHandler(NeoVitae.rl("altar_seer"),
-                new ElementDivinedInformation<AraVitaeTile>(5, ElementDivinedInformation.SigilGate.ADVANCED, AraVitaeTile.class) {
+                new ElementDivinedInformation<AraVitaeTile>(6, ElementDivinedInformation.SigilGate.ADVANCED, AraVitaeTile.class) {
                     @Override
                     public void gatherInformation(Consumer<Function<AraVitaeTile, Component>> rows) {
                         rows.accept(a -> Component.translatable("hud.neovitae.altar.tier", a.getTier()));
@@ -45,6 +45,7 @@ public final class NVHudElements {
                                 : Component.translatable("hud.neovitae.altar.inactive"));
                         rows.accept(a -> Component.translatable("hud.neovitae.altar.consumption", a.getConsumptionRate()));
                         rows.accept(a -> Component.translatable("hud.neovitae.altar.charge", a.getChargingTank()));
+                        rows.accept(a -> Component.translatable("hud.neovitae.altar.reserve", a.getReserveTank(), a.getReserveCapacity()));
                     }
                 }, new Vec2(0.01f, 0.30f));
 

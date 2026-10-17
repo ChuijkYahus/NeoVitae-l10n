@@ -23,6 +23,7 @@ public final class AltarConstants {
     public static final int STRUCTURE_CHECK_INTERVAL = 20 * 5; // 5 seconds
 
     public static final float BASE_IO_RATE = 20F;
+    public static final int RESERVE_CAPACITY_FACTOR = 20;
 
     public static final int CRAFTING_COOLDOWN_TICKS = 30;
     public static final int PARTICLE_FREQUENCY_REDSTONE = 4;

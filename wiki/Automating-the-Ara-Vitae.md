@@ -44,6 +44,8 @@ Where the Vitae Link crafts, the **Orb Vitae Link** charges. Craft one from a Vi
 
 To make the most of those idle windows, the Link draws at **5x** the rate an orb sitting on the altar would (the orb's fill rate, raised by the altar's **Speed Runes**). Several Orb Vitae Links on one altar **share** that rate between them, so adding a second Link does not charge any faster.
 
+The Link can only draw what the basin holds, so it never moves more EV in a tick than the altar's **capacity**. A fast charging altar needs both: Speed Runes for the draw, and enough Capacity Runes that the basin can keep up with it. For example, a Tier 5 altar with 162 Reinforced Speed Runes and 10 Reinforced Capacity Runes holds 50,000 EV, and a Divinus Orb in a Link draws 52,640 EV per tick from it. Large ritual offerings that overflow the basin wait in the altar's [overflow reserve](Ara-Vitae-and-Runes) and refill it tick by tick.
+
 1. **Seat your orb** by right-clicking the Link with a Blood Orb in hand; right-click empty-handed to take it back.
 2. **Keep the altar charged** (orb deposits, an altar leech, or a Well of Suffering); the Link drains the basin to fill your Anima.
 3. **Read the fill** off the Link's **comparator output**, which scales 0-15 with how full the owner's Anima is. Gate your blood generation with redstone, e.g. switch off a Well of Suffering once your network tops out.

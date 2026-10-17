@@ -14,6 +14,8 @@ Your first creation should be the **Novicius Orb of Vitae**, a diamond offered t
 
 > **Hidden reservoir:** 10% of the Ara Vitae's total capacity seeps into an internal vessel used for fluid transfer. If the numbers seem off, this unseen reservoir is the culprit.
 
+> **Overflow reserve:** sacrificed blood that arrives faster than the basin can hold pools in an overflow reserve of up to **20 times** the basin's capacity, and flows back into the basin each tick as room opens. A big offering from a Well of Suffering or a Torment Nexus can therefore feed an altar whose basin is smaller than the offering. A **Seer's Sigil** and Jade both show what is waiting in the reserve.
+
 ## Tier Construction Summary
 
 To ascend to greater tiers, you must lay **Blank Runes** in concentric **circular rings** around the basin, each new ring sitting one level deeper and further out than the last. Higher tiers also add pillars or capstone blocks at the ring's cardinal points or corners. Specialized runes confer different blessings; the most basic, the **Blank Rune**, carries no enchantment of its own and serves only as structural scaffolding. The in-game guide (Scriptura Vitae) renders the full multiblock for each tier if you want a block-by-block view.

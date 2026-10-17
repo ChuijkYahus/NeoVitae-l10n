@@ -17,6 +17,6 @@ public class BloodOrbStats {
                         .add(NVItems.ORB_MAGICIAN, new BloodOrb(2, 8_000, 150_000, 15), false)
                         .add(NVItems.ORB_MASTER, new BloodOrb(3, 10_000, 1_000_000, 25), false)
                         .add(NVItems.ORB_ARCHMAGE, new BloodOrb(4, 12_000, 5_000_000, 50), false)
-                        .add(NVItems.ORB_TRANSCENDENT, new BloodOrb(5, 14_000, 10_000_000, 50), false);
+                        .add(NVItems.ORB_TRANSCENDENT, new BloodOrb(5, 14_000, 10_000_000, 160), false);
         }
 }

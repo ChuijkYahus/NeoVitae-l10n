@@ -87,6 +87,10 @@ public enum NVBlockComponentProvider implements IBlockComponentProvider, IServer
             if (data.getBoolean("altar_active")) {
                 tooltip.add(Component.translatable("jade.neovitae.altar.crafting").withStyle(ChatFormatting.GREEN));
             }
+            int reserve = data.getInt("altar_reserve");
+            if (reserve > 0) {
+                tooltip.add(Component.translatable("hud.neovitae.altar.reserve", FORMAT.format(reserve), FORMAT.format(data.getInt("altar_reserve_capacity"))).withStyle(ChatFormatting.DARK_RED));
+            }
         }
 
         if (data.contains("ritual_name")) {
@@ -263,6 +267,8 @@ public enum NVBlockComponentProvider implements IBlockComponentProvider, IServer
             data.putInt("altar_tier", altar.getTier());
             data.putInt("altar_ev", altar.getMainTank());
             data.putInt("altar_capacity", altar.getMainCapacity());
+            data.putInt("altar_reserve", altar.getReserveTank());
+            data.putInt("altar_reserve_capacity", altar.getReserveCapacity());
             data.putBoolean("altar_active", altar.isActive());
         }
 

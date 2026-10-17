@@ -26,7 +26,7 @@
     },
     "neovitae:blood_orb_transcendent": {
       "animaCapacity": 10000000,
-      "fillRate": 50,
+      "fillRate": 160,
       "fluidCapacity": 14000,
       "tier": 5
     },

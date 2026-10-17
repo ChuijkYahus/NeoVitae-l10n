@@ -40,7 +40,8 @@ Customize the tier, capacity, and fill rate of blood orbs. See [Blood Orbs and A
 | Apprentice | 1 | 25,000 | 5 |
 | Magician | 2 | 150,000 | 15 |
 | Master | 3 | 1,000,000 | 25 |
-| Archmage | 4 | 10,000,000 | 50 |
+| Archmage | 4 | 5,000,000 | 50 |
+| Transcendent | 5 | 10,000,000 | 160 |
 
 #### Blood Orb Internal Fluid Tank
 

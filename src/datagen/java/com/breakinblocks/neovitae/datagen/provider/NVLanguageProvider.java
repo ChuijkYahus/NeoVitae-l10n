@@ -949,6 +949,7 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add("hud.neovitae.altar.inactive", "Idle");
         add("hud.neovitae.altar.consumption", "EV/tick: %s");
         add("hud.neovitae.altar.charge", "Charge: %s");
+        add("hud.neovitae.altar.reserve", "Reserve: %s / %s");
         add("hud.neovitae.incense.tranquility", "Tranquility: %s");
         add("hud.neovitae.incense.bonus", "Bonus: %s%%");
         add("gui.neovitae.hud.title", "Edit HUD Layout");
