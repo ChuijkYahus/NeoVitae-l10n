@@ -7,6 +7,7 @@ import com.breakinblocks.neovitae.common.blockentity.MasterRitualStoneBlockEntit
 import com.breakinblocks.neovitae.common.damagesource.NVDamageSources;
 import com.breakinblocks.neovitae.common.datamap.EntitySacrificeHelper;
 import com.breakinblocks.neovitae.common.item.ExperienceTomeItem;
+import com.breakinblocks.neovitae.common.tag.NVTags;
 import com.breakinblocks.neovitae.compat.arsnouveau.ArsNouveauCompat;
 import com.breakinblocks.neovitae.compat.enderio.EnderIOCompat;
 import com.breakinblocks.neovitae.ritual.EnumRuneType;
@@ -519,7 +520,7 @@ public class RitualTormentNexus extends Ritual {
         if (table == LootTable.EMPTY) return;
         LootParams params = new LootParams.Builder(level).create(LootContextParamSets.EMPTY);
         for (ItemStack drop : table.getRandomItems(params)) {
-            if (!drop.isEmpty()) ItemHandlerHelper.insertItemStacked(chestInv, drop, false);
+            if (!drop.isEmpty() && !drop.is(NVTags.Items.NEXUS_LOOT_BLACKLIST)) ItemHandlerHelper.insertItemStacked(chestInv, drop, false);
         }
     }
 
@@ -613,7 +614,7 @@ public class RitualTormentNexus extends Ritual {
             RandomSource rng = level.getRandom();
             for (long r = 0; r < rolls; r++) {
                 for (ItemStack drop : table.getRandomItems(params)) {
-                    if (drop.isEmpty()) continue;
+                    if (drop.isEmpty() || drop.is(NVTags.Items.NEXUS_LOOT_BLACKLIST)) continue;
                     double scaled = drop.getCount() * scale;
                     long count = (long) scaled;
                     if (rng.nextDouble() < scaled - count) count++;
@@ -653,7 +654,7 @@ public class RitualTormentNexus extends Ritual {
                     LootTable table = level.getServer().reloadableRegistries().getLootTable(lootKey);
                     if (table != LootTable.EMPTY) {
                         for (ItemStack drop : table.getRandomItems(params)) {
-                            if (!drop.isEmpty()) ItemHandlerHelper.insertItemStacked(chestInv, drop, false);
+                            if (!drop.isEmpty() && !drop.is(NVTags.Items.NEXUS_LOOT_BLACKLIST)) ItemHandlerHelper.insertItemStacked(chestInv, drop, false);
                         }
                     }
                 }

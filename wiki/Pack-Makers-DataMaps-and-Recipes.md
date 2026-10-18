@@ -627,6 +627,7 @@ All paths are relative to `data/neovitae/tags/` unless a different namespace is 
 | `crystals/demon` | All five Spiritus Crystal items | Spiritus crystal items. Used as a recipe ingredient. |
 | `charges` | Every explosive charge (shaped, deforester, veinmine, fungal and their upgrades) | Explosive charge items. Anointments are not consumed when a charge is used, and the Smelting and Voiding loot modifiers skip charge drops. |
 | `blood_mending_blacklist` | Empty | Items the Blood Mending upgrade will not repair. |
+| `nexus_loot_blacklist` | Empty | Items the Torment Nexus and Deus Torment Nexus never put in their output chest, from simulated mob kills or Trial Spawner rewards. |
 | `sentient_repair` | Binding Reagent | Repair material for Sentient tools, Sentient armor and the Lex Vitae in an anvil. |
 | `vitae_stone` | Deepslate | Stone-type ingredient used by a large number of early recipes (component frames, Tabula Rasa, and others). Retag this to change the base stone of the mod. |
 | `meteor` | Every meteor recipe catalyst | Filled at runtime from the loaded meteor recipes: whenever data loads or `/reload` runs, each recipe's `input` ingredient is expanded and its items are added to this tag before it is sent to clients, so datapack and KubeJS meteor recipes are picked up without editing the tag. Entries written into the tag JSON are kept alongside the recipe-derived ones. |
