@@ -48,8 +48,13 @@ public class DemonLanternEntry extends EntryProvider {
                 + "seethes anew every tick. From time to time it draws a "
                 + "single mote of a random aspect down into itself as payment. Though it shines like a lantern, "
                 + "it casts [#](2E8B57)no true light[#]() - the glow will neither brighten your halls nor "
-                + "calm the dark it stirs.\\\n\\\n"
-                + "The lantern [#](2E8B57)binds to whoever sets it down[#]() (or right-click it in hand "
+                + "calm the dark it stirs.");
+
+        this.page("upkeep", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("A Steady Toll");
+        this.pageText("The lantern [#](2E8B57)binds to whoever sets it down[#]() (or right-click it in hand "
                 + "beforehand to bind it for another), drawing thereafter on that soul's "
                 + "[#](4A0080)Soul Network[#](): a steady toll of [#](4A0080)Essentia Vitae[#]() each second it "
                 + "runs, falling dormant the moment the well runs dry.\\\n\\\n"
