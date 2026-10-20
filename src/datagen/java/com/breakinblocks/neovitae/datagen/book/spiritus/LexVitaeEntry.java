@@ -22,7 +22,9 @@ public class LexVitaeEntry extends EntryProvider {
         this.pageTitle("Lex Vitae");
         this.pageText("The [#](8B0000)Lex Vitae[#]() is a sentient multitool that chops, mines, digs, and tills, drawing on "
                 + "the [#](8B0000)Spiritus[#]() you carry to do its work. Like other Sentient equipment it grows stronger as "
-                + "you feed it Spiritus, and may be repaired with a Binding Reagent in an Anvil."
+                + "you feed it Spiritus, and may be repaired with a Binding Reagent in an Anvil. While active it takes "
+                + "the shape the work calls for: a pickaxe for stone, an axe for wood, a shovel for earth, a hoe for crops "
+                + "and a blade for anything living, glowing in the hue of your Spiritus."
                 + "\\\n\\\n[#](2E8B57)Sneak + right-click to toggle the Lex Vitae between dormant and active. It only works "
                 + "while active.[#]()");
 

@@ -1,0 +1,17 @@
+{
+  "base": {
+    "parent": "neovitae:item/lex_vitae/pickaxe_ruina_in_hand"
+  },
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "fixed": {
+      "parent": "neovitae:item/lex_vitae/pickaxe_ruina"
+    },
+    "ground": {
+      "parent": "neovitae:item/lex_vitae/pickaxe_ruina"
+    },
+    "gui": {
+      "parent": "neovitae:item/lex_vitae/pickaxe_ruina"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "base": {
+    "parent": "neovitae:item/lex_vitae/axe_ruina_in_hand"
+  },
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "fixed": {
+      "parent": "neovitae:item/lex_vitae/axe_ruina"
+    },
+    "ground": {
+      "parent": "neovitae:item/lex_vitae/axe_ruina"
+    },
+    "gui": {
+      "parent": "neovitae:item/lex_vitae/axe_ruina"
+    }
+  }
+}

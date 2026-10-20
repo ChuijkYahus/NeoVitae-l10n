@@ -2,41 +2,253 @@
   "parent": "minecraft:item/handheld",
   "overrides": [
     {
-      "model": "neovitae:item/variant/lex_vitae_active",
+      "model": "neovitae:item/lex_vitae/base_dormant_combined",
       "predicate": {
-        "neovitae:active": 1.0
+        "neovitae:active": 0.0
       }
     },
     {
-      "model": "neovitae:item/variant/lex_vitae_active_ruina",
+      "model": "neovitae:item/lex_vitae/base_raw_combined",
       "predicate": {
         "neovitae:active": 1.0,
+        "neovitae:lex_form": 0.0,
+        "neovitae:spiritus_type": 0.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/pickaxe_raw_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 1.0,
+        "neovitae:spiritus_type": 0.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/axe_raw_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 2.0,
+        "neovitae:spiritus_type": 0.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/shovel_raw_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 3.0,
+        "neovitae:spiritus_type": 0.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/hoe_raw_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 4.0,
+        "neovitae:spiritus_type": 0.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/sword_raw_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 5.0,
+        "neovitae:spiritus_type": 0.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/base_ruina_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 0.0,
         "neovitae:spiritus_type": 1.0
       }
     },
     {
-      "model": "neovitae:item/variant/lex_vitae_active_nihilum",
+      "model": "neovitae:item/lex_vitae/pickaxe_ruina_combined",
       "predicate": {
         "neovitae:active": 1.0,
+        "neovitae:lex_form": 1.0,
+        "neovitae:spiritus_type": 1.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/axe_ruina_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 2.0,
+        "neovitae:spiritus_type": 1.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/shovel_ruina_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 3.0,
+        "neovitae:spiritus_type": 1.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/hoe_ruina_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 4.0,
+        "neovitae:spiritus_type": 1.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/sword_ruina_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 5.0,
+        "neovitae:spiritus_type": 1.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/base_nihilum_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 0.0,
         "neovitae:spiritus_type": 2.0
       }
     },
     {
-      "model": "neovitae:item/variant/lex_vitae_active_invictus",
+      "model": "neovitae:item/lex_vitae/pickaxe_nihilum_combined",
       "predicate": {
         "neovitae:active": 1.0,
+        "neovitae:lex_form": 1.0,
+        "neovitae:spiritus_type": 2.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/axe_nihilum_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 2.0,
+        "neovitae:spiritus_type": 2.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/shovel_nihilum_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 3.0,
+        "neovitae:spiritus_type": 2.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/hoe_nihilum_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 4.0,
+        "neovitae:spiritus_type": 2.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/sword_nihilum_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 5.0,
+        "neovitae:spiritus_type": 2.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/base_invictus_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 0.0,
         "neovitae:spiritus_type": 3.0
       }
     },
     {
-      "model": "neovitae:item/variant/lex_vitae_active_vindicta",
+      "model": "neovitae:item/lex_vitae/pickaxe_invictus_combined",
       "predicate": {
         "neovitae:active": 1.0,
+        "neovitae:lex_form": 1.0,
+        "neovitae:spiritus_type": 3.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/axe_invictus_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 2.0,
+        "neovitae:spiritus_type": 3.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/shovel_invictus_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 3.0,
+        "neovitae:spiritus_type": 3.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/hoe_invictus_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 4.0,
+        "neovitae:spiritus_type": 3.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/sword_invictus_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 5.0,
+        "neovitae:spiritus_type": 3.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/base_vindicta_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 0.0,
+        "neovitae:spiritus_type": 4.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/pickaxe_vindicta_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 1.0,
+        "neovitae:spiritus_type": 4.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/axe_vindicta_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 2.0,
+        "neovitae:spiritus_type": 4.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/shovel_vindicta_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 3.0,
+        "neovitae:spiritus_type": 4.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/hoe_vindicta_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 4.0,
+        "neovitae:spiritus_type": 4.0
+      }
+    },
+    {
+      "model": "neovitae:item/lex_vitae/sword_vindicta_combined",
+      "predicate": {
+        "neovitae:active": 1.0,
+        "neovitae:lex_form": 5.0,
         "neovitae:spiritus_type": 4.0
       }
     }
   ],
   "textures": {
-    "layer0": "neovitae:item/lex_vitae"
+    "layer0": "neovitae:item/lex_vitae/base_dormant"
   }
 }

@@ -1,0 +1,17 @@
+{
+  "base": {
+    "parent": "neovitae:item/lex_vitae/hoe_invictus_in_hand"
+  },
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "fixed": {
+      "parent": "neovitae:item/lex_vitae/hoe_invictus"
+    },
+    "ground": {
+      "parent": "neovitae:item/lex_vitae/hoe_invictus"
+    },
+    "gui": {
+      "parent": "neovitae:item/lex_vitae/hoe_invictus"
+    }
+  }
+}

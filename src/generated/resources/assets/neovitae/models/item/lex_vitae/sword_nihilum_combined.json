@@ -1,0 +1,17 @@
+{
+  "base": {
+    "parent": "neovitae:item/lex_vitae/sword_nihilum_in_hand"
+  },
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "fixed": {
+      "parent": "neovitae:item/lex_vitae/sword_nihilum"
+    },
+    "ground": {
+      "parent": "neovitae:item/lex_vitae/sword_nihilum"
+    },
+    "gui": {
+      "parent": "neovitae:item/lex_vitae/sword_nihilum"
+    }
+  }
+}

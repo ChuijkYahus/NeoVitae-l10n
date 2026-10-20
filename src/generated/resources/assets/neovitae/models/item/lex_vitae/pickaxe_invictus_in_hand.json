@@ -1,0 +1,6 @@
+{
+  "parent": "neovitae:item/lex_vitae_in_hand",
+  "textures": {
+    "layer0": "neovitae:item/lex_vitae/pickaxe_invictus_in_hand"
+  }
+}

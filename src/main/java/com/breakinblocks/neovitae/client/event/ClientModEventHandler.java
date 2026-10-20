@@ -31,6 +31,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import com.breakinblocks.neovitae.client.color.RoutingNodeColor;
+import com.breakinblocks.neovitae.client.helper.LexVitaeFormResolver;
 import com.breakinblocks.neovitae.client.render.item.SpiritAccumulatorItemRenderer;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.client.render.NVFluidClientExtensions;
@@ -135,6 +136,8 @@ public class ClientModEventHandler {
                     (stack, level, entity, seed) -> stack.getOrDefault(NVDataComponents.LEX_ACTIVE, false) ? 1 : 0);
             ItemProperties.register(NVItems.LEX_VITAE.get(), NeoVitae.TYPE_PROPERTY,
                     (stack, level, entity, seed) -> stack.getOrDefault(NVDataComponents.SPIRITUS_TYPE, SpiritusType.RAW).ordinal());
+            ItemProperties.register(NVItems.LEX_VITAE.get(), NeoVitae.rl("lex_form"),
+                    (stack, level, entity, seed) -> LexVitaeFormResolver.resolve(stack, entity));
 
             for (var orb : List.of(NVItems.ORB_WEAK, NVItems.ORB_APPRENTICE, NVItems.ORB_MAGICIAN,
                     NVItems.ORB_MASTER, NVItems.ORB_ARCHMAGE, NVItems.ORB_TRANSCENDENT)) {

@@ -6,6 +6,7 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.loaders.SeparateTransformsModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
@@ -15,6 +16,7 @@ import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.common.item.ItemAnointmentProvider;
 import com.breakinblocks.neovitae.common.item.SpiritusCrystalItem;
 import com.breakinblocks.neovitae.common.item.soul.ISentientTool;
+import com.breakinblocks.neovitae.common.item.soul.LexVitaeForm;
 import com.breakinblocks.neovitae.common.material.MaterialDefinition;
 import com.breakinblocks.neovitae.common.material.MaterialRegistry;
 
@@ -189,24 +191,26 @@ public class NVItemModelProvider extends ItemModelProvider {
             }
         }
 
-        ModelFile lexActiveRaw = singleTexture("item/variant/lex_vitae_active",
-                mcLoc("item/handheld"), "layer0", modLoc("item/lex_vitae_active"));
-        ModelFile[] lexActiveTyped = new ModelFile[typeNames.length];
-        for (int i = 0; i < typeNames.length; i++) {
-            lexActiveTyped[i] = singleTexture("item/variant/lex_vitae_active_" + typeNames[i],
-                    mcLoc("item/handheld"), "layer0", modLoc("item/lex_vitae_active_" + typeNames[i]));
-        }
+        ItemModelBuilder lexInHand = getBuilder("item/lex_vitae_in_hand")
+                .parent(new ModelFile.UncheckedModelFile(mcLoc("item/handheld")));
+        lexInHand.transforms()
+                .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).rotation(0, -90, 55).translation(0, 8.0F, 1.0F).scale(1.7F).end()
+                .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).rotation(0, 90, -55).translation(0, 8.0F, 1.0F).scale(1.7F).end()
+                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(0, -90, 25).translation(-0.87F, 3.2F, 1.13F).scale(1.0F).end()
+                .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).rotation(0, 90, -25).translation(-0.87F, 3.2F, 1.13F).scale(1.0F).end();
         ItemModelBuilder lexBuilder = getBuilder(NVItems.LEX_VITAE.getId().getPath())
                 .parent(new ModelFile.UncheckedModelFile(mcLoc("item/handheld")));
-        lexBuilder.texture("layer0", modLoc("item/lex_vitae"));
-        lexBuilder.override().predicate(NeoVitae.rl("active"), 1).model(lexActiveRaw).end();
-        for (int i = 0; i < typeNames.length; i++) {
-            int typeOrdinal = i + 1;
-            lexBuilder.override()
-                    .predicate(NeoVitae.rl("active"), 1)
-                    .predicate(NeoVitae.TYPE_PROPERTY, typeOrdinal)
-                    .model(lexActiveTyped[i])
-                    .end();
+        lexBuilder.texture("layer0", modLoc("item/lex_vitae/base_dormant"));
+        lexBuilder.override().predicate(NeoVitae.rl("active"), 0).model(lexVitaeModel(lexInHand, LexVitaeForm.BASE, "dormant")).end();
+        for (SpiritusType type : SpiritusType.values()) {
+            for (LexVitaeForm form : LexVitaeForm.values()) {
+                lexBuilder.override()
+                        .predicate(NeoVitae.rl("active"), 1)
+                        .predicate(NeoVitae.TYPE_PROPERTY, type.ordinal())
+                        .predicate(NeoVitae.rl("lex_form"), form.ordinal())
+                        .model(lexVitaeModel(lexInHand, form, type.getSerializedName()))
+                        .end();
+            }
         }
 
         // Array effect dummy items - use their alchemy array textures
@@ -238,6 +242,19 @@ public class NVItemModelProvider extends ItemModelProvider {
     }
 
     /** Apply a GUI-only translation (in display-pixel units) so an item icon can be nudged in inventory slots. */
+    private ModelFile lexVitaeModel(ModelFile inHandParent, LexVitaeForm form, String variant) {
+        String name = "item/lex_vitae/" + form.getName() + "_" + variant;
+        ModelFile icon = singleTexture(name, mcLoc("item/handheld"), "layer0", modLoc(name));
+        ModelFile inHand = singleTexture(name + "_in_hand", inHandParent.getLocation(), "layer0", modLoc(name + "_in_hand"));
+        return getBuilder(name + "_combined")
+                .customLoader(SeparateTransformsModelBuilder::begin)
+                .base(nested().parent(inHand))
+                .perspective(ItemDisplayContext.GUI, nested().parent(icon))
+                .perspective(ItemDisplayContext.GROUND, nested().parent(icon))
+                .perspective(ItemDisplayContext.FIXED, nested().parent(icon))
+                .end();
+    }
+
     private ItemModelBuilder withGuiOffset(ModelFile model, float dx, float dy) {
         ItemModelBuilder b = (ItemModelBuilder) model;
         b.transforms().transform(ItemDisplayContext.GUI)

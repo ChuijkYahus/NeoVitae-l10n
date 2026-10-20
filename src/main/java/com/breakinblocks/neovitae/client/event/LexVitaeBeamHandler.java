@@ -48,6 +48,10 @@ public final class LexVitaeBeamHandler {
 
     private LexVitaeBeamHandler() {}
 
+    public static boolean isFiring() {
+        return lastFiring;
+    }
+
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
