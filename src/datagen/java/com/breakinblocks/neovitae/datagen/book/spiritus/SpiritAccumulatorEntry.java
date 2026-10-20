@@ -24,8 +24,9 @@ public class SpiritAccumulatorEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Spirit Accumulator");
         this.pageText("The [#](4A0080)Aura[#]() will hold no more than [#](8B0000)100[#]() of any one Aspect, and it "
-                + "cannot leave the chunk that holds it. Every crystal you burn past that ceiling is simply "
-                + "lost.\\\n\\\n"
+                + "cannot leave the chunk that holds it. A [#](8B0000)Spiritus Crucible[#]() stops burning "
+                + "crystals once their Aspect reaches 50, so a busy farm soon backs up with crystals it cannot "
+                + "use.\\\n\\\n"
                 + "The [#](8B0000)Spirit Accumulator[#]() is the answer: a suspended crystal that gathers "
                 + "[#](8B0000)1,000[#]() Spiritus of a single Aspect and surrenders it to your "
                 + "[#](4A0080)Routing Network[#]() wherever it is wanted.");
@@ -35,8 +36,8 @@ public class SpiritAccumulatorEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("What It Asks");
         this.pageText("Beyond the reagents, the chunk in which the Athanor labors must hold "
-                + "[#](8B0000)45 Raw[#]() Spiritus. A single Raw [#](8B0000)shard[#]() burned in a "
-                + "[#](8B0000)Spiritus Crucible[#]() settles that on its own, for a shard gives 50 whenever its "
+                + "[#](8B0000)45 Raw[#]() Spiritus. A single [#](8B0000)Spiritus Crystal[#]() burned in a "
+                + "[#](8B0000)Spiritus Crucible[#]() settles that on its own, for a crystal gives 50 whenever its "
                 + "Aspect stands below 50.\\\n\\\n"
                 + "[#](2E8B57)An Animus Mote is required too, and those are found only in the deep "
                 + "vaults of the Demon Realm.[#]()");
@@ -79,8 +80,8 @@ public class SpiritAccumulatorEntry extends EntryProvider {
                 + "[#](8B0000)30[#](). It will never draw the chunk below that mark.\\\n\\\n"
                 + "That floor sits low enough that a single crystal burned in a "
                 + "[#](8B0000)Spiritus Crucible[#]() will feed it, for a crystal lifts its Aspect to "
-                + "[#](8B0000)50[#](). Set one in a saturated crystal farm instead and it becomes an "
-                + "overflow vessel, catching everything burned past the ceiling.\\\n\\\n"
+                + "[#](8B0000)50[#](). Set one in a crystal farm and it keeps drawing the chunk back down to 30, "
+                + "so the Crucible never stops burning and every crystal is banked.\\\n\\\n"
                 + "[#](2E8B57)The crystal's inner light shows its Aspect and how full it stands; it burns "
                 + "dim while unlocked.[#]()");
 

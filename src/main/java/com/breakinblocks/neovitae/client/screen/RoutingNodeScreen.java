@@ -705,7 +705,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         }
         if ((stockDownButton.visible && stockDownButton.isHovered()) || (stockUpButton.visible && stockUpButton.isHovered())) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Amount to leave behind in the source"));
+            tooltip.add(Component.literal("Level to keep this chunk's Spiritus at"));
             tooltip.add(Component.literal("Shift for steps of 100").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;

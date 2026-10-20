@@ -41,16 +41,17 @@ public class RitualCrystallumFracturaEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("The Fracture's Edge");
         this.pageText("Harvested clusters drop with [#](8B0000)scaling Fortune[#]() based on the chunk's density of the crystal's own aspect: a Ruina crystal reads the chunk's Ruina, a Raw crystal its Raw. Geode clusters read the aspect the stone is biased toward, or Raw if it has none."
-                + "\n\n- below [#](B8860B)30[#](): no Fortune"
-                + "\n- [#](B8860B)30-100[#](): linearly scales from Fortune I to Fortune III"
-                + "\n- at or above [#](B8860B)100[#](): Fortune III"
-                + "\n\nWhen Fortune is active, the ritual probabilistically consumes that aspect at an average rate of one per twelve seconds; keep the chunk fed.");
+                + "\n\n- [#](B8860B)30[#]() or below: no Fortune"
+                + "\n- above [#](B8860B)30[#](): Fortune I"
+                + "\n- above about [#](B8860B)53[#](): Fortune II"
+                + "\n- above about [#](B8860B)77[#](): Fortune III"
+                + "\n\nEach harvest made with Fortune has about a 42%% chance to consume one point of that aspect; keep the chunk fed.");
 
         this.page("aspect_bias", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Aspect Bias");
-        this.pageText("Attune the Master Ritual Stone to a single Spiritus aspect with the [#](8B0000)Ritual Configurator[#]() in [#](2E8B57)Set Spiritus Consumed[#]() mode while holding exactly one matching crystal in your hotbar. The +25%% portion of any [#](8B0000)Raw Spiritus[#]() injection within the aura is then redirected to that aspect's pool, letting you farm a chosen aspect while the ritual is running.");
+        this.pageText("Right-click the Master Ritual Stone with the [#](8B0000)Ritual Configurator[#]() and pick an aspect in its [#](2E8B57)Aspect[#]() row. The +25%% portion of any [#](8B0000)Raw Spiritus[#]() injection within the aura is then redirected to that aspect's pool, letting you farm a chosen aspect while the ritual is running.");
     }
 
     @Override

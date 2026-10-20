@@ -23,20 +23,20 @@ public class RitualTinkererEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Ritual Configurator");
-        this.pageText("The [#](8B0000)Ritual Configurator[#]() is an essential instrument for the practitioner who demands mastery over their [#](4A0080)ritual circles[#](). It offers three modes of interaction, each granting deeper control. Cycle between them by pressing Sneak and Use.");
+        this.pageText("The [#](8B0000)Ritual Configurator[#]() is an essential instrument for the practitioner who demands mastery over their [#](4A0080)ritual circles[#](). Right-click a [#](8B0000)Master Ritual Stone[#]() with it to open its panel, which names the ritual and lists every zone it uses with that zone's current size. Hover a zone to see how far it can reach.");
 
         this.page("crafting", () -> BookCraftingRecipePageModel.create()
                 .withRecipeId1(ResourceLocation.fromNamespaceAndPath(NeoVitae.MODID, "ritual_reader")));
 
         this.page("modes", () -> BookTextPageModel.create()
                 .withText(this.context().pageText()));
-        this.pageText("- [#](8B0000)Information[#](): Reveals the purpose of the selected [#](4A0080)ritual[#](), much like the [#](8B0000)Ritual Diviner[#]()."
-                + "\n\n- [#](8B0000)Set Spiritus Consumed[#](): Attunes the ritual to consume specific types of [#](8B0000)Spiritus[#]() from the [#](4A0080)Aura[#](). Carry the desired [#](8B0000)Spiritus Crystals[#]() in your hotbar, one for each aspect you wish the ritual to draw upon. The effects of each spiritus type are detailed on individual ritual pages.");
+        this.pageText("- [#](8B0000)Edit area in world[#](): Select a zone in the panel and press this, then click two opposite corners to reshape it. A zone that is a single block, such as a chest, takes one click. Press Sneak and Use in the air to cancel."
+                + "\n\n- [#](8B0000)Ritual settings[#](): A few rituals add their own controls: an [#](8B0000)Aspect[#]() row for Crystallum Fractura, a [#](8B0000)Fill shape[#]() for the Ritual of the Mason, a [#](8B0000)Mining[#]() choice for the Deus Endless Quarry, and a [#](8B0000)Keep per species[#]() count for the Ritual of Butchering. Each is described on its ritual's page.");
 
         this.page("define_area", () -> BookTextPageModel.create()
                 .withText(this.context().pageText()));
-        this.pageText("- [#](8B0000)Define Area[#](): Specifies the zone in which the ritual operates, and displays the current boundaries. Press Sneak and Use in the air to cycle through a ritual's zones, then click two opposite corners to reshape the selected one."
-                + "\\\n\\\nRituals that draw from or deposit into a container expose their [#](8B0000)chest[#](), [#](8B0000)tank[#](), or input/output zone here too, so you can place that container wherever you like instead of directly atop the [#](8B0000)Master Ritual Stone[#]()."
+        this.pageText("Rituals that draw from or deposit into a container list their [#](8B0000)chest[#](), [#](8B0000)tank[#](), or input/output zone in the panel too, so you can place that container wherever you like instead of directly atop the [#](8B0000)Master Ritual Stone[#]()."
+                + "\\\n\\\nThe Configurator also links a ritual to a [#](8B0000)Ritual Anchor[#](): right-click the anchor, then the Master Ritual Stone."
                 + "\\\n\\\n[#](2E8B57)Some rituals can be expanded far beyond their default range, but the EV cost scales to match. Tread carefully with your reserves.[#]()");
     }
 
