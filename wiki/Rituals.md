@@ -38,13 +38,20 @@ You can also change the facing of the completed ritual by pressing Use in the ai
 
 ## Ritual Configurator
 
-The **Ritual Configurator** is essential for mastery over your circles. Cycle between three modes with Sneak + Use:
+The **Ritual Configurator** is essential for mastery over your circles. Right-click a Master Ritual Stone with it to open its panel, which names the ritual and lists every zone it uses with the zone's current size. Hover a zone to see how far it can reach.
 
-- **Information** - reveals the purpose of the selected ritual.
-- **Set Spiritus Consumed** - attunes the ritual to consume specific aspects of **[Spiritus](Spiritus-Aspects-and-Crystals)** from the Aura. Carry the desired Spiritus Crystals in your hotbar, one per aspect.
-- **Define Area** - specifies the zone in which the ritual operates and displays the current boundaries. Sneak + Use in the air to cycle through a ritual's zones, then click two opposite corners to reshape the selected one.
+To reshape a zone, select it, press **Edit area in world**, then click two opposite corners. A zone that is a single block, such as a ritual's chest, takes one click instead. Sneak + Use in the air cancels an edit.
 
-Rituals that draw from or deposit into a container expose their chest, tank, or input/output zone here as well, so you can relocate that container instead of being forced to place it directly above the Master Ritual Stone. It defaults to the block above the stone and can be moved a few blocks away.
+Rituals that draw from or deposit into a container list their chest, tank, or input/output zone here as well, so you can relocate that container instead of being forced to place it directly above the Master Ritual Stone. It defaults to the block above the stone and can be moved a few blocks away.
+
+A few rituals add their own settings to the panel:
+
+- **Crystallum Fractura** - an **Aspect** row. The ritual's +25% bonus on Raw **[Spiritus](Spiritus-Aspects-and-Crystals)** injections goes to the chosen Aspect instead.
+- **Ritual of the Mason** - a **Fill shape**: Solid, Shell, Walls, Floor, Roof or Frame.
+- **Deus Endless Quarry** - a **Mining** choice between Fortune III and Silk Touch.
+- **Ritual of Butchering** - a **Keep per species** count.
+
+The Configurator also links rituals to a **[Ritual Anchor](#ritual-anchor)**.
 
 Some rituals can be expanded far beyond their default range, but EV cost scales to match. Tread carefully with your reserves.
 

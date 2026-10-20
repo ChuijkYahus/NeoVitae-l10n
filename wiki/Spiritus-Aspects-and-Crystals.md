@@ -119,7 +119,7 @@ Right-click a cluster with a **matching-Aspect** catalyst (e.g., Ruina catalyst 
 
 ### Automation Loop
 
-Pair the catalyst with the **Crystallum Fractura** ritual (see **[Rituals](Rituals)**) for a hands-off farm; the ritual auto-harvests fully-grown clusters, doubles crystal growth speed, and amplifies any Spiritus injection by +25% across the chunks in range. With the Master Ritual Stone attuned via the Ritual Configurator (carry exactly one aspect crystal in your hotbar in SET_WILL_CONFIG mode), the +25% injection bonus is biased toward any Aspect you choose. A modest **Routing Node** arrangement can then ship harvested shards back into a Spiritus Crucible to maintain saturation, closing the loop.
+Pair the catalyst with the **Crystallum Fractura** ritual (see **[Rituals](Rituals)**) for a hands-off farm; the ritual auto-harvests fully grown clusters, doubles crystal growth speed, and amplifies any Spiritus injection by +25% across the chunks in range. Right-click the Master Ritual Stone with the Ritual Configurator and pick an Aspect to send the +25% bonus on Raw injections to that Aspect instead. An Input Routing Node on the harvest chest and an Output Routing Node against a Spiritus Crucible then ship the crystals back to be burned, closing the loop. See **[Automating Spiritus](Automating-Spiritus)** for the full setup.
 
 ## Spiritus Infusion
 
