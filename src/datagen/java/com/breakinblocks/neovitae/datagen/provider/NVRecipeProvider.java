@@ -2274,6 +2274,17 @@ public class NVRecipeProvider extends RecipeProvider {
                 .texture("textures/models/alchemyarrays/bindingarray.png")
                 .save(output, "sentient_boots");
 
+        Holder<SentientUpgrade> elytra = registriesFuture.join()
+                .lookupOrThrow(NVRegistries.Keys.SENTIENT_UPGRADES)
+                .getOrThrow(SentientUpgrades.ELYTRA);
+        ItemStack elytraTome = new ItemStack(NVItems.UPGRADE_TOME.get());
+        elytraTome.set(NVDataComponents.UPGRADE_TOME_DATA.get(), new UpgradeTome(elytra, 1.0f));
+        AlchemyArrayRecipeBuilder.build(elytraTome)
+                .base(NVItems.REAGENT_BINDING.get())
+                .added(Items.ELYTRA)
+                .texture("textures/models/alchemyarrays/bindingarray.png")
+                .save(output, "elytra_tome");
+
         // Training Bracelet
         AlchemyArrayRecipeBuilder.build(NVItems.TRAINING_BRACELET.get())
                 .base(NVItems.REAGENT_BINDING.get())

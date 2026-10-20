@@ -646,7 +646,7 @@
   "book.neovitae.guide.alchemy_arrays.upgrade_elytra.intro.text": "The armor sprouts membranes of living tissue, granting true flight. This upgrade cannot be trained; it must be inscribed via [#](8B0000)Upgrade Tome[#]().",
   "book.neovitae.guide.alchemy_arrays.upgrade_elytra.intro.title": "Elytra",
   "book.neovitae.guide.alchemy_arrays.upgrade_elytra.name": "Elytra",
-  "book.neovitae.guide.alchemy_arrays.upgrade_elytra.recipe.text": "The [#](8B0000)Elytra Tome[#]() is forged in an [#](8B0000)Alchemy Array[#](). Apply it to your [#](8B0000)Sentient Chestplate[#]() to unfurl the wings.\\\n\\\n[#](4A0080)Blood gave you life. Now it gives you the sky.[#]()",
+  "book.neovitae.guide.alchemy_arrays.upgrade_elytra.recipe.text": "The [#](8B0000)Elytra Tome[#]() is forged in an [#](8B0000)Alchemy Array[#]() from a [#](8B0000)Binding Reagent[#]() and an [#](8B0000)Elytra[#](). Apply it to your [#](8B0000)Sentient Chestplate[#]() to unfurl the wings.\\\n\\\n[#](4A0080)Blood gave you life. Now it gives you the sky.[#]()",
   "book.neovitae.guide.alchemy_arrays.upgrade_experienced.description": "The armor draws deeper knowledge from each fallen foe.",
   "book.neovitae.guide.alchemy_arrays.upgrade_experienced.details.text": "[#](B8860B)Trained by[#](): Collecting experience orbs.\\\n\\\n[#](B8860B)Maximum level[#](): 10",
   "book.neovitae.guide.alchemy_arrays.upgrade_experienced.intro.text": "The armor learns to amplify the resonance of slain creatures, drawing forth greater experience from each kill. Increases XP drops up to 150%%.",
