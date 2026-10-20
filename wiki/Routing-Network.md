@@ -37,7 +37,7 @@ A right-click with the router in hand links rather than opening the node's scree
 - **Right-click a Master**: stores that Master's position.
 - **Subsequent right-clicks on non-master nodes** within 16 blocks: binds each to the stored Master.
 - **Right-click a non-master node** instead: stores *that* position. Every subsequent right-click links them, and the stored position advances to the just-clicked node. Walk down a chain and the router links step by step.
-- **Shift-right-click the stored node**: cuts every link it has.
+- **Shift-right-click the stored node**: cuts every link it has. Done on a **Master**, it dissolves the whole network. An unlinked node stays unlinked until you link it again; it will not rejoin a network on its own.
 - **Right-click any other block, or Shift-right-click empty air**: clears the stored position.
 
 Each successful link emits a violet arcane bolt.

@@ -653,6 +653,18 @@ public class MasterRoutingNodeBlockEntity extends BlockEntity implements IMaster
         setChanged();
     }
 
+    public void unlinkNetwork() {
+        Set<BlockPos> members = new LinkedHashSet<>(connectionMap.keySet());
+        members.addAll(generalNodeList);
+        members.remove(worldPosition);
+        removeAllConnections();
+        for (BlockPos pos : members) {
+            if (getLevel().isLoaded(pos) && getLevel().getBlockEntity(pos) instanceof RoutingNodeBlockEntity node) {
+                node.detachFromNetwork();
+            }
+        }
+    }
+
     @Override
     public Triple<Boolean, List<BlockPos>, List<IRoutingNode>> recheckConnectionToMaster(
             List<BlockPos> alreadyChecked, List<IRoutingNode> nodeList) {

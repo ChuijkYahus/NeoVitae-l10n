@@ -32,6 +32,7 @@ import com.breakinblocks.neovitae.common.blockentity.BloodTankBlockEntity;
 import com.breakinblocks.neovitae.common.fluid.NVFluids;
 
 import java.util.LinkedList;
+import java.util.List;
 
 @GameTestHolder("neovitae")
 @PrefixGameTestTemplate(false)
@@ -221,6 +222,46 @@ public class RoutingNodeTests {
             }
             helper.succeed();
         });
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 60)
+    public void masterUnlinkDetachesNetwork(GameTestHelper helper) {
+        RoutingTestContext ctx = setupLinearNetwork(helper);
+        MasterRoutingNodeBlockEntity master = (MasterRoutingNodeBlockEntity) helper.getBlockEntity(ctx.master);
+        InputRoutingNodeBlockEntity input = (InputRoutingNodeBlockEntity) helper.getBlockEntity(ctx.input);
+        OutputRoutingNodeBlockEntity output = (OutputRoutingNodeBlockEntity) helper.getBlockEntity(ctx.output);
+
+        master.unlinkNetwork();
+
+        helper.assertTrue(master.getConnected().isEmpty(), "The master should have no links left");
+        for (RoutingNodeBlockEntity node : List.of(input, output)) {
+            helper.assertTrue(node.getMasterPos().equals(BlockPos.ZERO), "A detached node should forget its master");
+            helper.assertTrue(node.getConnected().isEmpty(), "A detached node should have no links left");
+        }
+
+        BlockPos absInput = helper.absolutePos(ctx.input);
+        input.onLoad();
+        input.tick(helper.getLevel(), absInput, helper.getLevel().getBlockState(absInput));
+        helper.assertTrue(input.getMasterPos().equals(BlockPos.ZERO),
+                "An unlinked node must not auto-bind back to the master when it reloads");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 60)
+    public void relinkingLiftsUnlink(GameTestHelper helper) {
+        RoutingTestContext ctx = setupLinearNetwork(helper);
+        MasterRoutingNodeBlockEntity master = (MasterRoutingNodeBlockEntity) helper.getBlockEntity(ctx.master);
+        InputRoutingNodeBlockEntity input = (InputRoutingNodeBlockEntity) helper.getBlockEntity(ctx.input);
+        BlockPos absInput = helper.absolutePos(ctx.input);
+        BlockPos absMaster = helper.absolutePos(ctx.master);
+
+        master.unlinkNetwork();
+        connectToMaster(helper, input, master, absInput, absMaster);
+        input.onLoad();
+        input.tick(helper.getLevel(), absInput, helper.getLevel().getBlockState(absInput));
+
+        helper.assertTrue(input.getMasterPos().equals(absMaster), "A relinked node should stay bound to its master");
+        helper.succeed();
     }
 
     @GameTest(template = "empty_5x5x7", timeoutTicks = 60)
