@@ -6,9 +6,9 @@ The **Athanor** is the alchemist's furnace, a vessel of transmutation that trans
 
 ## Operating the Athanor
 
-The Athanor is sided, much like a common furnace. By default **tools** enter and leave from the **top**, **inputs** (and the input tank) are accepted from the four sides, and **outputs** (and the output tank) emerge from the **bottom**.
+The Athanor is sided, much like a common furnace. By default **tools** enter and leave from the **top**, **inputs** and the fluid slots are reached from the four sides, and **outputs** emerge from the **bottom**. The input tank fills from the top and sides, and the output tank drains from the bottom.
 
-The **Sides** panel beside the Athanor's screen reassigns each face, labelled relative to the Athanor's front: **Inputs**, **Outputs**, **Inputs & Outputs**, **Tool**, or **Off**. Click a face to step forward through the modes and right-click to step back. A face set to **Inputs & Outputs** accepts inputs and gives back finished outputs, so one Hopper chain or Routing Node can run the whole machine. Fluids follow the face: inputs feed the input tank and outputs drain the output tank.
+Each group of slots can be opened to any side, the same way as the [Hellfire Forge](Hellfire-Forge-and-Sentient-Equipment#side-configuration). Click an empty slot in the menu and toggle the direction buttons that appear beside the screen; green sides reach that group of slots, red sides do not. With an output slot chosen, right-click a direction to push finished items out of that side. Opening one side to both the inputs and the outputs lets a single Hopper chain or Routing Node run the whole machine.
 
 It accepts only two fuel sources, the **Primitive Fuel Cell** (a Block of Coal worked in a recipe) or a **Lava Crystal**. The Primitive Fuel Cell endures for **128 individual operations**, more than double what its Block of Coal would yield in a furnace, and wears down only on completing a craft so nothing is wasted. The Lava Crystal is a shard of imprisoned heat born from molten rock and sustained by your **[Anima](Blood-Orbs-and-Anima)**; placed in any furnace it becomes an inexhaustible flame, drawing **50 EV** per item smelted (ten seconds per operation, one item per cycle).
 

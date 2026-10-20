@@ -5,12 +5,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
 import com.breakinblocks.neovitae.common.blockentity.AthanorBlockEntity;
-import com.breakinblocks.neovitae.common.blockentity.AthanorSides;
 import net.minecraft.network.chat.Component;
 import java.util.Locale;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import com.breakinblocks.neovitae.NeoVitae;
+import com.breakinblocks.neovitae.client.widgets.SideConfigPanel;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.common.menu.AthanorMenu;
 import com.breakinblocks.neovitae.compat.jei.NeoVitaeJEIPlugin;
@@ -21,11 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public class AthanorScreen extends AbstractContainerScreen<AthanorMenu> {
     private final ResourceLocation background = ResourceLocation.fromNamespaceAndPath(NeoVitae.MODID, "textures/gui/container/athanor_gui.png");
     private final ResourceLocation progress = ResourceLocation.fromNamespaceAndPath(NeoVitae.MODID, "container/athanor/progress");
     private final ResourceLocation gauge = ResourceLocation.fromNamespaceAndPath(NeoVitae.MODID, "container/athanor/gauge");
     private static final ResourceLocation BARS_TEXTURE = NeoVitae.rl("textures/hud/bars.png");
+    private static final ResourceLocation SLOT_HIGHLIGHT = NeoVitae.rl("textures/gui/hellfire_forge.png");
+    private static final int SIDE_PANEL_WIDTH = 44;
+    private static final int SIDE_PANEL_HEIGHT = 62;
 
     private static final SpiritusType[] ORDERED_TYPES = {
             SpiritusType.RAW, SpiritusType.RUINA,
@@ -49,6 +55,7 @@ public class AthanorScreen extends AbstractContainerScreen<AthanorMenu> {
     private int inputY;
     private int outputX;
     private int outputY;
+    private SideConfigPanel sidePanel;
 
     @Override
     protected void init() {
@@ -57,6 +64,41 @@ public class AthanorScreen extends AbstractContainerScreen<AthanorMenu> {
         this.inputY = topPos + 43;
         this.outputX = leftPos + 152;
         this.outputY = topPos + 18;
+        AthanorBlockEntity tile = menu.tile;
+        sidePanel = new SideConfigPanel(tile.getBlockPos(), tile.getSideConfig(), () -> tile.activeGroup,
+                AthanorScreen::groupName, AthanorBlockEntity.GROUP_OUTPUT, tile);
+        sidePanel.create(this::addRenderableWidget, sidePanelX() + 4, sidePanelY() + 4);
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        sidePanel.tick();
+    }
+
+    private int sidePanelX() {
+        return leftPos + imageWidth + 2;
+    }
+
+    private int sidePanelY() {
+        return topPos + 14;
+    }
+
+    @Nullable
+    public Rect2i sidePanelArea() {
+        if (menu.tile.activeGroup < 0) return null;
+        return new Rect2i(sidePanelX(), sidePanelY(), SIDE_PANEL_WIDTH, SIDE_PANEL_HEIGHT);
+    }
+
+    private static Component groupName(int group) {
+        String key = switch (group) {
+            case AthanorBlockEntity.GROUP_INPUT -> "input";
+            case AthanorBlockEntity.GROUP_INPUT_BUCKET -> "input_bucket";
+            case AthanorBlockEntity.GROUP_OUTPUT_BUCKET -> "output_bucket";
+            case AthanorBlockEntity.GROUP_OUTPUT -> "output";
+            default -> "tool";
+        };
+        return Component.translatable("gui.neovitae.athanor.group." + key).withStyle(ChatFormatting.YELLOW);
     }
 
     @Override
@@ -75,98 +117,8 @@ public class AthanorScreen extends AbstractContainerScreen<AthanorMenu> {
         guiGraphics.blitSprite(gauge, outputX, outputY, 16, 57);
 
         renderSpiritusGauge(guiGraphics);
-        renderSidePanel(guiGraphics, mouseX, mouseY);
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
-    }
-
-    private static final int SIDE_PANEL_WIDTH = 60;
-    private static final int SIDE_PANEL_HEIGHT = 70;
-    private static final int SIDE_CELL = 18;
-    private static final int[][] SIDE_LAYOUT = {
-            {1, 1}, {2, 2}, {0, 1}, {2, 1}, {1, 0}, {1, 2}
-    };
-
-    public int sidePanelX() {
-        return leftPos + imageWidth + 2;
-    }
-
-    public int sidePanelY() {
-        return topPos + 4;
-    }
-
-    public Rect2i sidePanelArea() {
-        return new Rect2i(sidePanelX(), sidePanelY(), SIDE_PANEL_WIDTH, SIDE_PANEL_HEIGHT);
-    }
-
-    private int sideButtonX(AthanorSides.Face face) {
-        return sidePanelX() + 4 + SIDE_LAYOUT[face.ordinal()][0] * SIDE_CELL;
-    }
-
-    private int sideButtonY(AthanorSides.Face face) {
-        return sidePanelY() + 13 + SIDE_LAYOUT[face.ordinal()][1] * SIDE_CELL;
-    }
-
-    private AthanorSides.Face sideFaceAt(double mouseX, double mouseY) {
-        for (AthanorSides.Face face : AthanorSides.Face.values()) {
-            int bx = sideButtonX(face);
-            int by = sideButtonY(face);
-            if (mouseX >= bx && mouseX < bx + 16 && mouseY >= by && mouseY < by + 16) return face;
-        }
-        return null;
-    }
-
-    private static int sideModeColor(AthanorSides.Mode mode) {
-        return switch (mode) {
-            case INPUTS -> 0xFF3F76E4;
-            case OUTPUTS -> 0xFFE07A2E;
-            case BOTH -> 0xFF9B4FD1;
-            case TOOL -> 0xFFD9B23A;
-            default -> 0xFF2A2A2A;
-        };
-    }
-
-    private static String sideModeLabel(AthanorSides.Mode mode) {
-        return switch (mode) {
-            case INPUTS -> "I";
-            case OUTPUTS -> "O";
-            case BOTH -> "IO";
-            case TOOL -> "T";
-            default -> "-";
-        };
-    }
-
-    private void renderSidePanel(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int px = sidePanelX();
-        int py = sidePanelY();
-        guiGraphics.fill(px, py, px + SIDE_PANEL_WIDTH, py + SIDE_PANEL_HEIGHT, 0xFF000000);
-        guiGraphics.fill(px + 1, py + 1, px + SIDE_PANEL_WIDTH - 1, py + SIDE_PANEL_HEIGHT - 1, 0xFF2B2228);
-        guiGraphics.drawString(this.font, Component.translatable("gui.neovitae.athanor.sides"), px + 4, py + 3, 0xFFE0D0D0, false);
-        for (AthanorSides.Face face : AthanorSides.Face.values()) {
-            AthanorSides.Mode mode = menu.tile.getSideMode(face);
-            boolean isDefault = mode == AthanorSides.Mode.DEFAULT;
-            AthanorSides.Mode shown = isDefault ? face.defaultRole() : mode;
-            int bx = sideButtonX(face);
-            int by = sideButtonY(face);
-            int color = sideModeColor(shown);
-            if (isDefault) {
-                color = 0xFF000000 | (((color >> 16) & 0xFF) * 45 / 100) << 16 | (((color >> 8) & 0xFF) * 45 / 100) << 8 | ((color & 0xFF) * 45 / 100);
-            }
-            boolean hovered = mouseX >= bx && mouseX < bx + 16 && mouseY >= by && mouseY < by + 16;
-            guiGraphics.fill(bx - 1, by - 1, bx + 17, by + 17, hovered ? 0xFFFFFFFF : 0xFF000000);
-            guiGraphics.fill(bx, by, bx + 16, by + 16, color);
-            String label = sideModeLabel(shown);
-            guiGraphics.drawString(this.font, label, bx + 8 - this.font.width(label) / 2, by + 4, isDefault ? 0xFFB0B0B0 : 0xFFFFFFFF, true);
-        }
-    }
-
-    private Component sideModeName(AthanorSides.Face face) {
-        AthanorSides.Mode mode = menu.tile.getSideMode(face);
-        if (mode == AthanorSides.Mode.DEFAULT) {
-            return Component.translatable("gui.neovitae.athanor.side_mode.default",
-                    Component.translatable("gui.neovitae.athanor.side_mode." + face.defaultRole().getName()));
-        }
-        return Component.translatable("gui.neovitae.athanor.side_mode." + mode.getName());
     }
 
     private void renderSpiritusGauge(GuiGraphics guiGraphics) {
@@ -214,16 +166,6 @@ public class AthanorScreen extends AbstractContainerScreen<AthanorMenu> {
     protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
         super.renderTooltip(guiGraphics, x, y);
 
-        AthanorSides.Face hoveredFace = sideFaceAt(x, y);
-        if (hoveredFace != null) {
-            List<Component> tip = new ArrayList<>();
-            tip.add(Component.translatable("gui.neovitae.athanor.face_mode",
-                    Component.translatable("gui.neovitae.athanor.face." + hoveredFace.getName()), sideModeName(hoveredFace)));
-            tip.add(Component.translatable("gui.neovitae.athanor.side_hint").withStyle(ChatFormatting.DARK_GRAY));
-            guiGraphics.renderComponentTooltip(this.font, tip, x, y);
-            return;
-        }
-
         if (x > inputX && x < inputX + 16 && y > inputY && y < inputY + 63) {
             List<Component> tip = new ArrayList<>();
             if (!this.menu.tile.inputTank.isEmpty()) {
@@ -249,7 +191,12 @@ public class AthanorScreen extends AbstractContainerScreen<AthanorMenu> {
         // Slot area tooltips when hovering empty slots
         if (this.hoveredSlot != null && !this.hoveredSlot.hasItem() && this.hoveredSlot.index <= 13) {
             int slotIdx = this.hoveredSlot.index;
-            if (slotIdx == 0) {
+            if (AthanorBlockEntity.groupOf(slotIdx) == menu.tile.activeGroup) {
+                List<Component> lines = new ArrayList<>();
+                lines.add(Component.translatable("gui.neovitae.tabula_vitae.active_slot", groupName(menu.tile.activeGroup)).withStyle(ChatFormatting.WHITE));
+                lines.add(Component.translatable("gui.neovitae.tabula_vitae.active_hint").withStyle(ChatFormatting.GRAY));
+                guiGraphics.renderComponentTooltip(this.font, lines, x, y);
+            } else if (slotIdx == 0) {
                 guiGraphics.renderTooltip(this.font, Component.literal("Tool").withStyle(ChatFormatting.GRAY), x, y);
             } else if (slotIdx >= 1 && slotIdx <= 6) {
                 guiGraphics.renderTooltip(this.font, Component.literal("Input").withStyle(ChatFormatting.GRAY), x, y);
@@ -312,10 +259,7 @@ public class AthanorScreen extends AbstractContainerScreen<AthanorMenu> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        AthanorSides.Face clickedFace = sideFaceAt(mouseX, mouseY);
-        if (clickedFace != null && (button == 0 || button == 1) && this.minecraft != null && this.minecraft.gameMode != null) {
-            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId,
-                    AthanorMenu.sideButtonId(clickedFace, button == 1));
+        if (sidePanel.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
         if (button == 0 && isOverProgressArrow(mouseX, mouseY)) {
@@ -334,6 +278,20 @@ public class AthanorScreen extends AbstractContainerScreen<AthanorMenu> {
         int progressWidth = menu.tile.getProgressForGui();
         if (progressWidth > 0) {
             guiGraphics.blitSprite(progress, 38, 23, 0, 4, leftPos + 63, topPos + 51, progressWidth, 19);
+        }
+
+        int group = menu.tile.activeGroup;
+        if (group >= 0) {
+            int px = sidePanelX();
+            int py = sidePanelY();
+            guiGraphics.fill(px, py, px + SIDE_PANEL_WIDTH, py + SIDE_PANEL_HEIGHT, 0xFF000000);
+            guiGraphics.fill(px + 1, py + 1, px + SIDE_PANEL_WIDTH - 1, py + SIDE_PANEL_HEIGHT - 1, 0xFF2B2228);
+            float highlightV = group == AthanorBlockEntity.GROUP_OUTPUT ? 37f : 19f;
+            for (int slotIdx = 0; slotIdx < AthanorBlockEntity.OUTPUT_SLOT + AthanorBlockEntity.NUM_OUTPUTS; slotIdx++) {
+                if (AthanorBlockEntity.groupOf(slotIdx) != group) continue;
+                Slot slot = menu.getSlot(slotIdx);
+                guiGraphics.blit(SLOT_HIGHLIGHT, leftPos + slot.x, topPos + slot.y, 195f, highlightV, 16, 16, 256, 256);
+            }
         }
     }
 }

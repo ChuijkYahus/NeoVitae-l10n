@@ -10,6 +10,8 @@ The Athanor is sided like a furnace:
 - **Sides** accept the **inputs** (ore, fragments, gravel) and the fluid bucket slots.
 - **Bottom** dispenses the **outputs**.
 
+These are the defaults. Each group of slots can be opened to other sides, and the outputs pushed out of a chosen side, from the Athanor's menu; see [Athanor and Materials](Athanor-and-Materials).
+
 A typical ore line: keep a Cutting Fluid (or the appropriate tool) in the top, pipe ore and any fluid in from the sides, and pull finished items out of the bottom into storage. Remember the chain has several steps (ore -> fragments -> gravel -> dust -> ingot) and the **Resonator** step needs the Resonator tool, so multi-stage automation may use more than one Athanor, each with its own tool.
 
 Two things to keep supplied:

@@ -5,13 +5,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.blockentity.AthanorBlockEntity;
-import com.breakinblocks.neovitae.common.blockentity.AthanorSides;
 
 public class AthanorMenu extends AbstractBlockEntityMenu<AthanorBlockEntity> {
 
@@ -66,24 +66,6 @@ public class AthanorMenu extends AbstractBlockEntityMenu<AthanorBlockEntity> {
         }
 
         this.addDataSlot(idleData);
-        for (AthanorSides.Face face : AthanorSides.Face.values()) {
-            this.addDataSlot(new DataSlot() {
-                private int value;
-
-                @Override
-                public int get() {
-                    return tile != null ? tile.getSideMode(face).ordinal() : value;
-                }
-
-                @Override
-                public void set(int newValue) {
-                    value = newValue;
-                    if (tile != null) {
-                        tile.setSideModeFromNetwork(face.ordinal(), newValue);
-                    }
-                }
-            });
-        }
 
         MenuSlotHelper.addPlayerInventory(this::addSlot, playerInventory,
                 MenuSlotHelper.INV_Y_208, MenuSlotHelper.HOTBAR_Y_208);
@@ -95,19 +77,6 @@ public class AthanorMenu extends AbstractBlockEntityMenu<AthanorBlockEntity> {
 
     public AthanorMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
         this(containerId, playerInventory, (AthanorBlockEntity) playerInventory.player.level().getBlockEntity(buf.readBlockPos()));
-    }
-
-    @Override
-    public boolean clickMenuButton(Player player, int id) {
-        AthanorSides.Face[] faces = AthanorSides.Face.values();
-        int face = id / 2;
-        if (tile == null || face < 0 || face >= faces.length) return false;
-        tile.cycleSideMode(faces[face], id % 2 == 0 ? 1 : -1);
-        return true;
-    }
-
-    public static int sideButtonId(AthanorSides.Face face, boolean backwards) {
-        return face.ordinal() * 2 + (backwards ? 1 : 0);
     }
 
     @Override
@@ -127,5 +96,17 @@ public class AthanorMenu extends AbstractBlockEntityMenu<AthanorBlockEntity> {
     @Override
     public boolean stillValid(Player player) {
         return AbstractContainerMenu.stillValid(ContainerLevelAccess.NULL, player, NVBlocks.ATHANOR_BLOCK.block().get());
+    }
+
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (slotId >= 0 && slotId < AthanorBlockEntity.OUTPUT_SLOT + AthanorBlockEntity.NUM_OUTPUTS) {
+            Slot slot = this.getSlot(slotId);
+            if (!slot.hasItem() && this.getCarried().isEmpty()) {
+                int group = AthanorBlockEntity.groupOf(slotId);
+                tile.activeGroup = tile.activeGroup == group ? -1 : group;
+            }
+        }
+        super.clicked(slotId, button, clickType, player);
     }
 }
