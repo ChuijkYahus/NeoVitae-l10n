@@ -7,6 +7,7 @@ package com.breakinblocks.neovitae.ritual.types;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -17,7 +18,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -46,6 +49,7 @@ public class RitualMagnetism extends Ritual {
     private static final double STEADFAST_DRAIN = 0.01;
     private static final double CORROSIVE_DRAIN = 0.1;
     private static final float CORROSIVE_DRAIN_CHANCE = 0.1F;
+    private static final int MAX_QUARRY_RADIUS = 255;
 
     private BlockPos lastPos;
 
@@ -251,6 +255,41 @@ public class RitualMagnetism extends Ritual {
         return null;
     }
 
+    public static void notifyDeposit(ServerLevel level, BlockPos center, int depositRadius) {
+        int reach = MAX_QUARRY_RADIUS + depositRadius;
+        int minChunkX = SectionPos.blockToSectionCoord(center.getX() - reach);
+        int maxChunkX = SectionPos.blockToSectionCoord(center.getX() + reach);
+        int minChunkZ = SectionPos.blockToSectionCoord(center.getZ() - reach);
+        int maxChunkZ = SectionPos.blockToSectionCoord(center.getZ() + reach);
+        for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+            for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+                LevelChunk chunk = level.getChunkSource().getChunkNow(chunkX, chunkZ);
+                if (chunk == null) continue;
+                for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+                    if (blockEntity instanceof IMasterRitualStone master && master.isActive()
+                            && master.getCurrentRitual() instanceof RitualMagnetism quarry) {
+                        quarry.rewindForDeposit(level, blockEntity.getBlockPos(), center, depositRadius);
+                    }
+                }
+            }
+        }
+    }
+
+    private void rewindForDeposit(Level world, BlockPos masterPos, BlockPos center, int depositRadius) {
+        int radius = getRadius(world.getBlockState(masterPos.below()).getBlock());
+        if (Math.abs(center.getX() - masterPos.getX()) > radius + depositRadius
+                || Math.abs(center.getZ() - masterPos.getZ()) > radius + depositRadius) {
+            return;
+        }
+        int bottom = center.getY() - depositRadius - masterPos.getY();
+        if (bottom > -1) return;
+        int top = Math.min(-1, center.getY() + depositRadius - masterPos.getY());
+        int cursor = lastPos == null ? -1 : lastPos.getY();
+        if (cursor <= top) {
+            lastPos = new BlockPos(-radius, top, -radius);
+        }
+    }
+
     private static int clamp(int value, int lo, int hi) {
         return Math.min(hi, Math.max(lo, value));
     }
@@ -261,7 +300,7 @@ public class RitualMagnetism extends Ritual {
         if (foundation == Blocks.DIAMOND_BLOCK) return 31;
         if (foundation == Blocks.NETHERITE_BLOCK) return 63;
         if (foundation == NVBlocks.HELLFORGED_BLOCK.block().get()) return 127;
-        if (foundation == NVBlocks.SANGUINE_DEUS_BLOCK.block().get()) return 255;
+        if (foundation == NVBlocks.SANGUINE_DEUS_BLOCK.block().get()) return MAX_QUARRY_RADIUS;
         return 3;
     }
 

@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -22,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import com.breakinblocks.neovitae.common.meteor.MeteorLayer;
 import com.breakinblocks.neovitae.common.recipe.NVRecipeCodecs;
 import com.breakinblocks.neovitae.common.recipe.NVRecipes;
+import com.breakinblocks.neovitae.ritual.types.RitualMagnetism;
 
 import java.util.*;
 
@@ -95,6 +97,9 @@ public class MeteorRecipe implements Recipe<MeteorInput> {
             MeteorLayer layer = layerMap.get(radius);
             layer.buildLayer(level, centerPos, prevRadius, oresOnly);
             prevRadius = layer.getLayerRadius();
+        }
+        if (level instanceof ServerLevel serverLevel) {
+            RitualMagnetism.notifyDeposit(serverLevel, centerPos, getMaxRadius());
         }
     }
 
