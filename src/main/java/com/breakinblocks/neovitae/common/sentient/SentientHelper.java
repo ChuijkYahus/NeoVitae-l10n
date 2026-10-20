@@ -28,6 +28,7 @@ import com.breakinblocks.neovitae.common.datacomponent.UpgradeTome;
 import com.breakinblocks.neovitae.common.event.SentientArmourEvent;
 import com.breakinblocks.neovitae.common.registry.NVRegistries;
 import com.breakinblocks.neovitae.common.tag.NVTags;
+import com.breakinblocks.neovitae.ritual.types.RitualDeusArmourEvolve;
 import com.breakinblocks.neovitae.util.ChatUtil;
 
 import java.util.ArrayList;
@@ -276,8 +277,19 @@ public class SentientHelper {
         return result.expConsumed;
     }
 
+    public static boolean meetsEvolutionRequirement(ItemStack chest, Holder<SentientUpgrade> upgrade) {
+        if (!upgrade.is(NVTags.Sentient.REQUIRES_FULL_EVOLUTION)) {
+            return true;
+        }
+        int maxPoints = chest.getOrDefault(NVDataComponents.CURRENT_MAX_UPGRADE_POINTS, NeoVitae.SERVER_CONFIG.DEFAULT_UPGRADE_POINTS.get());
+        return maxPoints >= RitualDeusArmourEvolve.DEUS_MAX_UPGRADE_POINTS;
+    }
+
     private static ExpContext gatherExpContext(Player wearer, Holder<SentientUpgrade> upgrade, float amount, boolean fromTome) {
         ItemStack chest = getChest(wearer);
+        if (!meetsEvolutionRequirement(chest, upgrade)) {
+            return null;
+        }
         SentientArmourEvent.ExpGain event = NeoForge.EVENT_BUS.post(new SentientArmourEvent.ExpGain(wearer, upgrade, amount, fromTome));
         float eventAmount = event.getCurrentAmount();
         if (eventAmount <= 0) {

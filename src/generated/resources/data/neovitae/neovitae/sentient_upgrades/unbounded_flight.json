@@ -1,0 +1,21 @@
+{
+  "effects": {
+    "neovitae:attributes": [
+      {
+        "amounts": 1.0,
+        "attribute": "neoforge:creative_flight",
+        "id": "neovitae:unbounded_flight",
+        "operation": "add_value"
+      }
+    ],
+    "neovitae:unbounded_flight": {}
+  },
+  "levels": {
+    "exp_to_level": {
+      "1": 1
+    },
+    "level_to_cost": {
+      "1": 20
+    }
+  }
+}

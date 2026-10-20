@@ -227,6 +227,7 @@ public class NVTags {
         public static final TagKey<SentientUpgrade> IS_SCRAPPABLE = tag(bm("is_scrappable"));
         /** Upgrades in this tag are unsuitable for Sentient Armor and should not be applied */
         public static final TagKey<SentientUpgrade> SENTIENT_BLACKLIST = tag(bm("sentient_blacklist"));
+        public static final TagKey<SentientUpgrade> REQUIRES_FULL_EVOLUTION = tag(bm("requires_full_evolution"));
 
         private static TagKey<SentientUpgrade> tag(ResourceLocation id) {
             return TagKey.create(NVRegistries.Keys.SENTIENT_UPGRADES, id);

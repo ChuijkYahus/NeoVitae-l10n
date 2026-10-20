@@ -17,6 +17,7 @@ public class NVGameTestRegistration {
         event.register(HellfireForgeTests.class);
         event.register(AthanorTests.class);
         event.register(TabulaVitaeTests.class);
+        event.register(UnboundedFlightTests.class);
         event.register(SpiritusTests.class);
         event.register(AlchemyArrayTests.class);
         event.register(ImperfectRitualTests.class);

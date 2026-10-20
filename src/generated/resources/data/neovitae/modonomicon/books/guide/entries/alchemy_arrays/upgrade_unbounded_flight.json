@@ -1,0 +1,93 @@
+{
+  "background_u_index": 0,
+  "background_v_index": 0,
+  "category": "alchemy_arrays",
+  "condition": {
+    "type": "modonomicon:entry_read",
+    "entry_id": "alchemy_arrays/sentient_upgrades"
+  },
+  "description": "book.neovitae.guide.alchemy_arrays.upgrade_unbounded_flight.description",
+  "hide_while_locked": false,
+  "icon": {
+    "item": "minecraft:feather"
+  },
+  "name": "book.neovitae.guide.alchemy_arrays.upgrade_unbounded_flight.name",
+  "pages": [
+    {
+      "type": "neovitae:sentient_upgrade_table",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "text": "book.neovitae.guide.alchemy_arrays.upgrade_unbounded_flight.intro.text",
+      "title": "book.neovitae.guide.alchemy_arrays.upgrade_unbounded_flight.intro.title"
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.alchemy_arrays.upgrade_unbounded_flight.details.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.alchemy_arrays.upgrade_unbounded_flight.deus_shard.text",
+      "title": "",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "neovitae:revenant_plating",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "neovitae:athanor_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "neovitae:athanor/orb/deus_shard",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    },
+    {
+      "type": "neovitae:tabula_vitae_recipe",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "recipe_id_1": "neovitae:alchemytable/unbounded_flight_tome",
+      "text": "",
+      "title1": "",
+      "title2": ""
+    }
+  ],
+  "parents": [
+    {
+      "draw_arrow": true,
+      "entry": "alchemy_arrays/sentient_upgrades",
+      "line_enabled": true,
+      "line_reversed": false
+    }
+  ],
+  "show_when_any_parent_unlocked": false,
+  "sort_number": 44,
+  "x": 6,
+  "y": 4
+}

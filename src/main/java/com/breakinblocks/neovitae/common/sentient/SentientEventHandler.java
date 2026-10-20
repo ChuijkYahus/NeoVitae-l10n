@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ArmorItem;
@@ -28,17 +29,22 @@ import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import com.breakinblocks.neovitae.NeoVitae;
+import com.breakinblocks.neovitae.api.soul.AnimaTicket;
+import com.breakinblocks.neovitae.common.datacomponent.Anima;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.event.LexVitaeAoeHandler;
 import com.breakinblocks.neovitae.common.item.ExperienceTomeItem;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.common.tag.NVTags;
 import com.breakinblocks.neovitae.compat.curios.CuriosCompat;
+import com.breakinblocks.neovitae.util.helper.AnimaHelper;
 
 import java.util.List;
 
 @EventBusSubscriber(modid = NeoVitae.MODID)
 public class SentientEventHandler {
+    public static final int UNBOUNDED_FLIGHT_EV_PER_TICK = 5;
+
 
     @SubscribeEvent
     public static void onTotemUse(LivingUseTotemEvent event) {
@@ -229,6 +235,35 @@ public class SentientEventHandler {
                 }
             }
         }
+
+        tickUnboundedFlight(event.getEntity());
+    }
+
+    private static void tickUnboundedFlight(Player player) {
+        Abilities abilities = player.getAbilities();
+        if (!abilities.flying || player.isCreative() || player.isSpectator()) return;
+
+        if (!player.mayFly()) {
+            stopFlying(player);
+            return;
+        }
+
+        if (player.onGround() || player.isSwimming() || player.isInWater()) return;
+        if (!SentientHelper.hasFullSet(player) || !SentientHelper.has(player, SentientEffectComponents.UNBOUNDED_FLIGHT.get())) return;
+
+        Anima network = AnimaHelper.getAnima(player);
+        if (network != null && network.getCurrentEV() >= UNBOUNDED_FLIGHT_EV_PER_TICK) {
+            network.syphon(AnimaTicket.create(UNBOUNDED_FLIGHT_EV_PER_TICK));
+            return;
+        }
+
+        stopFlying(player);
+        player.displayClientMessage(Component.translatable("chat." + NeoVitae.MODID + ".unbounded_flight.no_ev"), true);
+    }
+
+    private static void stopFlying(Player player) {
+        player.getAbilities().flying = false;
+        player.onUpdateAbilities();
     }
 
     @SubscribeEvent

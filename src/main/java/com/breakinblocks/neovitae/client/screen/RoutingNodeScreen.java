@@ -44,7 +44,14 @@ import java.util.Set;
 public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> {
     private static final ResourceLocation BACKGROUND = NeoVitae.rl("textures/gui/routingnode.png");
 
-    private static final String[] DIRECTION_NAMES = {"Down", "Up", "North", "South", "West", "East"};
+    private static final String[] DIRECTION_KEYS = {
+            "gui.neovitae.routing.direction.down",
+            "gui.neovitae.routing.direction.up",
+            "gui.neovitae.routing.direction.north",
+            "gui.neovitae.routing.direction.south",
+            "gui.neovitae.routing.direction.west",
+            "gui.neovitae.routing.direction.east"
+    };
 
     /** Client-side UI tab - server never needs to know which tab the player is viewing. */
     private enum Tab { ITEMS, FLUIDS, ENERGY, SPIRITUS }
@@ -109,7 +116,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
             this.addRenderableWidget(btn);
         }
 
-        enableButton = Button.builder(Component.literal("Disabled"), btn -> {
+        enableButton = Button.builder(Component.translatable("gui.neovitae.routing.disabled"), btn -> {
             PacketDistributor.sendToServer(new RoutingNodePayload(
                     menu.tile.getBlockPos(),
                     RoutingNodePayload.ACTION_TOGGLE_SIDE_ENABLED,
@@ -117,7 +124,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         }).bounds(leftPos + 8, topPos + 18, 50, 16).build();
         this.addRenderableWidget(enableButton);
 
-        tabButton = Button.builder(Component.literal("Items"), btn -> {
+        tabButton = Button.builder(Component.translatable("gui.neovitae.routing.items"), btn -> {
             activeTab = switch (activeTab) {
                 case ITEMS -> Tab.FLUIDS;
                 case FLUIDS -> Tab.ENERGY;
@@ -128,7 +135,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         }).bounds(leftPos + 8, topPos + 36, 50, 16).build();
         this.addRenderableWidget(tabButton);
 
-        directionButton = Button.builder(Component.literal("Face: Off"), btn ->
+        directionButton = Button.builder(Component.translatable("gui.neovitae.routing.direction_off"), btn ->
                 PacketDistributor.sendToServer(new RoutingNodePayload(
                         menu.tile.getBlockPos(), RoutingNodePayload.ACTION_CYCLE_SIDE_DIRECTION,
                         Screen.hasShiftDown() ? -1 : 1)))
@@ -136,7 +143,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         directionButton.visible = false;
         this.addRenderableWidget(directionButton);
 
-        energyButton = Button.builder(Component.literal("Energy: On"), btn ->
+        energyButton = Button.builder(Component.translatable("gui.neovitae.routing.energy_on"), btn ->
                 PacketDistributor.sendToServer(new RoutingNodePayload(
                         menu.tile.getBlockPos(), RoutingNodePayload.ACTION_TOGGLE_SIDE_ENERGY, 0)))
                 .bounds(leftPos + 8, topPos + 80, 160, 16).build();
@@ -144,7 +151,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         this.addRenderableWidget(energyButton);
 
         energyRateBox = new EditBox(this.font, leftPos + ENERGY_BOX_X, topPos + ENERGY_BOX_Y,
-                ENERGY_BOX_W, ENERGY_BOX_H, Component.literal("Rate"));
+                ENERGY_BOX_W, ENERGY_BOX_H, Component.translatable("gui.neovitae.routing.rate"));
         energyRateBox.setMaxLength(7);
         energyRateBox.setFilter(s -> s.isEmpty() || s.chars().allMatch(Character::isDigit));
         lastSyncedEnergyRate = menu.getEnergyRate();
@@ -152,13 +159,13 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         energyRateBox.visible = false;
         this.addRenderableWidget(energyRateBox);
 
-        energyRateSetButton = Button.builder(Component.literal("Set"), btn -> commitEnergyRate())
+        energyRateSetButton = Button.builder(Component.translatable("gui.neovitae.routing.set"), btn -> commitEnergyRate())
                 .bounds(leftPos + ENERGY_BOX_X + ENERGY_BOX_W + 4, topPos + ENERGY_BOX_Y, 26, ENERGY_BOX_H)
                 .build();
         energyRateSetButton.visible = false;
         this.addRenderableWidget(energyRateSetButton);
 
-        spiritusTypeButton = Button.builder(Component.literal("Off"), btn -> {
+        spiritusTypeButton = Button.builder(Component.translatable("gui.neovitae.routing.spiritus_off"), btn -> {
             PacketDistributor.sendToServer(new RoutingNodePayload(
                     menu.tile.getBlockPos(),
                     RoutingNodePayload.ACTION_CYCLE_SPIRITUS_TYPE,
@@ -185,7 +192,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         stockUpButton.visible = false;
         this.addRenderableWidget(stockUpButton);
 
-        modeButton = Button.builder(Component.literal("Whitelist"), btn -> {
+        modeButton = Button.builder(Component.translatable("gui.neovitae.routing.whitelist"), btn -> {
             int action = activeTab == Tab.ITEMS
                     ? RoutingNodePayload.ACTION_TOGGLE_SIDE_ITEM_MODE
                     : RoutingNodePayload.ACTION_TOGGLE_SIDE_FLUID_MODE;
@@ -293,7 +300,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
 
         if (activeTab == Tab.SPIRITUS) {
             guiGraphics.drawCenteredString(this.font,
-                    Component.literal("Keep: " + menu.getSpiritusStock()),
+                    Component.translatable("gui.neovitae.routing.spiritus_keep", menu.getSpiritusStock()),
                     leftPos + 88, topPos + 106, 0xFFFFFF);
         }
 
@@ -320,16 +327,16 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         }
         boolean omni = menu.isOmniNode();
         boolean enabled = menu.isSideEnabled(currentSlot);
-        enableButton.setMessage(Component.literal(enabled ? "Enabled" : "Disabled")
+        enableButton.setMessage(Component.translatable(enabled ? "gui.neovitae.routing.enabled" : "gui.neovitae.routing.disabled")
                 .withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.RED));
 
         if (omni) {
             FaceDirection facing = menu.getSideDirection(currentSlot);
-            directionButton.setMessage(Component.literal(switch (facing) {
-                case OFF -> "Off";
-                case INPUT -> "Input";
-                case OUTPUT -> "Output";
-                case BOTH -> "Both";
+            directionButton.setMessage(Component.translatable(switch (facing) {
+                case OFF -> "gui.neovitae.routing.direction_off";
+                case INPUT -> "gui.neovitae.routing.direction_input";
+                case OUTPUT -> "gui.neovitae.routing.direction_output";
+                case BOTH -> "gui.neovitae.routing.direction_both";
             }).withStyle(switch (facing) {
                 case OFF -> ChatFormatting.RED;
                 case INPUT -> ChatFormatting.AQUA;
@@ -338,11 +345,11 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
             }));
         }
 
-        tabButton.setMessage(Component.literal(switch (activeTab) {
-            case ITEMS -> "Items";
-            case FLUIDS -> "Fluids";
-            case ENERGY -> "Energy";
-            case SPIRITUS -> "Spiritus";
+        tabButton.setMessage(Component.translatable(switch (activeTab) {
+            case ITEMS -> "gui.neovitae.routing.items";
+            case FLUIDS -> "gui.neovitae.routing.fluids";
+            case ENERGY -> "gui.neovitae.routing.energy";
+            case SPIRITUS -> "gui.neovitae.routing.spiritus";
         }));
         tabButton.active = true;
 
@@ -370,7 +377,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
 
         if (energyTab) {
             boolean energyOn = menu.isSideEnergyEnabled(currentSlot);
-            energyButton.setMessage(Component.literal(energyOn ? "Energy: On" : "Energy: Off")
+            energyButton.setMessage(Component.translatable(energyOn ? "gui.neovitae.routing.energy_on" : "gui.neovitae.routing.energy_off")
                     .withStyle(energyOn ? ChatFormatting.GREEN : ChatFormatting.RED));
             energyButton.active = enabled;
 
@@ -396,7 +403,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         if (spiritusTab) {
             int typeOrdinal = menu.getSpiritusTypeOrdinal();
             if (typeOrdinal <= 0) {
-                spiritusTypeButton.setMessage(Component.literal("Off").withStyle(ChatFormatting.GRAY));
+                spiritusTypeButton.setMessage(Component.translatable("gui.neovitae.routing.spiritus_off").withStyle(ChatFormatting.GRAY));
             } else {
                 SpiritusType type = SpiritusType.values()[Math.min(typeOrdinal - 1, SpiritusType.values().length - 1)];
                 spiritusTypeButton.setMessage(Component.translatable("tooltip.neovitae.spiritus." + type.getSerializedName())
@@ -407,21 +414,21 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         modeButton.active = enabled && filterTab;
         if (activeTab == Tab.ITEMS) {
             FilterMode mode = menu.getSideItemMode(currentSlot);
-            modeButton.setMessage(Component.literal(mode == FilterMode.WHITELIST ? "Whitelist" : "Blacklist")
+            modeButton.setMessage(Component.translatable(mode == FilterMode.WHITELIST ? "gui.neovitae.routing.whitelist" : "gui.neovitae.routing.blacklist")
                     .withStyle(mode == FilterMode.WHITELIST ? ChatFormatting.GREEN : ChatFormatting.RED));
         } else if (activeTab == Tab.FLUIDS) {
             FilterMode mode = menu.getSideFluidMode(currentSlot);
             String label = switch (mode) {
-                case WHITELIST -> "Whitelist";
-                case BLACKLIST -> "Blacklist";
-                case AUTO_MATCH -> "Auto-Match";
+                case WHITELIST -> "gui.neovitae.routing.whitelist";
+                case BLACKLIST -> "gui.neovitae.routing.blacklist";
+                case AUTO_MATCH -> "gui.neovitae.routing.auto_match";
             };
             ChatFormatting color = switch (mode) {
                 case WHITELIST -> ChatFormatting.GREEN;
                 case BLACKLIST -> ChatFormatting.RED;
                 case AUTO_MATCH -> ChatFormatting.AQUA;
             };
-            modeButton.setMessage(Component.literal(label).withStyle(color));
+            modeButton.setMessage(Component.translatable(label).withStyle(color));
         }
 
         int pageCount = menu.getPageCount();
@@ -562,15 +569,15 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
 
         if (activeTab != Tab.SPIRITUS) {
             int priority = menu.getCurrentPriority();
-            String priorityStr = "P:" + priority;
+            Component priorityStr = Component.translatable("gui.neovitae.routing.priority_short", priority);
             guiGraphics.drawString(font, priorityStr, 87 - font.width(priorityStr) / 2, 44, 0x404040, false);
         }
 
         if (activeTab == Tab.ENERGY) {
             int ceiling = menu.getEnergyCeiling();
-            guiGraphics.drawString(font, "Rate (FE/t):", 8, ENERGY_BOX_Y + 3, 0x808080, false);
+            guiGraphics.drawString(font, Component.translatable("gui.neovitae.routing.rate_label"), 8, ENERGY_BOX_Y + 3, 0x808080, false);
             int color = menu.getEnergyRate() > ceiling ? 0xC00000 : 0x808080;
-            guiGraphics.drawString(font, "Max: " + ceiling + " FE/t",
+            guiGraphics.drawString(font, Component.translatable("gui.neovitae.routing.rate_max", ceiling),
                     ENERGY_BOX_X, ENERGY_BOX_Y + ENERGY_BOX_H + 4, color, false);
         }
     }
@@ -593,17 +600,17 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
             List<Component> tooltip = new ArrayList<>(Screen.getTooltipFromItem(this.minecraft, ghost));
             if (menu.getSideItemMode(menu.getCurrentSlot()) == FilterMode.WHITELIST) {
                 int amount = menu.getCurrentItemAmount(this.hoveredSlot.index);
-                tooltip.add(Component.literal(amount > 0 ? "Keep: " + amount : "Keep: Unlimited").withStyle(ChatFormatting.AQUA));
-                tooltip.add(Component.literal("Scroll to set (Shift x10, Ctrl x64)").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+                tooltip.add((amount > 0 ? Component.translatable("gui.neovitae.routing.keep", amount) : Component.translatable("gui.neovitae.routing.keep_unlimited")).withStyle(ChatFormatting.AQUA));
+                tooltip.add(Component.translatable("gui.neovitae.routing.keep_scroll").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             }
             Set<ResourceLocation> matched = menu.getCurrentItemComponents(this.hoveredSlot.index);
             if (!matched.isEmpty()) {
-                tooltip.add(Component.literal("Matching components:").withStyle(ChatFormatting.GREEN));
+                tooltip.add(Component.translatable("gui.neovitae.routing.matching_components").withStyle(ChatFormatting.GREEN));
                 for (ResourceLocation id : matched) {
                     tooltip.add(Component.literal(" - " + id).withStyle(ChatFormatting.DARK_GREEN));
                 }
             }
-            tooltip.add(Component.literal("Shift-Right-Click: match components").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+            tooltip.add(Component.translatable("gui.neovitae.routing.shift_match").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
         }
@@ -613,16 +620,16 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
             FluidStack fluid = menu.getCurrentFluidGhost(this.hoveredSlot.index);
             List<Component> tooltip = new ArrayList<>();
             if (fluid.isEmpty()) {
-                tooltip.add(Component.literal("Empty").withStyle(ChatFormatting.DARK_GRAY));
-                tooltip.add(Component.literal("Left-click with a bucket to set").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+                tooltip.add(Component.translatable("gui.neovitae.routing.slot.empty").withStyle(ChatFormatting.DARK_GRAY));
+                tooltip.add(Component.translatable("gui.neovitae.routing.bucket.set").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             } else {
                 tooltip.add(fluid.getHoverName());
                 if (menu.getSideFluidMode(menu.getCurrentSlot()) == FilterMode.WHITELIST) {
                     int amount = menu.getCurrentFluidAmount(this.hoveredSlot.index);
-                    tooltip.add(Component.literal(amount > 0 ? "Keep: " + amount + " mB" : "Keep: Unlimited").withStyle(ChatFormatting.AQUA));
-                    tooltip.add(Component.literal("Scroll to set (Shift x10k, Ctrl x250)").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+                    tooltip.add((amount > 0 ? Component.translatable("gui.neovitae.routing.keep_mb", amount) : Component.translatable("gui.neovitae.routing.keep_unlimited")).withStyle(ChatFormatting.AQUA));
+                    tooltip.add(Component.translatable("gui.neovitae.routing.keep_scroll_fluid").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
                 }
-                tooltip.add(Component.literal("Right-click to clear").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+                tooltip.add(Component.translatable("gui.neovitae.routing.bucket.clear").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             }
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
@@ -633,7 +640,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         for (int i = 0; i < 6; i++) {
             if (directionButtons[i].visible && directionButtons[i].isHovered()) {
                 List<Component> tooltip = new ArrayList<>();
-                tooltip.add(Component.literal(DIRECTION_NAMES[i] + " Face"));
+                tooltip.add(Component.translatable("gui.neovitae.routing.face", Component.translatable(DIRECTION_KEYS[i])));
 
                 if (menu.tile != null) {
                     Direction dir = Direction.from3DDataValue(i);
@@ -641,21 +648,21 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
                     boolean hasInv = menu.tile.hasInventoryNeighbor(dir);
 
                     if (hasInv) {
-                        tooltip.add(Component.literal("Inventory: " + neighborName).withStyle(ChatFormatting.GREEN));
+                        tooltip.add(Component.translatable("gui.neovitae.routing.inventory_neighbor", neighborName).withStyle(ChatFormatting.GREEN));
                     } else {
-                        tooltip.add(Component.literal("Block: " + neighborName).withStyle(ChatFormatting.GRAY));
+                        tooltip.add(Component.translatable("gui.neovitae.routing.block_neighbor", neighborName).withStyle(ChatFormatting.GRAY));
                     }
 
                     int priority = menu.getPriority(dir);
-                    tooltip.add(Component.literal("Priority: " + priority).withStyle(ChatFormatting.YELLOW));
+                    tooltip.add(Component.translatable("gui.neovitae.routing.priority_value", priority).withStyle(ChatFormatting.YELLOW));
 
                     boolean sideEnabled = menu.isSideEnabled(i);
-                    tooltip.add(Component.literal(sideEnabled ? "Enabled" : "Disabled")
+                    tooltip.add(Component.translatable(sideEnabled ? "gui.neovitae.routing.enabled" : "gui.neovitae.routing.disabled")
                             .withStyle(sideEnabled ? ChatFormatting.GREEN : ChatFormatting.RED));
 
                     int currentSlot = menu.getCurrentSlot();
                     if (i != currentSlot) {
-                        tooltip.add(Component.literal("Right-click to swap priority").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+                        tooltip.add(Component.translatable("gui.neovitae.routing.swap_priority").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
                     }
                 }
 
@@ -666,58 +673,58 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
 
         if (enableButton.visible && enableButton.isHovered()) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Toggle routing for this side"));
-            tooltip.add(Component.literal("Disabled sides block all transfer").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            tooltip.add(Component.translatable("gui.neovitae.routing.side.toggle"));
+            tooltip.add(Component.translatable("gui.neovitae.routing.side.disabled_blocks").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
         }
         if (directionButton.visible && directionButton.isHovered()) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Face mode for this side"));
-            tooltip.add(Component.literal("Input: pulls from the neighbor").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Output: pushes into the neighbor").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Both: does either").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Shift-click to cycle backwards").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+            tooltip.add(Component.translatable("gui.neovitae.routing.face_mode"));
+            tooltip.add(Component.translatable("gui.neovitae.routing.face_mode.input").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("gui.neovitae.routing.face_mode.output").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("gui.neovitae.routing.face_mode.both").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("gui.neovitae.routing.face_mode.cycle").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
         }
         if (energyButton.visible && energyButton.isHovered()) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Toggle energy transfer for this side"));
+            tooltip.add(Component.translatable("gui.neovitae.routing.energy_toggle"));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
         }
         if (energyRateBox.visible && energyRateBox.isMouseOver(mouseX, mouseY)) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Most this side will move per transfer"));
-            tooltip.add(Component.literal("Capped by the linked master node's upgrades").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Anything at or above the cap tracks the master").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Enter or Set to apply").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+            tooltip.add(Component.translatable("gui.neovitae.routing.rate.title"));
+            tooltip.add(Component.translatable("gui.neovitae.routing.rate.capped").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("gui.neovitae.routing.rate.tracks").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("gui.neovitae.routing.rate.apply").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
         }
         if (spiritusTypeButton.visible && spiritusTypeButton.isHovered()) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Spiritus aspect this node exports"));
-            tooltip.add(Component.literal("Applies to the whole node, not one side").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            tooltip.add(Component.translatable("gui.neovitae.routing.spiritus_aspect"));
+            tooltip.add(Component.translatable("gui.neovitae.routing.spiritus_aspect.desc").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
         }
         if ((stockDownButton.visible && stockDownButton.isHovered()) || (stockUpButton.visible && stockUpButton.isHovered())) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Level to keep this chunk's Spiritus at"));
-            tooltip.add(Component.literal("Shift for steps of 100").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+            tooltip.add(Component.translatable("gui.neovitae.routing.spiritus_reserve"));
+            tooltip.add(Component.translatable("gui.neovitae.routing.spiritus_reserve.hint").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
         }
         if (tabButton.isHovered()) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Switch filter target"));
-            tooltip.add(Component.literal("Items: per-item whitelist/blacklist").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Fluids: whitelist/blacklist/auto-match").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Energy: per-side on/off").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("gui.neovitae.routing.filter.switch"));
+            tooltip.add(Component.translatable("gui.neovitae.routing.filter.items_desc").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("gui.neovitae.routing.filter.fluids_desc").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("gui.neovitae.routing.filter.energy_desc").withStyle(ChatFormatting.GRAY));
             if (isSpiritusCapable()) {
-                tooltip.add(Component.literal("Spiritus: aspect and reserve").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("gui.neovitae.routing.filter.spiritus_desc").withStyle(ChatFormatting.GRAY));
             }
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
@@ -725,27 +732,27 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         if (modeButton.visible && modeButton.isHovered()) {
             List<Component> tooltip = new ArrayList<>();
             if (activeTab == Tab.ITEMS) {
-                tooltip.add(Component.literal("Item filter mode"));
-                tooltip.add(Component.literal("Whitelist + empty = nothing passes").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.literal("Blacklist + empty = everything passes").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("gui.neovitae.routing.filter.item_mode"));
+                tooltip.add(Component.translatable("gui.neovitae.routing.filter.whitelist_empty").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("gui.neovitae.routing.filter.blacklist_empty").withStyle(ChatFormatting.GRAY));
             } else {
-                tooltip.add(Component.literal("Fluid filter mode"));
-                tooltip.add(Component.literal("Whitelist / Blacklist: explicit control").withStyle(ChatFormatting.GRAY));
-                tooltip.add(Component.literal("Auto-Match: mirrors the neighbor tank").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("gui.neovitae.routing.filter.fluid_mode"));
+                tooltip.add(Component.translatable("gui.neovitae.routing.filter.fluid_explicit").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("gui.neovitae.routing.filter.fluid_automatch").withStyle(ChatFormatting.GRAY));
             }
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
             return;
         }
         if (priorityUpButton.visible && priorityUpButton.isHovered()) {
-            guiGraphics.renderTooltip(font, Component.literal("Increase Priority"), mouseX, mouseY);
+            guiGraphics.renderTooltip(font, Component.translatable("gui.neovitae.routing.priority.increase"), mouseX, mouseY);
         }
         if (priorityDownButton.visible && priorityDownButton.isHovered()) {
-            guiGraphics.renderTooltip(font, Component.literal("Decrease Priority"), mouseX, mouseY);
+            guiGraphics.renderTooltip(font, Component.translatable("gui.neovitae.routing.priority.decrease"), mouseX, mouseY);
         }
         if ((pagePrevButton.visible && pagePrevButton.isHovered()) || (pageNextButton.visible && pageNextButton.isHovered())) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal("Filter Page " + (menu.getCurrentPage() + 1) + " of " + menu.getPageCount()));
-            tooltip.add(Component.literal("A new page opens as you fill the last").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            tooltip.add(Component.translatable("gui.neovitae.routing.page", menu.getCurrentPage() + 1, menu.getPageCount()));
+            tooltip.add(Component.translatable("gui.neovitae.routing.page_hint").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
         }
     }

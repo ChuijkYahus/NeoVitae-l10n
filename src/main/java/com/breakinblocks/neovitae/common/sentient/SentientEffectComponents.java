@@ -38,6 +38,7 @@ public class SentientEffectComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> GILDED = LIVING_EFFECT_COMPONENTS.registerComponentType("gilded", builder -> builder.persistent(Unit.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> ELYTRA = LIVING_EFFECT_COMPONENTS.registerComponentType("elytra", builder -> builder.persistent(Unit.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> UNBOUNDED_FLIGHT = LIVING_EFFECT_COMPONENTS.registerComponentType("unbounded_flight", builder -> builder.persistent(Unit.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> QUENCHED = LIVING_EFFECT_COMPONENTS.registerComponentType("quenched", builder -> builder.persistent(Unit.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CRIPPLED_ARM = LIVING_EFFECT_COMPONENTS.registerComponentType("crippled_arm", builder -> builder.persistent(Unit.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> WALK_ON_POWDERED_SNOW = LIVING_EFFECT_COMPONENTS.registerComponentType("walk_on_powdered_snow", builder -> builder.persistent(Unit.CODEC));

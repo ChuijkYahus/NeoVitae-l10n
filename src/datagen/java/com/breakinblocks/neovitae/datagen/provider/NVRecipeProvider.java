@@ -442,6 +442,15 @@ public class NVRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_hellforged_parts", has(NVItems.HELLFORGED_PARTS.get()))
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NVItems.REVENANT_PLATING.get())
+                .pattern("ppp")
+                .pattern("php")
+                .pattern("ppp")
+                .define('p', NVItems.REVENANT_PLATE.get())
+                .define('h', NVItems.HELLFORGED_PARTS.get())
+                .unlockedBy("has_revenant_plate", has(NVItems.REVENANT_PLATE.get()))
+                .save(output);
+
         // Tier 2 Runes (require bloodstone and netherite)
         addTier2RuneRecipe(output, NVBlocks.RUNE_2_SPEED.block().get(), NVBlocks.RUNE_SPEED.block().get());
         addTier2RuneRecipe(output, NVBlocks.RUNE_2_SACRIFICE.block().get(), NVBlocks.RUNE_SACRIFICE.block().get());
@@ -2072,6 +2081,22 @@ public class NVRecipeProvider extends RecipeProvider {
                 .save(output, NeoVitae.rl("prismatic_spiritus_gem"));
 
         AthanorRecipeBuilder.build(NVTags.Items.ATHANOR_ORB)
+                .input(NVItems.REVENANT_PLATING.get())
+                .input(NVItems.REVENANT_PLATING.get())
+                .input(NVItems.REVENANT_PLATING.get())
+                .input(NVItems.REVENANT_PLATING.get())
+                .input(Items.NETHER_STAR)
+                .fluidInput(NVFluids.ESSENTIA_VITAE_SOURCE.get(), 10000)
+                .spiritusCost(SpiritusType.RAW, 20.0)
+                .spiritusCost(SpiritusType.RUINA, 20.0)
+                .spiritusCost(SpiritusType.NIHILUM, 20.0)
+                .spiritusCost(SpiritusType.VINDICTA, 20.0)
+                .spiritusCost(SpiritusType.INVICTUS, 20.0)
+                .guaranteedOutput(new ItemStack(NVItems.DEUS_SHARD.get()))
+                .unlockedBy("has_revenant_plating", has(NVItems.REVENANT_PLATING.get()))
+                .save(output, NeoVitae.rl("deus_shard"));
+
+        AthanorRecipeBuilder.build(NVTags.Items.ATHANOR_ORB)
                 .input(NVBlocks.HELLFORGED_BLOCK.block().get())
                 .fluidInput(NVFluids.ESSENTIA_VITAE_SOURCE.get(), 10000)
                 .spiritusCost(SpiritusType.RAW, 40.0)
@@ -2467,6 +2492,19 @@ public class NVRecipeProvider extends RecipeProvider {
                 .syphon(5000)
                 .minimumTier(3)
                 .save(output, "curios_socket_tome");
+
+        Holder<SentientUpgrade> unboundedFlight = registriesFuture.join()
+                .lookupOrThrow(NVRegistries.Keys.SENTIENT_UPGRADES)
+                .getOrThrow(SentientUpgrades.UNBOUNDED_FLIGHT);
+        ItemStack unboundedFlightTome = new ItemStack(NVItems.UPGRADE_TOME.get());
+        unboundedFlightTome.set(NVDataComponents.UPGRADE_TOME_DATA.get(), new UpgradeTome(unboundedFlight, 1.0f));
+        TabulaVitaeRecipeBuilder.build(unboundedFlightTome)
+                .input(Items.ELYTRA)
+                .input(NVItems.DEUS_SHARD.get())
+                .input(NVItems.PRISMATIC_SPIRITUS_GEM.get())
+                .syphon(100000)
+                .minimumTier(5)
+                .save(output, "unbounded_flight_tome");
 
         // Reagent Water - sugar, water bucket x2
         TabulaVitaeRecipeBuilder.build(NVItems.REAGENT_WATER.get())
