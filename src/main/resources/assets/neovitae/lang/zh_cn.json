@@ -2328,7 +2328,7 @@
   "gui.neovitae.routing.blacklist": "黑名单",
   "gui.neovitae.routing.block_neighbor": "方块：%s",
   "gui.neovitae.routing.bucket.clear": "右击以清空",
-  "gui.neovitae.routing.bucket.set": "用流体桶右击以设置流体筛选器",
+  "gui.neovitae.routing.bucket.set": "用流体桶左击以设置流体筛选器",
   "gui.neovitae.routing.direction.down": "下",
   "gui.neovitae.routing.direction.east": "东",
   "gui.neovitae.routing.direction.north": "北",
