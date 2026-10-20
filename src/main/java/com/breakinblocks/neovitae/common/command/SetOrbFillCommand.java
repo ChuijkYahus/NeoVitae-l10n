@@ -27,7 +27,7 @@ public class SetOrbFillCommand {
     private static int execute(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         if (!(source.getEntity() instanceof ServerPlayer player)) {
-            source.sendFailure(Component.literal("This command must be run by a player"));
+            source.sendFailure(Component.translatable("command.neovitae.player_only"));
             return 0;
         }
 

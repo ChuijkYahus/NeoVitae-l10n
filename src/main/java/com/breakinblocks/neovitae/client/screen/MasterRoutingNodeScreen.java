@@ -35,7 +35,7 @@ public class MasterRoutingNodeScreen extends AbstractContainerScreen<MasterRouti
         this.titleLabelX = 38;
     }
 
-    private void drawStat(GuiGraphics guiGraphics, int line, String label, String value) {
+    private void drawStat(GuiGraphics guiGraphics, int line, Component label, Component value) {
         int y = STATS_Y + line * STATS_LINE_HEIGHT;
         guiGraphics.drawString(this.font, label, STATS_X, y, 0x808080, false);
         guiGraphics.drawString(this.font, value, STATS_VALUE_RIGHT - font.width(value), y, 0xB0A0A4, false);
@@ -45,9 +45,15 @@ public class MasterRoutingNodeScreen extends AbstractContainerScreen<MasterRouti
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0x404040, false);
 
-        drawStat(guiGraphics, 0, "Items", FORMAT.format(menu.getMaxTransfer()) + " / pulse");
-        drawStat(guiGraphics, 1, "Fluid", FORMAT.format(menu.getMaxFluidTransfer()) + " mB / pulse");
-        drawStat(guiGraphics, 2, "Energy", FORMAT.format(menu.getMaxEnergyTransfer()) + " FE / pulse");
+        drawStat(guiGraphics, 0,
+                Component.translatable("gui.neovitae.master_routing.stat.items"),
+                Component.translatable("gui.neovitae.master_routing.stat.items_value", FORMAT.format(menu.getMaxTransfer())));
+        drawStat(guiGraphics, 1,
+                Component.translatable("gui.neovitae.master_routing.stat.fluid"),
+                Component.translatable("gui.neovitae.master_routing.stat.fluid_value", FORMAT.format(menu.getMaxFluidTransfer())));
+        drawStat(guiGraphics, 2,
+                Component.translatable("gui.neovitae.master_routing.stat.energy"),
+                Component.translatable("gui.neovitae.master_routing.stat.energy_value", FORMAT.format(menu.getMaxEnergyTransfer())));
     }
 
     @Override
@@ -65,28 +71,27 @@ public class MasterRoutingNodeScreen extends AbstractContainerScreen<MasterRouti
 
         if (slotEmpty && isHovering(62, 15, 16, 16, mouseX, mouseY)) {
             List<Component> lines = new ArrayList<>();
-            lines.add(Component.literal("Stack Upgrade Slot"));
-            lines.add(Component.literal("Each upgrade raises every transfer cap"));
+            lines.add(Component.translatable("gui.neovitae.master_routing.stack_upgrade_slot"));
+            lines.add(Component.translatable("gui.neovitae.master_routing.stack_upgrade_slot.desc"));
             guiGraphics.renderComponentTooltip(font, lines, mouseX, mouseY);
             return;
         }
 
         if (slotEmpty && isHovering(98, 15, 16, 16, mouseX, mouseY)) {
             List<Component> lines = new ArrayList<>();
-            lines.add(Component.literal("Speed Upgrade Slot"));
-            lines.add(Component.literal("Each upgrade shortens the pulse by one tick"));
+            lines.add(Component.translatable("gui.neovitae.master_routing.speed_upgrade_slot"));
+            lines.add(Component.translatable("gui.neovitae.master_routing.speed_upgrade_slot.desc"));
             guiGraphics.renderComponentTooltip(font, lines, mouseX, mouseY);
             return;
         }
 
         int statsHeight = 3 * STATS_LINE_HEIGHT;
         if (isHovering(STATS_X, STATS_Y, STATS_VALUE_RIGHT - STATS_X, statsHeight, mouseX, mouseY)) {
-            int tickRate = menu.getTickRate();
             List<Component> lines = new ArrayList<>();
-            lines.add(Component.literal("Transfer Caps"));
-            lines.add(Component.literal("Most this network moves in one pulse"));
-            lines.add(Component.literal("Pulse every " + tickRate + (tickRate == 1 ? " tick" : " ticks")));
-            lines.add(Component.literal("Individual node faces may set a lower rate"));
+            lines.add(Component.translatable("gui.neovitae.master_routing.caps.title"));
+            lines.add(Component.translatable("gui.neovitae.master_routing.caps.desc"));
+            lines.add(Component.translatable("gui.neovitae.master_routing.caps.pulse", menu.getTickRate()));
+            lines.add(Component.translatable("gui.neovitae.master_routing.caps.faces"));
             guiGraphics.renderComponentTooltip(font, lines, mouseX, mouseY);
         }
     }

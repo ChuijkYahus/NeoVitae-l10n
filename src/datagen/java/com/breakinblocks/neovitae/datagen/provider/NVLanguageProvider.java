@@ -1201,6 +1201,23 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add("command.neovitae.generate.restart", "Restart the game for new items to appear.");
         add("command.neovitae.setorbfill.success", "Set orb fill to %s / %s mB");
         add("command.neovitae.setorbfill.not_orb", "You must be holding an Orb of Vitae");
+        add("command.neovitae.player_only", "This command must be run by a player");
+        add("command.neovitae.routing_rescan.no_master", "No master routing node within %s blocks");
+        add("command.neovitae.routing_rescan.result", "Master at [%s, %s, %s]: re-linked %s nodes within %s blocks");
+        add("gui.neovitae.master_routing.stack_upgrade_slot", "Stack upgrade slot");
+        add("gui.neovitae.master_routing.stack_upgrade_slot.desc", "Each upgrade raises every transfer cap");
+        add("gui.neovitae.master_routing.speed_upgrade_slot", "Speed upgrade slot");
+        add("gui.neovitae.master_routing.speed_upgrade_slot.desc", "Each upgrade shortens the pulse by one tick");
+        add("gui.neovitae.master_routing.stat.items", "Items");
+        add("gui.neovitae.master_routing.stat.items_value", "%s / pulse");
+        add("gui.neovitae.master_routing.stat.fluid", "Fluid");
+        add("gui.neovitae.master_routing.stat.fluid_value", "%s mB / pulse");
+        add("gui.neovitae.master_routing.stat.energy", "Energy");
+        add("gui.neovitae.master_routing.stat.energy_value", "%s FE / pulse");
+        add("gui.neovitae.master_routing.caps.title", "Transfer Caps");
+        add("gui.neovitae.master_routing.caps.desc", "Most this network moves in one pulse");
+        add("gui.neovitae.master_routing.caps.pulse", "Pulse every %s ticks");
+        add("gui.neovitae.master_routing.caps.faces", "Individual node faces may set a lower rate");
 
         add(NVItems.SENTIENT_HELMET.get(), "Sentient Helmet");
         add(NVItems.SENTIENT_PLATE.get(), "Sentient Plate");
