@@ -26,6 +26,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.item.NVItems;
+import com.breakinblocks.neovitae.common.item.soul.LexVitaeGrowth;
 import com.breakinblocks.neovitae.common.item.soul.LexVitaeItem;
 import com.breakinblocks.neovitae.ritual.RitualHelper;
 import com.breakinblocks.neovitae.util.helper.BlockProtectionHelper;
@@ -193,6 +194,81 @@ public class LexVitaeTests {
     }
 
     @GameTest(template = "empty_5x5x7", timeoutTicks = 60)
+    public void lexVitaeFellsNaturalTree(GameTestHelper helper) {
+        for (int y = 1; y <= 4; y++) {
+            helper.setBlock(new BlockPos(2, y, 1), Blocks.OAK_LOG.defaultBlockState());
+        }
+        helper.setBlock(new BlockPos(2, 5, 1), Blocks.OAK_LEAVES.defaultBlockState());
+
+        Player player = armedPlayer(helper, 0);
+        helper.runAfterDelay(1, () -> {
+            postBreak(helper, player, helper.absolutePos(new BlockPos(2, 1, 1)));
+            for (int y = 2; y <= 4; y++) {
+                helper.assertBlockNotPresent(Blocks.OAK_LOG, new BlockPos(2, y, 1));
+            }
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 60)
+    public void lexVitaeDoesNotFellLogBuilds(GameTestHelper helper) {
+        for (int y = 1; y <= 4; y++) {
+            helper.setBlock(new BlockPos(2, y, 1), Blocks.OAK_LOG.defaultBlockState());
+        }
+
+        Player player = armedPlayer(helper, 0);
+        helper.runAfterDelay(1, () -> {
+            postBreak(helper, player, helper.absolutePos(new BlockPos(2, 1, 1)));
+            for (int y = 2; y <= 4; y++) {
+                helper.assertBlockPresent(Blocks.OAK_LOG, new BlockPos(2, y, 1));
+            }
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 60)
+    public void lexVitaeSneakingSkipsFelling(GameTestHelper helper) {
+        for (int y = 1; y <= 3; y++) {
+            helper.setBlock(new BlockPos(2, y, 1), Blocks.OAK_LOG.defaultBlockState());
+        }
+        helper.setBlock(new BlockPos(2, 4, 1), Blocks.OAK_LEAVES.defaultBlockState());
+
+        Player player = armedPlayer(helper, 0);
+        player.setShiftKeyDown(true);
+        helper.runAfterDelay(1, () -> {
+            postBreak(helper, player, helper.absolutePos(new BlockPos(2, 1, 1)));
+            helper.assertBlockPresent(Blocks.OAK_LOG, new BlockPos(2, 2, 1));
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 20)
+    public void lexVitaeGrowthCurveIsConsistent(GameTestHelper helper) {
+        for (int level = 0; level <= 80; level++) {
+            double threshold = LexVitaeGrowth.experienceForLevel(level);
+            helper.assertTrue(LexVitaeGrowth.levelFor(threshold) == level,
+                    "Level " + level + " threshold resolved to " + LexVitaeGrowth.levelFor(threshold));
+            if (level > 0) {
+                helper.assertTrue(LexVitaeGrowth.levelFor(threshold - 0.001) == level - 1,
+                        "Just below level " + level + " should still be level " + (level - 1));
+            }
+        }
+        helper.assertTrue(LexVitaeGrowth.wearResistance(10) == 0.5, "Level 10 should ignore half of all wear");
+        helper.assertTrue(LexVitaeGrowth.fortuneBonus(14) == 0 && LexVitaeGrowth.fortuneBonus(15) == 1,
+                "Fortune should start at level 15");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 20)
+    public void lexVitaeExperienceGrowsLevel(GameTestHelper helper) {
+        Player player = armedPlayer(helper, 0);
+        ItemStack lex = player.getMainHandItem();
+        LexVitaeGrowth.addExperience(lex, player, LexVitaeGrowth.experienceForLevel(3));
+        helper.assertTrue(LexVitaeGrowth.getLevel(lex) == 3, "Lex should be level 3, is " + LexVitaeGrowth.getLevel(lex));
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 60)
     public void lexVitaeBeamMinesPlaneAroundHitFace(GameTestHelper helper) {
         BlockPos center = new BlockPos(2, 2, 1);
         for (int x = 1; x <= 3; x++) {
@@ -207,8 +283,8 @@ public class LexVitaeTests {
 
         helper.runAfterDelay(1, () -> {
             try {
-                LexVitaeItem.beamAoe(helper.getLevel(), player, player.getMainHandItem(),
-                        helper.absolutePos(center), Direction.SOUTH);
+                LexVitaeItem.breakAoe(helper.getLevel(), player, player.getMainHandItem(),
+                        helper.absolutePos(center), Direction.SOUTH.getAxis());
                 helper.assertBlockNotPresent(Blocks.STONE, new BlockPos(1, 2, 1));
                 helper.assertBlockNotPresent(Blocks.STONE, new BlockPos(3, 2, 1));
                 helper.assertBlockNotPresent(Blocks.STONE, new BlockPos(2, 1, 1));
@@ -254,8 +330,8 @@ public class LexVitaeTests {
 
         helper.runAfterDelay(1, () -> {
             try {
-                LexVitaeItem.beamAoe(helper.getLevel(), player, player.getMainHandItem(),
-                        helper.absolutePos(center), Direction.SOUTH);
+                LexVitaeItem.breakAoe(helper.getLevel(), player, player.getMainHandItem(),
+                        helper.absolutePos(center), Direction.SOUTH.getAxis());
                 helper.assertBlockNotPresent(Blocks.STONE, neighbor);
                 if (player.getInventory().countItem(Items.COBBLESTONE) == 0) {
                     helper.fail("Beam-mined drops should vacuum into the player's inventory");

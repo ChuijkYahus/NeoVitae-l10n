@@ -44,6 +44,9 @@ public class SentientEffectComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> WALK_ON_POWDERED_SNOW = LIVING_EFFECT_COMPONENTS.registerComponentType("walk_on_powdered_snow", builder -> builder.persistent(Unit.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> IS_ENDER_MASK = LIVING_EFFECT_COMPONENTS.registerComponentType("is_ender_mask", builder -> builder.persistent(Unit.CODEC));
 
+    public static final List<DeferredHolder<DataComponentType<?>, DataComponentType<Unit>>> CLIENT_FLAGS = List.of(
+            GILDED, ELYTRA, UNBOUNDED_FLIGHT, QUENCHED, CRIPPLED_ARM, WALK_ON_POWDERED_SNOW, IS_ENDER_MASK);
+
     public static void register(IEventBus modBus) {
         LIVING_EFFECT_COMPONENTS.makeRegistry(builder -> {});
         LIVING_EFFECT_COMPONENTS.register(modBus);

@@ -119,11 +119,11 @@ public class DungeonRoomProvider implements DataProvider {
         miniFarm.addDoor(new BlockPos(8, 0, 0), Direction.NORTH, "default", 1);
         miniFarm.addNormalRoomPool(1, ModRoomPools.MINI_DUNGEON);
 
-        DungeonRoom miniLibrary = new DungeonRoom().addStructure("neovitae:mini_dungeon/library", new BlockPos(0, 0, 0)).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(17, 7, 17)));
+        DungeonRoom miniLibrary = new DungeonRoom().addStructure("neovitae:mini_dungeon/library", new BlockPos(0, 0, 0)).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(17, 7, 18)));
         miniLibrary.addDoor(new BlockPos(8, 0, 0), Direction.NORTH, "default", 1);
         miniLibrary.addNormalRoomPool(1, ModRoomPools.MINI_DUNGEON);
 
-        DungeonRoom miniPortalRoom = new DungeonRoom().addStructure("neovitae:mini_dungeon/portal_nether", new BlockPos(0, 0, 0)).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(17, 7, 17)));
+        DungeonRoom miniPortalRoom = new DungeonRoom().addStructure("neovitae:mini_dungeon/portal_nether", new BlockPos(0, 0, 0)).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(17, 15, 17)));
         miniPortalRoom.addDoor(new BlockPos(8, 5, 0), Direction.NORTH, "default", 1);
         miniPortalRoom.addNormalRoomPool(1, ModRoomPools.MINI_DUNGEON);
 
@@ -136,7 +136,7 @@ public class DungeonRoomProvider implements DataProvider {
         fourWayCorridor.addNormalRoomPool(1, ModRoomPools.CONNECTIVE_CORRIDORS);
         addDefaultSpecialRoomPools(fourWayCorridor, 1);
 
-        DungeonRoom fourWayCorridorLoot = new DungeonRoom().addStructure("neovitae:four_way_corridor_loot", BlockPos.ZERO).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(11, 1, 11)));
+        DungeonRoom fourWayCorridorLoot = new DungeonRoom().addStructure("neovitae:four_way_corridor_loot", BlockPos.ZERO).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(11, 11, 11)));
         fourWayCorridorLoot.addDoors(Direction.NORTH, "default", 1, new BlockPos(5, 5, 0));
         fourWayCorridorLoot.addDoors(Direction.SOUTH, "default", 1, new BlockPos(5, 5, 10));
         fourWayCorridorLoot.addDoors(Direction.WEST, "default", 1, new BlockPos(0, 5, 5));
@@ -277,7 +277,7 @@ public class DungeonRoomProvider implements DataProvider {
         DungeonRoom mineEntrance = new DungeonRoom().addStructure("neovitae:standard/mine_entrance", new BlockPos(0, 0, 0)).addStructure("neovitae:standard/mine_entrance2", new BlockPos(0, 0, 32));
         mineEntrance.addDoor(new BlockPos(0, 12, 38), Direction.WEST, "default", 1);
         mineEntrance.addDoor(new BlockPos(22, 1, 0), Direction.NORTH, "mine", 2);
-        mineEntrance.addAreaDescriptor(new Rectangle(new BlockPos(-1, 0, 0), new BlockPos(25, 18, 43)));
+        mineEntrance.addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(27, 18, 43)));
         mineEntrance.addNormalRoomPool(1, ModRoomPools.STANDARD_ROOMS);
         mineEntrance.addNormalRoomPool(2, ModRoomPools.MINE_CORRIDORS);
 
@@ -285,7 +285,7 @@ public class DungeonRoomProvider implements DataProvider {
         mineKey.addDoor(new BlockPos(5, 1, 0), Direction.NORTH, "default", 1);
         mineKey.setOreDensity(0.8f);
 
-        DungeonRoom waterway = new DungeonRoom().addStructure("neovitae:standard/test_waterway", new BlockPos(0, 0, 0)).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(12, 8, 11)));
+        DungeonRoom waterway = new DungeonRoom().addStructure("neovitae:standard/test_waterway", new BlockPos(0, 0, 0)).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(12, 10, 11)));
         waterway.addDoor(new BlockPos(11, 3, 5), Direction.EAST, "default", 1);
         waterway.addNonstandardDoor(new BlockPos(6, 3, 0), Direction.NORTH, "waterway_r", 2, "waterway_l");
         waterway.addNonstandardDoor(new BlockPos(6, 3, 10), Direction.SOUTH, "waterway_l", 3, "waterway_r");
@@ -316,7 +316,7 @@ public class DungeonRoomProvider implements DataProvider {
         mineSplitRoad.setOreDensity(0.4f);
         mineSplitRoad.addDeadendRoomPool(1, ModRoomPools.MINE_DEADEND);
 
-        DungeonRoom mineCornerZombieTrap = new DungeonRoom().addStructure("neovitae:standard/corner_zombie_trap", new BlockPos(0, 0, 0)).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(17, 9, 17))).addAreaDescriptor(new Rectangle(new BlockPos(4, 9, 2), 7, 4, 7));
+        DungeonRoom mineCornerZombieTrap = new DungeonRoom().addStructure("neovitae:standard/corner_zombie_trap", new BlockPos(0, 0, 0)).addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(17, 9, 17))).addAreaDescriptor(new Rectangle(new BlockPos(4, 9, 2), new BlockPos(11, 13, 9)));
         mineCornerZombieTrap.addDoor(new BlockPos(13, 2, 0), Direction.NORTH, "mine", 1);
         mineCornerZombieTrap.addDoor(new BlockPos(0, 2, 13), Direction.WEST, "mine", 1);
         addMinesRoomPools(mineCornerZombieTrap, 1);
@@ -327,7 +327,7 @@ public class DungeonRoomProvider implements DataProvider {
         DungeonRoom mineStation = new DungeonRoom().addStructure("neovitae:standard/mine_station_1", new BlockPos(0, 0, 0));
         mineStation.addStructure("neovitae:standard/mine_station_2", new BlockPos(23, 4, 32));
         mineStation.addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(32, 13, 32)));
-        mineStation.addAreaDescriptor(new Rectangle(new BlockPos(23, 4, 32), 9, 8, 9));
+        mineStation.addAreaDescriptor(new Rectangle(new BlockPos(23, 4, 32), new BlockPos(32, 12, 41)));
         mineStation.addDoors(Direction.WEST, "mine", 1, new BlockPos(0, 5, 4), new BlockPos(0, 5, 16));
         mineStation.addDoor(new BlockPos(3, 5, 31), Direction.SOUTH, "mine", 1);
         mineStation.addDoor(new BlockPos(31, 5, 36), Direction.EAST, "mine", 1);
@@ -339,7 +339,7 @@ public class DungeonRoomProvider implements DataProvider {
         DungeonRoom mineDownwardTunnel = new DungeonRoom().addStructure("neovitae:standard/mine_downward_tunnel_1", new BlockPos(0, 0, 0));
         mineDownwardTunnel.addStructure("neovitae:standard/mine_downward_tunnel_2", new BlockPos(0, 9, 2));
         mineDownwardTunnel.addAreaDescriptor(new Rectangle(new BlockPos(0, 0, 0), new BlockPos(18, 9, 25)));
-        mineDownwardTunnel.addAreaDescriptor(new Rectangle(new BlockPos(0, 9, 2), 18, 10, 17));
+        mineDownwardTunnel.addAreaDescriptor(new Rectangle(new BlockPos(0, 9, 2), new BlockPos(18, 19, 19)));
         mineDownwardTunnel.addDoors(Direction.WEST, "mine", 1, new BlockPos(0, 1, 4), new BlockPos(0, 13, 5));
         mineDownwardTunnel.addDoor(new BlockPos(8, 1, 0), Direction.NORTH, "mine", 1);
         mineDownwardTunnel.addDoor(new BlockPos(8, 1, 24), Direction.SOUTH, "mine", 1);

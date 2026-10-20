@@ -26,6 +26,8 @@ import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 import com.breakinblocks.neovitae.api.routing.*;
 import com.breakinblocks.neovitae.common.block.dungeon.DungeonAlternatorBlockEntity;
+import com.breakinblocks.neovitae.common.blockentity.routing.MasterRoutingNodeBlockEntity;
+import com.breakinblocks.neovitae.common.blockentity.routing.RoutingNodeBlockEntity;
 import com.breakinblocks.neovitae.common.routing.RoutingLinkHelper;
 import com.breakinblocks.neovitae.common.world.AlternatorLinks;
 import com.breakinblocks.neovitae.util.Constants;
@@ -88,8 +90,9 @@ public class ItemNodeRouter extends Item {
         BlockPos pos = context.getClickedPos();
         ItemStack stack = context.getItemInHand();
 
-        if (level.isClientSide) {
-            return player.isShiftKeyDown() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        if (level.isClientSide()) {
+            return player.isShiftKeyDown() || level.getBlockEntity(pos) instanceof IRoutingNode
+                    ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
 
         BlockEntity tileHit = level.getBlockEntity(pos);
@@ -162,9 +165,16 @@ public class ItemNodeRouter extends Item {
         BlockPos masterPos = node.getMasterPos();
         boolean isMaster = node instanceof IMasterRoutingNode;
 
-        node.removeAllConnections();
-        if (!masterPos.equals(BlockPos.ZERO)) {
-            node.removeConnection(masterPos);
+        if (node instanceof MasterRoutingNodeBlockEntity master) {
+            master.unlinkNetwork();
+        } else {
+            node.removeAllConnections();
+            if (!masterPos.equals(BlockPos.ZERO)) {
+                node.removeConnection(masterPos);
+            }
+            if (node instanceof RoutingNodeBlockEntity routingNode) {
+                routingNode.suppressAutoBind();
+            }
         }
 
         setBlockPos(stack, BlockPos.ZERO);

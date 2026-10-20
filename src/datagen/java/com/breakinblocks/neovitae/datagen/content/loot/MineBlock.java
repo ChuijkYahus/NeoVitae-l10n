@@ -14,12 +14,15 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.CopyBlockState;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.block.BlockShapedExplosive;
 import com.breakinblocks.neovitae.common.block.BlockTau;
+import com.breakinblocks.neovitae.common.block.PillarAccent;
 import com.breakinblocks.neovitae.common.block.dungeon.DungeonBlocks;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.util.helper.BlockWithItemHolder;
@@ -76,6 +79,8 @@ public class MineBlock extends BlockLootSubProvider {
             NVBlocks.SPIRIT_CACHE.block().get(),
             NVBlocks.BLOOD_STAINED_GLASS.block().get(),
             NVBlocks.BLOOD_STAINED_GLASS_PANE.block().get(),
+            NVBlocks.INVERSION_PILLAR.block().get(),
+            NVBlocks.INVERSION_PILLAR_CAP.block().get(),
             DungeonBlocks.DUNGEON_ORE.block().get()
     );
     private List<Block> dropSelfList = new ArrayList<>();
@@ -112,11 +117,25 @@ public class MineBlock extends BlockLootSubProvider {
         dropSelf(NVBlocks.SPIRIT_CACHE.block().get());
 
         // Glass blocks - silk touch only
+        dropWithAccent(NVBlocks.INVERSION_PILLAR.block().get());
+        dropWithAccent(NVBlocks.INVERSION_PILLAR_CAP.block().get());
+
         dropWhenSilkTouch(NVBlocks.BLOOD_STAINED_GLASS.block().get());
         dropWhenSilkTouch(NVBlocks.BLOOD_STAINED_GLASS_PANE.block().get());
 
         add(DungeonBlocks.DUNGEON_ORE.block().get(),
                 createOreDrop(DungeonBlocks.DUNGEON_ORE.block().get(), NVItems.DEMONITE_RAW.get()));
+    }
+
+    private void dropWithAccent(Block block) {
+        add(block, LootTable.lootTable()
+                .withPool(applyExplosionCondition(block, LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(block)
+                                .apply(CopyBlockState.copyState(block).copy(PillarAccent.PROPERTY)
+                                        .when(InvertedLootItemCondition.invert(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                                .setProperties(StatePropertiesPredicate.Builder.properties()
+                                                        .hasProperty(PillarAccent.PROPERTY, PillarAccent.DEFAULT)))))))));
     }
 
     private void generateTauLoot(BlockWithItemHolder<BlockTau, BlockItem> holder) {

@@ -11,6 +11,27 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "block": "neovitae:inversion_pillar_cap",
+              "conditions": [
+                {
+                  "condition": "minecraft:inverted",
+                  "term": {
+                    "block": "neovitae:inversion_pillar_cap",
+                    "condition": "minecraft:block_state_property",
+                    "properties": {
+                      "accent": "default"
+                    }
+                  }
+                }
+              ],
+              "function": "minecraft:copy_state",
+              "properties": [
+                "accent"
+              ]
+            }
+          ],
           "name": "neovitae:inversion_pillar_cap"
         }
       ],

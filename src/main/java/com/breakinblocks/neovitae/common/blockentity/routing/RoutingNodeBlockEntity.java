@@ -35,6 +35,7 @@ public abstract class RoutingNodeBlockEntity extends BlockEntity implements IRou
     private List<BlockPos> connectionList = new ArrayList<>();
 
     private boolean bindingNeedsValidation = true;
+    private boolean autoBindSuppressed = false;
     private int connectionSweepTimer = 0;
 
     private static final int CONNECTION_SWEEP_INTERVAL = 100;
@@ -103,10 +104,11 @@ public abstract class RoutingNodeBlockEntity extends BlockEntity implements IRou
                 masterPos = BlockPos.ZERO;
                 connectionList.clear();
                 setChanged();
+                syncToClient();
             }
         }
 
-        if (masterPos.equals(BlockPos.ZERO)) {
+        if (masterPos.equals(BlockPos.ZERO) && !autoBindSuppressed) {
             RoutingLinkHelper.tryAutoBind(level, worldPosition, this);
         }
 
@@ -135,6 +137,7 @@ public abstract class RoutingNodeBlockEntity extends BlockEntity implements IRou
             tags.add(posTag);
         }
         tag.put(Constants.NBT.ROUTING_CONNECTION, tags);
+        tag.putBoolean("noAutoBind", autoBindSuppressed);
     }
 
     @Override
@@ -147,6 +150,7 @@ public abstract class RoutingNodeBlockEntity extends BlockEntity implements IRou
                 masterTag.getInt(Constants.NBT.X_COORD),
                 masterTag.getInt(Constants.NBT.Y_COORD),
                 masterTag.getInt(Constants.NBT.Z_COORD));
+        autoBindSuppressed = tag.getBoolean("noAutoBind");
 
         ListTag tags = tag.getList(Constants.NBT.ROUTING_CONNECTION, 10);
         for (int i = 0; i < tags.size(); i++) {
@@ -217,6 +221,26 @@ public abstract class RoutingNodeBlockEntity extends BlockEntity implements IRou
         }
 
         connectionList.clear();
+        setChanged();
+        syncToClient();
+    }
+
+    public void suppressAutoBind() {
+        autoBindSuppressed = true;
+        setChanged();
+    }
+
+    public void detachFromNetwork() {
+        masterPos = BlockPos.ZERO;
+        connectionList.clear();
+        suppressAutoBind();
+        syncToClient();
+    }
+
+    private void syncToClient() {
+        if (level == null || level.isClientSide()) return;
+        BlockState state = level.getBlockState(worldPosition);
+        level.sendBlockUpdated(worldPosition, state, state, 3);
     }
 
     @Override
@@ -339,6 +363,7 @@ public abstract class RoutingNodeBlockEntity extends BlockEntity implements IRou
 
     @Override
     public void addConnection(BlockPos pos) {
+        autoBindSuppressed = false;
         if (!connectionList.contains(pos)) {
             connectionList.add(pos);
             setChanged();

@@ -217,6 +217,7 @@ public class MasterRoutingNodeBlockEntity extends BlockEntity implements IMaster
         }
 
         setChanged();
+        pendingClientSync = true;
         return added;
     }
 
@@ -648,7 +649,20 @@ public class MasterRoutingNodeBlockEntity extends BlockEntity implements IMaster
         inputNodeLists.clear();
         outputNodeLists.clear();
         connectionMap.clear();
+        pendingClientSync = true;
         setChanged();
+    }
+
+    public void unlinkNetwork() {
+        Set<BlockPos> members = new LinkedHashSet<>(connectionMap.keySet());
+        members.addAll(generalNodeList);
+        members.remove(worldPosition);
+        removeAllConnections();
+        for (BlockPos pos : members) {
+            if (getLevel().isLoaded(pos) && getLevel().getBlockEntity(pos) instanceof RoutingNodeBlockEntity node) {
+                node.detachFromNetwork();
+            }
+        }
     }
 
     @Override

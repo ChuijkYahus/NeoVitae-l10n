@@ -45,6 +45,28 @@
       "text": "book.neovitae.guide.spiritus.lex_vitae.modes.text",
       "title": "book.neovitae.guide.spiritus.lex_vitae.modes.title",
       "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.lex_vitae.felling.text",
+      "title": "book.neovitae.guide.spiritus.lex_vitae.felling.title",
+      "use_markdown_in_title": false
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "",
+      "condition": {
+        "type": "modonomicon:none"
+      },
+      "show_title_separator": true,
+      "text": "book.neovitae.guide.spiritus.lex_vitae.growth.text",
+      "title": "book.neovitae.guide.spiritus.lex_vitae.growth.title",
+      "use_markdown_in_title": false
     }
   ],
   "parents": [

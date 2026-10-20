@@ -1,6 +1,8 @@
 {
-  "parent": "neovitae:block/pillar_bottom",
+  "parent": "neovitae:block/pillar_bottom_accented",
+  "render_type": "minecraft:cutout",
   "textures": {
+    "accent": "neovitae:block/pillar_base_accent",
     "texture": "neovitae:block/pillar_base"
   }
 }

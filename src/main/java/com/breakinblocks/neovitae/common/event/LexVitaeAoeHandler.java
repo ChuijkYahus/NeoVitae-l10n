@@ -2,14 +2,10 @@ package com.breakinblocks.neovitae.common.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -19,7 +15,6 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import com.breakinblocks.neovitae.NeoVitae;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.item.soul.LexVitaeItem;
-import com.breakinblocks.neovitae.util.helper.BlockProtectionHelper;
 
 @EventBusSubscriber(modid = NeoVitae.MODID)
 public final class LexVitaeAoeHandler {
@@ -48,14 +43,22 @@ public final class LexVitaeAoeHandler {
             return;
         }
 
-        int radius = stack.getOrDefault(NVDataComponents.LEX_RADIUS.get(), 0);
-        if (radius == 0) return;
-
         Level level = (Level) event.getLevel();
         BlockPos center = event.getPos();
         if (event.getState().getDestroySpeed(level, center) <= 0) return;
 
-        int half = radius == 1 ? 1 : 2;
+        if (LexVitaeItem.canFell(player, event.getState())) {
+            AOE_BREAKING.set(true);
+            try {
+                if (LexVitaeItem.fellTree(level, player, stack, center)) return;
+            } finally {
+                AOE_BREAKING.set(false);
+            }
+        }
+
+        int radius = stack.getOrDefault(NVDataComponents.LEX_RADIUS.get(), 0);
+        if (radius == 0) return;
+
         Direction.Axis depth = targetedFaceAxis(player, level, center);
         if (depth == null) {
             depth = dominantAxis(player.getLookAngle());
@@ -63,26 +66,7 @@ public final class LexVitaeAoeHandler {
 
         AOE_BREAKING.set(true);
         try {
-            for (int u = -half; u <= half; u++) {
-                for (int v = -half; v <= half; v++) {
-                    if (u == 0 && v == 0) continue;
-                    BlockPos pos = switch (depth) {
-                        case X -> center.offset(0, u, v);
-                        case Y -> center.offset(u, 0, v);
-                        case Z -> center.offset(u, v, 0);
-                    };
-                    BlockState state = level.getBlockState(pos);
-                    if (state.isAir()) continue;
-                    if (state.getDestroySpeed(level, pos) < 0) continue;
-                    if (!stack.isCorrectToolForDrops(state)) continue;
-                    if (player instanceof ServerPlayer sp) {
-                        sp.gameMode.destroyBlock(pos);
-                    } else if (BlockProtectionHelper.tryBreakBlock(level, pos, player)) {
-                        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-                    }
-                    if (stack.isEmpty()) return;
-                }
-            }
+            LexVitaeItem.breakAoe(level, player, stack, center, depth);
         } finally {
             AOE_BREAKING.set(false);
         }

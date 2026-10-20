@@ -53,7 +53,7 @@ public class RitualAnchorBlock extends BaseEntityBlock {
     public RitualAnchorBlock(BlockBehaviour.Properties props) {
         super(props
                 .mapColor(MapColor.STONE)
-                .strength(2.0F, 6.0F)
+                .strength(2.0F, 1200.0F)
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.STONE)
                 .noOcclusion()

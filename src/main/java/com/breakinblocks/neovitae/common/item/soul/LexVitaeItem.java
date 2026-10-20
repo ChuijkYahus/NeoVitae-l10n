@@ -11,9 +11,13 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -27,6 +31,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -37,13 +42,19 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import com.breakinblocks.neovitae.NeoVitae;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import com.breakinblocks.neovitae.client.particle.ColoredParticleOptions;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
+import com.breakinblocks.neovitae.common.particle.NVParticles;
 import com.breakinblocks.neovitae.common.tag.NVTags;
 import com.breakinblocks.neovitae.spiritus.PlayerSpiritusHandler;
 import com.breakinblocks.neovitae.util.helper.BlockProtectionHelper;
@@ -112,11 +123,15 @@ public class LexVitaeItem extends Item implements ISentientTool {
     }
 
     @Override
-    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, java.util.function.Consumer<Item> onBroken) {
+    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<Item> onBroken) {
+        if (entity != null) {
+            amount = LexVitaeGrowth.resistWear(amount, LexVitaeGrowth.getLevel(stack), entity.getRandom());
+        }
+        if (amount <= 0) return 0;
         if (entity instanceof Player player) {
             SpiritusType type = PlayerSpiritusHandler.getLargestSpiritusType(player);
-            if (PlayerSpiritusHandler.getTotalSpiritus(type, player) >= 1.0
-                    && PlayerSpiritusHandler.consumeSpiritus(type, player, 1.0) > 0) {
+            if (PlayerSpiritusHandler.getTotalSpiritus(type, player) >= amount
+                    && PlayerSpiritusHandler.consumeSpiritus(type, player, amount) > 0) {
                 return 0;
             }
         }
@@ -150,11 +165,28 @@ public class LexVitaeItem extends Item implements ISentientTool {
     }
 
     public static final double BEAM_RANGE = 32.0;
+    public static final int MIN_BEAM_TICKS = 2;
+    public static final int AOE_BLOCKS_PER_CHARGE = 5;
+    public static final int MAX_FELLED_LOGS = 96;
 
     private static final ItemAttributeModifiers BASE_ACTIVE_MODIFIERS = buildWeaponModifiers("lex_vitae", BASE_WEAPON_DAMAGE, DEFAULT_ATTACK_SPEED, 0);
 
     private static final Map<UUID, Long> BEAM_COOLDOWN = new HashMap<>();
     private static final Set<UUID> BEAMING = ConcurrentHashMap.newKeySet();
+    private static final Map<UUID, BeamTarget> BEAM_TARGET = new ConcurrentHashMap<>();
+    private static final ThreadLocal<Boolean> AOE_UNCHARGED = ThreadLocal.withInitial(() -> false);
+
+    private record BeamTarget(BlockPos pos, long start) {}
+
+    public static int beamColor(SpiritusType type) {
+        return switch (type) {
+            case RAW -> 0x66E6E6;
+            case RUINA -> 0x55EE55;
+            case NIHILUM -> 0xFF8844;
+            case VINDICTA -> 0xBB55EE;
+            case INVICTUS -> 0xEEEEEE;
+        };
+    }
 
     public static final int ATTACK_BLOCKS_MINING_TICKS = 20;
     public static final int MINING_BLOCKS_ATTACK_TICKS = 8;
@@ -237,10 +269,13 @@ public class LexVitaeItem extends Item implements ISentientTool {
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miner) {
         if (!isActive(stack)) return false;
-        if (state.getDestroySpeed(level, pos) != 0.0F) {
+        float hardness = state.getDestroySpeed(level, pos);
+        boolean area = AOE_UNCHARGED.get();
+        if (hardness != 0.0F && !area) {
             stack.hurtAndBreak(1, miner, LivingEntity.getSlotForHand(miner.getUsedItemHand()));
         }
         if (miner instanceof Player player) {
+            LexVitaeGrowth.addExperience(stack, player, LexVitaeGrowth.blockExperience(state, hardness, area));
             if (!isBeaming(player)) {
                 markBlockMined(player);
             }
@@ -273,7 +308,19 @@ public class LexVitaeItem extends Item implements ISentientTool {
         } else {
             BEAMING.remove(player.getUUID());
             BEAM_COOLDOWN.remove(player.getUUID());
+            clearBeamTarget(player);
         }
+    }
+
+    private static void clearBeamTarget(Player player) {
+        BeamTarget target = BEAM_TARGET.remove(player.getUUID());
+        if (target != null) {
+            player.level().destroyBlockProgress(beamBreakerId(player), target.pos(), -1);
+        }
+    }
+
+    private static int beamBreakerId(Player player) {
+        return -player.getId() - 1;
     }
 
     public static boolean isBeaming(Player player) {
@@ -283,6 +330,7 @@ public class LexVitaeItem extends Item implements ISentientTool {
     public static void clearBeaming(UUID id) {
         BEAMING.remove(id);
         BEAM_COOLDOWN.remove(id);
+        BEAM_TARGET.remove(id);
         LAST_ENTITY_HIT.remove(id);
         LAST_BLOCK_MINED.remove(id);
     }
@@ -312,51 +360,143 @@ public class LexVitaeItem extends Item implements ISentientTool {
 
         BlockHitResult bhr = level.clip(new ClipContext(origin, reach,
                 ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
-        if (bhr.getType() != HitResult.Type.BLOCK) return;
+        if (bhr.getType() != HitResult.Type.BLOCK) {
+            clearBeamTarget(player);
+            return;
+        }
 
         BlockPos pos = bhr.getBlockPos();
         BlockState state = level.getBlockState(pos);
-        if (state.isAir()) return;
-
         float hardness = state.getDestroySpeed(level, pos);
-        if (hardness < 0) return;
-
-        int requiredTicks = Math.max(2, (int) (hardness * 4));
+        if (state.isAir() || hardness < 0) {
+            clearBeamTarget(player);
+            return;
+        }
         if (now < cooldownEnd) return;
-        BEAM_COOLDOWN.put(player.getUUID(), now + requiredTicks);
+
+        BeamTarget target = BEAM_TARGET.get(player.getUUID());
+        if (target == null || !target.pos().equals(pos)) {
+            clearBeamTarget(player);
+            target = new BeamTarget(pos, now);
+            BEAM_TARGET.put(player.getUUID(), target);
+        }
+
+        int requiredTicks = beamBreakTicks(player, stack, state, hardness);
+        long elapsed = now - target.start() + 1;
+        if (elapsed < requiredTicks) {
+            level.destroyBlockProgress(beamBreakerId(player), pos, (int) (elapsed * 10 / requiredTicks));
+            return;
+        }
+        clearBeamTarget(player);
 
         if (player instanceof ServerPlayer sp) {
-            sp.gameMode.destroyBlock(pos);
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-            beamAoe(level, sp, stack, pos, bhr.getDirection());
+            if (sp.gameMode.destroyBlock(pos) && level instanceof ServerLevel serverLevel) {
+                Vec3 hit = bhr.getLocation();
+                serverLevel.sendParticles(new ColoredParticleOptions(NVParticles.BLOOD_GLOW.get(), beamColor(getCurrentType(stack)), true),
+                        hit.x, hit.y, hit.z, 12, 0.25, 0.25, 0.25, 0.02);
+            }
+            if (!(canFell(sp, state) && fellTree(level, sp, stack, pos))) {
+                breakAoe(level, sp, stack, pos, bhr.getDirection().getAxis());
+            }
         }
     }
 
-    public static void beamAoe(Level level, Player player, ItemStack stack, BlockPos center, Direction face) {
-        int radius = stack.getOrDefault(NVDataComponents.LEX_RADIUS, 0);
-        if (radius == 0) return;
-        int half = radius == 1 ? 1 : 2;
-        Direction.Axis depth = face.getAxis();
+    public static int beamBreakTicks(Player player, ItemStack stack, BlockState state, float hardness) {
+        float speed = stack.getDestroySpeed(state);
+        if (speed > 1.0F) {
+            speed += (float) player.getAttributeValue(Attributes.MINING_EFFICIENCY);
+        }
+        if (MobEffectUtil.hasDigSpeed(player)) {
+            speed *= 1.0F + (MobEffectUtil.getDigSpeedAmplification(player) + 1) * 0.2F;
+        }
+        speed *= (float) player.getAttributeValue(Attributes.BLOCK_BREAK_SPEED);
+        float divisor = !state.requiresCorrectToolForDrops() || stack.isCorrectToolForDrops(state) ? 30.0F : 100.0F;
+        int ticks = (int) Math.ceil(hardness * divisor / Math.max(speed, 0.01F));
+        return Math.max(MIN_BEAM_TICKS, ticks);
+    }
 
+    public static List<BlockPos> aoePositions(BlockPos center, Direction.Axis depth, int radius) {
+        List<BlockPos> positions = new ArrayList<>();
+        if (radius == 0) return positions;
+        int half = radius == 1 ? 1 : 2;
         for (int u = -half; u <= half; u++) {
             for (int v = -half; v <= half; v++) {
                 if (u == 0 && v == 0) continue;
-                BlockPos offset = switch (depth) {
+                positions.add(switch (depth) {
                     case X -> center.offset(0, u, v);
                     case Y -> center.offset(u, 0, v);
                     case Z -> center.offset(u, v, 0);
-                };
-                BlockState state = level.getBlockState(offset);
-                if (state.isAir()) continue;
-                if (state.getDestroySpeed(level, offset) < 0) continue;
-                if (!stack.isCorrectToolForDrops(state)) continue;
-                if (player instanceof ServerPlayer sp) {
-                    sp.gameMode.destroyBlock(offset);
-                } else if (BlockProtectionHelper.tryBreakBlock(level, offset, player)) {
-                    stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+                });
+            }
+        }
+        return positions;
+    }
+
+    public static boolean canAoeBreak(Level level, BlockPos pos, ItemStack stack) {
+        BlockState state = level.getBlockState(pos);
+        return !state.isAir() && state.getDestroySpeed(level, pos) >= 0 && stack.isCorrectToolForDrops(state);
+    }
+
+    public static void breakAoe(Level level, Player player, ItemStack stack, BlockPos center, Direction.Axis depth) {
+        int radius = stack.getOrDefault(NVDataComponents.LEX_RADIUS, 0);
+        if (radius == 0) return;
+        breakBlocks(level, player, stack, aoePositions(center, depth, radius));
+    }
+
+    public static boolean canFell(Player player, BlockState state) {
+        return !player.isShiftKeyDown() && state.is(BlockTags.LOGS);
+    }
+
+    public static boolean fellTree(Level level, Player player, ItemStack stack, BlockPos origin) {
+        List<BlockPos> logs = collectTree(level, origin);
+        if (logs.isEmpty()) return false;
+        breakBlocks(level, player, stack, logs);
+        return true;
+    }
+
+    public static List<BlockPos> collectTree(Level level, BlockPos origin) {
+        List<BlockPos> logs = new ArrayList<>();
+        Set<BlockPos> seen = new HashSet<>();
+        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+        seen.add(origin);
+        queue.add(origin);
+        boolean naturalLeaves = false;
+        while (!queue.isEmpty() && logs.size() < MAX_FELLED_LOGS) {
+            BlockPos current = queue.poll();
+            for (BlockPos next : BlockPos.betweenClosed(current.offset(-1, -1, -1), current.offset(1, 1, 1))) {
+                BlockPos pos = next.immutable();
+                if (!seen.add(pos)) continue;
+                BlockState state = level.getBlockState(pos);
+                if (state.is(BlockTags.LOGS)) {
+                    logs.add(pos);
+                    queue.add(pos);
+                    if (logs.size() >= MAX_FELLED_LOGS) break;
+                } else if (state.hasProperty(LeavesBlock.PERSISTENT) && !state.getValue(LeavesBlock.PERSISTENT)) {
+                    naturalLeaves = true;
                 }
+            }
+        }
+        return naturalLeaves ? logs : List.of();
+    }
+
+    private static void breakBlocks(Level level, Player player, ItemStack stack, List<BlockPos> positions) {
+        int broken = 0;
+        AOE_UNCHARGED.set(true);
+        try {
+            for (BlockPos pos : positions) {
+                if (!canAoeBreak(level, pos, stack)) continue;
+                boolean destroyed = player instanceof ServerPlayer sp
+                        ? sp.gameMode.destroyBlock(pos)
+                        : BlockProtectionHelper.tryBreakBlock(level, pos, player);
+                if (destroyed) broken++;
                 if (stack.isEmpty()) return;
             }
+        } finally {
+            AOE_UNCHARGED.set(false);
+        }
+        int charge = broken / AOE_BLOCKS_PER_CHARGE;
+        if (charge > 0) {
+            stack.hurtAndBreak(charge, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
         }
     }
 
@@ -449,6 +589,9 @@ public class LexVitaeItem extends Item implements ISentientTool {
             if (bracket >= 0) {
                 applyEffectToEntity(type, bracket, target, player);
             }
+            if (target.isDeadOrDying()) {
+                LexVitaeGrowth.addExperience(stack, player, LexVitaeGrowth.killExperience(target));
+            }
         }
         stack.hurtAndBreak(1, attacker, LivingEntity.getSlotForHand(attacker.getUsedItemHand()));
         return true;
@@ -488,8 +631,15 @@ public class LexVitaeItem extends Item implements ISentientTool {
         setStaticDrop(stack, level >= 0 ? STATIC_DROP[level] : 1);
         setSoulDrop(stack, level >= 0 ? SOUL_DROP[level] : 0);
         setDigSpeedBonus(stack, level >= 0 ? DEFAULT_DIG_SPEED_ADDED[level] : 0);
-        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, buildWeaponModifiers("lex_vitae", damage,
-                getWeaponAttackSpeed(type, level), getWeaponMovementSpeed(type, level)));
+        ItemAttributeModifiers modifiers = buildWeaponModifiers("lex_vitae", damage,
+                getWeaponAttackSpeed(type, level), getWeaponMovementSpeed(type, level));
+        double efficiency = LexVitaeGrowth.efficiencyBonus(LexVitaeGrowth.getLevel(stack));
+        if (efficiency > 0) {
+            modifiers = modifiers.withModifierAdded(Attributes.MINING_EFFICIENCY,
+                    new AttributeModifier(NeoVitae.rl("lex_vitae_growth_efficiency"), efficiency, AttributeModifier.Operation.ADD_VALUE),
+                    EquipmentSlotGroup.MAINHAND);
+        }
+        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
     }
 
     @Override
@@ -502,6 +652,21 @@ public class LexVitaeItem extends Item implements ISentientTool {
         int side = r == 0 ? 1 : (r == 1 ? 3 : 5);
         tooltip.add(Component.translatable("tooltip.neovitae.lexVitae.radius", side, side).withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.neovitae.lexVitae.mode", Component.translatable(getModeTranslationKey(stack))).withStyle(ChatFormatting.GRAY));
+        int growth = LexVitaeGrowth.getLevel(stack);
+        tooltip.add(Component.translatable("tooltip.neovitae.lexVitae.growth.level", growth).withStyle(ChatFormatting.GOLD));
+        if (flag.hasShiftDown()) {
+            double experience = LexVitaeGrowth.getExperience(stack);
+            tooltip.add(Component.translatable("tooltip.neovitae.lexVitae.growth.progress",
+                    String.format(Locale.ROOT, "%.0f", experience - LexVitaeGrowth.experienceForLevel(growth)),
+                    String.format(Locale.ROOT, "%.0f", LexVitaeGrowth.experienceForLevel(growth + 1) - LexVitaeGrowth.experienceForLevel(growth)))
+                    .withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.neovitae.lexVitae.growth.efficiency",
+                    String.format(Locale.ROOT, "%.0f", LexVitaeGrowth.efficiencyBonus(growth))).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.neovitae.lexVitae.growth.fortune",
+                    LexVitaeGrowth.fortuneBonus(growth)).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.neovitae.lexVitae.growth.wear",
+                    String.format(Locale.ROOT, "%.0f", LexVitaeGrowth.wearResistance(growth) * 100)).withStyle(ChatFormatting.GRAY));
+        }
         SpiritusTooltipHelper.appendSpiritusInfo(stack, getTooltipKey(), tooltip, flag);
         super.appendHoverText(stack, context, tooltip, flag);
     }

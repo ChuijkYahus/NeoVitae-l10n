@@ -299,10 +299,10 @@ public class DungeonRoom {
     private AreaDescriptor rotateDescriptor(AreaDescriptor desc, StructurePlaceSettings settings) {
         if (desc instanceof AreaDescriptor.Rectangle rect) {
             BlockPos min = StructureTemplate.calculateRelativePosition(settings, rect.getMinimumOffset());
-            BlockPos max = StructureTemplate.calculateRelativePosition(settings, rect.getMaximumOffset());
+            BlockPos max = StructureTemplate.calculateRelativePosition(settings, rect.getMaximumOffset().offset(-1, -1, -1));
             return new AreaDescriptor.Rectangle(
                     new BlockPos(Math.min(min.getX(), max.getX()), Math.min(min.getY(), max.getY()), Math.min(min.getZ(), max.getZ())),
-                    new BlockPos(Math.max(min.getX(), max.getX()), Math.max(min.getY(), max.getY()), Math.max(min.getZ(), max.getZ()))
+                    new BlockPos(Math.max(min.getX(), max.getX()) + 1, Math.max(min.getY(), max.getY()) + 1, Math.max(min.getZ(), max.getZ()) + 1)
             );
         }
         return desc.copy();
@@ -367,12 +367,18 @@ public class DungeonRoom {
             compositeMap.computeIfAbsent(structureKey, k -> new ArrayList<>()).add(structure);
         }
 
-        for (Entry<BlockPos, List<String>> entry : compositeMap.entrySet()) {
-            List<String> structures = entry.getValue();
-            ResourceLocation location = ResourceLocation.parse(structures.get(rand.nextInt(structures.size())));
-            BlockPos offsetPos = StructureTemplate.calculateRelativePosition(settings, entry.getKey());
-            DungeonStructure structure = new DungeonStructure(location);
-            structure.placeStructureAtPosition(rand, settings, world, pos.offset(offsetPos));
+        RoomBoundsProcessor bounds = new RoomBoundsProcessor(getAreaDescriptors(settings, pos));
+        settings.addProcessor(bounds);
+        try {
+            for (Entry<BlockPos, List<String>> entry : compositeMap.entrySet()) {
+                List<String> structures = entry.getValue();
+                ResourceLocation location = ResourceLocation.parse(structures.get(rand.nextInt(structures.size())));
+                BlockPos offsetPos = StructureTemplate.calculateRelativePosition(settings, entry.getKey());
+                DungeonStructure structure = new DungeonStructure(location);
+                structure.placeStructureAtPosition(rand, settings, world, pos.offset(offsetPos));
+            }
+        } finally {
+            settings.popProcessor(bounds);
         }
 
         return true;
