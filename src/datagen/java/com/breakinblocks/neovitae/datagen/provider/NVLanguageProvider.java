@@ -479,8 +479,14 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         addTooltip("lexVitae.mode.both", "Mining & Damage");
         addTooltip("lexVitae.mode.mining", "Mining");
         addTooltip("lexVitae.mode.damaging", "Damage");
+        addTooltip("lexVitae.growth.level", "Growth Level %s");
+        addTooltip("lexVitae.growth.progress", "  %s / %s experience to the next level");
+        addTooltip("lexVitae.growth.efficiency", "  +%s Mining Efficiency");
+        addTooltip("lexVitae.growth.fortune", "  +%s Fortune");
+        addTooltip("lexVitae.growth.wear", "  Shrugs off %s%% of wear");
         add("message.neovitae.lex_vitae.radius", "Lex Vitae mining radius: %sx%s");
         add("message.neovitae.lex_vitae.mode", "Lex Vitae mode: %s");
+        add("message.neovitae.lex_vitae.level_up", "The Lex Vitae grows stronger: Growth Level %s");
 
         // Spiritus type tooltip header + per-type display names (color-coded at runtime)
         addTooltip("spiritus.type", "Attuned: %s");

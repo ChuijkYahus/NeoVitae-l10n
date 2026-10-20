@@ -47,6 +47,25 @@ public class LexVitaeEntry extends EntryProvider {
                 + "\n\n- [#](8B0000)Mining[#](): only mines blocks; the beam passes harmlessly through creatures."
                 + "\n\n- [#](8B0000)Damage[#](): only strikes creatures; the beam ignores blocks."
                 + "\\\n\\\nThe current mode is shown in the Lex Vitae's tooltip.");
+
+        this.page("felling", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("Felling");
+        this.pageText("Strike a log with the active Lex Vitae, by hand or with the beam, and it brings down every "
+                + "connected log of the tree with it, up to ninety-six at once."
+                + "\\\n\\\nIt only fells trees that still wear their [#](2E8B57)natural leaves[#](), so your log "
+                + "walls are safe. [#](B8860B)Sneak while chopping to take a single log.[#]()");
+
+        this.page("growth", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("A Living Blade");
+        this.pageText("The Lex Vitae [#](8B0000)learns[#]() from everything it breaks and slays, and its "
+                + "[#](8B0000)Growth Level[#]() rises without end, though each level asks more than the last."
+                + "\\\n\\\nEvery level adds [#](2E8B57)Mining Efficiency[#]() and lets it shrug off more wear, "
+                + "sparing your Spiritus. Every fifteenth level adds a level of [#](2E8B57)Fortune[#]()."
+                + "\\\n\\\nHold Shift over it to see what it has learned.");
     }
 
     @Override

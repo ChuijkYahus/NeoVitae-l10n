@@ -43,12 +43,21 @@ public final class LexVitaeAoeHandler {
             return;
         }
 
-        int radius = stack.getOrDefault(NVDataComponents.LEX_RADIUS.get(), 0);
-        if (radius == 0) return;
-
         Level level = (Level) event.getLevel();
         BlockPos center = event.getPos();
         if (event.getState().getDestroySpeed(level, center) <= 0) return;
+
+        if (LexVitaeItem.canFell(player, event.getState())) {
+            AOE_BREAKING.set(true);
+            try {
+                if (LexVitaeItem.fellTree(level, player, stack, center)) return;
+            } finally {
+                AOE_BREAKING.set(false);
+            }
+        }
+
+        int radius = stack.getOrDefault(NVDataComponents.LEX_RADIUS.get(), 0);
+        if (radius == 0) return;
 
         Direction.Axis depth = targetedFaceAxis(player, level, center);
         if (depth == null) {
