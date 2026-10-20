@@ -408,6 +408,7 @@ public class NVLanguageProvider extends LanguageProvider implements com.klikli_d
         add("tooltip.neovitae.bound_treasures.unloaded", "Linked container is in an unloaded area");
         add("tooltip.neovitae.bound_treasures.missing", "Linked container no longer exists");
         add("tooltip.neovitae.bound_treasures.not_a_container", "That is not a container");
+        add("tooltip.neovitae.bound_treasures.too_far", "This container can only be opened from nearby");
 
         // Alchemy & Misc
         add(NVItems.ARCANE_SCRIBE_TOOL.get(), "Arcane Scribe Tool");

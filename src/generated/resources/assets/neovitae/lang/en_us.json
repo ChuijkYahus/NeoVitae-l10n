@@ -3309,6 +3309,7 @@
   "tooltip.neovitae.bound_treasures.missing": "Linked container no longer exists",
   "tooltip.neovitae.bound_treasures.not_a_container": "That is not a container",
   "tooltip.neovitae.bound_treasures.not_linked": "No container linked. Shift right-click a container to bind.",
+  "tooltip.neovitae.bound_treasures.too_far": "This container can only be opened from nearby",
   "tooltip.neovitae.bound_treasures.unloaded": "Linked container is in an unloaded area",
   "tooltip.neovitae.container_tier": "Current Tier: %s",
   "tooltip.neovitae.container_tier_missing": "No Tier found!",
