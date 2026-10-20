@@ -92,6 +92,7 @@ import com.breakinblocks.neovitae.client.screen.TeleposerScreen;
 import com.breakinblocks.neovitae.common.datacomponent.NVDataComponents;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.client.color.AthanorGlowColor;
+import com.breakinblocks.neovitae.client.color.PillarAccentColor;
 import com.breakinblocks.neovitae.client.color.RitualAnchorColor;
 import com.breakinblocks.neovitae.common.item.NVItems;
 import com.breakinblocks.neovitae.common.item.OrbFluidHandler;
@@ -230,6 +231,9 @@ public class ClientModEventHandler {
                 NVBlocks.OMNI_ROUTING_NODE.block().get());
         event.register(new AthanorGlowColor(), NVBlocks.ATHANOR_BLOCK.block().get());
         event.register(new RitualAnchorColor(), NVBlocks.RITUAL_ANCHOR.block().get());
+        event.register(new PillarAccentColor(),
+                NVBlocks.INVERSION_PILLAR.block().get(),
+                NVBlocks.INVERSION_PILLAR_CAP.block().get());
     }
 
     @SubscribeEvent
@@ -239,6 +243,10 @@ public class ClientModEventHandler {
                 NVItems.ALCHEMY_FLASK.get(),
                 NVItems.ALCHEMY_FLASK_THROWABLE.get(),
                 NVItems.ALCHEMY_FLASK_LINGERING.get());
+
+        event.register(new PillarAccentColor(),
+                NVBlocks.INVERSION_PILLAR.item().get(),
+                NVBlocks.INVERSION_PILLAR_CAP.item().get());
 
         TippedDaggerColor tippedDaggerColor = new TippedDaggerColor();
         event.register(tippedDaggerColor, NVItems.THROWING_DAGGER_TIPPED.get());

@@ -128,8 +128,10 @@ public class NVBlockStateProvider extends BlockStateProvider {
         simpleBlockItem(NVBlocks.DUNGEON_SEAL_INACCESSIBLE.block().get(), dungeonSealInertModel);
 
         // Inversion Pillar - dungeon teleporter (uses custom pillar_mid parent)
-        ModelFile inversionPillarModel = models().withExistingParent("inversion_pillar", bm("block/pillar_mid"))
-                .texture("texture", bm("block/pillar_mid"));
+        ModelFile inversionPillarModel = models().withExistingParent("inversion_pillar", bm("block/pillar_mid_accented"))
+                .texture("texture", bm("block/pillar_mid"))
+                .texture("accent", bm("block/pillar_mid_accent"))
+                .renderType("cutout");
         getVariantBuilder(NVBlocks.INVERSION_PILLAR.block().get())
                 .partialState().with(BlockInversionPillar.RIFT_RETURN, false)
                 .modelForState().modelFile(inversionPillarModel).addModel()
@@ -149,10 +151,14 @@ public class NVBlockStateProvider extends BlockStateProvider {
                 bm("block/blood_stained_glass"), bm("block/blood_stained_glass_pane_top"), "translucent");
 
         // Inversion Pillar Cap - uses block state for top/bottom orientation (uses custom pillar_top/pillar_bottom parents)
-        ModelFile inversionPillarCapBottom = models().withExistingParent("inversion_pillar_bottom", bm("block/pillar_bottom"))
-                .texture("texture", bm("block/pillar_base"));
-        ModelFile inversionPillarCapTop = models().withExistingParent("inversion_pillar_top", bm("block/pillar_top"))
-                .texture("texture", bm("block/pillar_base"));
+        ModelFile inversionPillarCapBottom = models().withExistingParent("inversion_pillar_bottom", bm("block/pillar_bottom_accented"))
+                .texture("texture", bm("block/pillar_base"))
+                .texture("accent", bm("block/pillar_base_accent"))
+                .renderType("cutout");
+        ModelFile inversionPillarCapTop = models().withExistingParent("inversion_pillar_top", bm("block/pillar_top_accented"))
+                .texture("texture", bm("block/pillar_base"))
+                .texture("accent", bm("block/pillar_base_accent"))
+                .renderType("cutout");
         getVariantBuilder(NVBlocks.INVERSION_PILLAR_CAP.block().get())
                 .partialState().with(BlockInversionPillarEnd.TYPE, PillarCapType.BOTTOM)
                 .with(BlockInversionPillarEnd.RIFT_RETURN, false)
