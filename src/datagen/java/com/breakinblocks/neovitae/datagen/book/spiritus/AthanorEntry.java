@@ -103,10 +103,10 @@ public class AthanorEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Automating the Athanor");
         this.pageText("[#](2E8B57)The Athanor is sided, much like a common furnace. "
-                + "Tools may only enter or exit from the top. Inputs are accepted from the sides. "
-                + "Outputs emerge from the bottom.[#]()\\\n\\\n"
-                + "Keep this geometry in mind when placing your Hoppers or Routing Nodes. "
-                + "An automated Athanor is the heart of any serious ore-processing chain.");
+                + "Tools enter and leave from the top, inputs from the sides, and outputs emerge from the bottom.[#]()\\\n\\\n"
+                + "The [#](8B0000)Sides[#]() panel beside its screen reassigns any face to inputs, outputs, both, "
+                + "the tool, or nothing at all. A face set to both takes inputs in and gives outputs back, so a single "
+                + "Routing Node can tend the whole furnace.");
 
         this.page("prismatic_gem", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())

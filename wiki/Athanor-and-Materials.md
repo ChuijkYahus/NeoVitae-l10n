@@ -6,7 +6,9 @@ The **Athanor** is the alchemist's furnace, a vessel of transmutation that trans
 
 ## Operating the Athanor
 
-The Athanor is sided, much like a common furnace. **Tools** may only enter or exit from the **top**. **Inputs** are accepted from the sides. **Outputs** emerge from the bottom. Keep this geometry in mind when placing your Hoppers or Routing Nodes; an automated Athanor is the heart of any serious ore-processing chain.
+The Athanor is sided, much like a common furnace. By default **tools** enter and leave from the **top**, **inputs** (and the input tank) are accepted from the four sides, and **outputs** (and the output tank) emerge from the **bottom**.
+
+The **Sides** panel beside the Athanor's screen reassigns each face, labelled relative to the Athanor's front: **Inputs**, **Outputs**, **Inputs & Outputs**, **Tool**, or **Off**. Click a face to step forward through the modes and right-click to step back. A face set to **Inputs & Outputs** accepts inputs and gives back finished outputs, so one Hopper chain or Routing Node can run the whole machine. Fluids follow the face: inputs feed the input tank and outputs drain the output tank.
 
 It accepts only two fuel sources, the **Primitive Fuel Cell** (a Block of Coal worked in a recipe) or a **Lava Crystal**. The Primitive Fuel Cell endures for **128 individual operations**, more than double what its Block of Coal would yield in a furnace, and wears down only on completing a craft so nothing is wasted. The Lava Crystal is a shard of imprisoned heat born from molten rock and sustained by your **[Anima](Blood-Orbs-and-Anima)**; placed in any furnace it becomes an inexhaustible flame, drawing **50 EV** per item smelted (ten seconds per operation, one item per cycle).
 

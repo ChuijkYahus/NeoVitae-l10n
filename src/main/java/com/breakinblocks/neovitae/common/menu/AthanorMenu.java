@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import com.breakinblocks.neovitae.common.block.NVBlocks;
 import com.breakinblocks.neovitae.common.blockentity.AthanorBlockEntity;
+import com.breakinblocks.neovitae.common.blockentity.AthanorSides;
 
 public class AthanorMenu extends AbstractBlockEntityMenu<AthanorBlockEntity> {
 
@@ -65,6 +66,24 @@ public class AthanorMenu extends AbstractBlockEntityMenu<AthanorBlockEntity> {
         }
 
         this.addDataSlot(idleData);
+        for (AthanorSides.Face face : AthanorSides.Face.values()) {
+            this.addDataSlot(new DataSlot() {
+                private int value;
+
+                @Override
+                public int get() {
+                    return tile != null ? tile.getSideMode(face).ordinal() : value;
+                }
+
+                @Override
+                public void set(int newValue) {
+                    value = newValue;
+                    if (tile != null) {
+                        tile.setSideModeFromNetwork(face.ordinal(), newValue);
+                    }
+                }
+            });
+        }
 
         MenuSlotHelper.addPlayerInventory(this::addSlot, playerInventory,
                 MenuSlotHelper.INV_Y_208, MenuSlotHelper.HOTBAR_Y_208);
@@ -76,6 +95,19 @@ public class AthanorMenu extends AbstractBlockEntityMenu<AthanorBlockEntity> {
 
     public AthanorMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
         this(containerId, playerInventory, (AthanorBlockEntity) playerInventory.player.level().getBlockEntity(buf.readBlockPos()));
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        AthanorSides.Face[] faces = AthanorSides.Face.values();
+        int face = id / 2;
+        if (tile == null || face < 0 || face >= faces.length) return false;
+        tile.cycleSideMode(faces[face], id % 2 == 0 ? 1 : -1);
+        return true;
+    }
+
+    public static int sideButtonId(AthanorSides.Face face, boolean backwards) {
+        return face.ordinal() * 2 + (backwards ? 1 : 0);
     }
 
     @Override

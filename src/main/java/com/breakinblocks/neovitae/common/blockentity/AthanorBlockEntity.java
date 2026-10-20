@@ -49,12 +49,15 @@ import com.breakinblocks.neovitae.client.particle.ColoredParticleOptions;
 import com.breakinblocks.neovitae.client.sound.LoopSoundManager;
 import com.breakinblocks.neovitae.common.particle.NVParticles;
 import com.breakinblocks.neovitae.util.AthanorOutputHandler;
+import com.breakinblocks.neovitae.util.SplitFluidHandler;
+import com.breakinblocks.neovitae.util.SplitItemHandler;
 import net.minecraft.sounds.SoundSource;
 
 import com.breakinblocks.neovitae.spiritus.WorldSpiritusHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -170,15 +173,58 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider,
         return spiritusBlocked;
     }
 
+    @Nullable
     public static IItemHandler getItemHandler(AthanorBlockEntity tile, @Nullable Direction side) {
         if (side == null) {
             return tile.athanorInv;
         }
-        return switch (side) {
-            case UP -> new RangedWrapper(tile.athanorInv, TOOL_SLOT, TOOL_SLOT + 1);
-            case DOWN -> new RangedWrapper(tile.athanorInv, OUTPUT_SLOT, OUTPUT_SLOT + NUM_OUTPUTS);
-            default -> new RangedWrapper(tile.athanorInv, INPUT_START, OUTPUT_BUCKET_SLOT + 1);
+        AthanorSides.Mode mode = tile.getSideMode(side);
+        if (mode == AthanorSides.Mode.DEFAULT) {
+            mode = AthanorSides.Face.of(tile.getBlockState().getValue(AthanorBlock.FACING), side).defaultRole();
+        }
+        return switch (mode) {
+            case TOOL -> new RangedWrapper(tile.athanorInv, TOOL_SLOT, TOOL_SLOT + 1);
+            case OUTPUTS -> outputSlots(tile);
+            case INPUTS, DEFAULT -> inputSlots(tile);
+            case BOTH -> new SplitItemHandler(inputSlots(tile), outputSlots(tile));
+            case OFF -> null;
         };
+    }
+
+    private static IItemHandler inputSlots(AthanorBlockEntity tile) {
+        return new RangedWrapper(tile.athanorInv, INPUT_START, OUTPUT_BUCKET_SLOT + 1);
+    }
+
+    private static IItemHandler outputSlots(AthanorBlockEntity tile) {
+        return new RangedWrapper(tile.athanorInv, OUTPUT_SLOT, OUTPUT_SLOT + NUM_OUTPUTS);
+    }
+
+    private final AthanorSides.Mode[] sideModes = new AthanorSides.Mode[AthanorSides.Face.values().length];
+
+    {
+        Arrays.fill(sideModes, AthanorSides.Mode.DEFAULT);
+    }
+
+    public AthanorSides.Mode getSideMode(AthanorSides.Face face) {
+        return sideModes[face.ordinal()];
+    }
+
+    public AthanorSides.Mode getSideMode(Direction side) {
+        return getSideMode(AthanorSides.Face.of(getBlockState().getValue(AthanorBlock.FACING), side));
+    }
+
+    public void cycleSideMode(AthanorSides.Face face, int step) {
+        sideModes[face.ordinal()] = sideModes[face.ordinal()].cycle(step);
+        setChanged();
+        if (level != null) {
+            level.invalidateCapabilities(worldPosition);
+        }
+    }
+
+    public void setSideModeFromNetwork(int face, int mode) {
+        if (face >= 0 && face < sideModes.length) {
+            sideModes[face] = AthanorSides.Mode.byOrdinal(mode);
+        }
     }
 
     public final FluidTank inputTank = new FluidTank(20 * FluidType.BUCKET_VOLUME) {
@@ -212,6 +258,9 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider,
         outputTank.readFromNBT(registries, tag.getCompound("outputtank"));
         progress = tag.getDouble("arcprogress");
         spiritusBlocked = tag.getBoolean("spiritusBlocked");
+        for (AthanorSides.Face face : AthanorSides.Face.values()) {
+            sideModes[face.ordinal()] = AthanorSides.Mode.byName(tag.getString("side_" + face.getName()));
+        }
         if (tag.contains("chunkSpiritus")) {
             CompoundTag spiritusTag = tag.getCompound("chunkSpiritus");
             for (SpiritusType type : SpiritusType.values()) {
@@ -246,6 +295,11 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider,
         tag.put("outputtank", output);
         tag.putDouble("arcprogress", progress);
         tag.putBoolean("spiritusBlocked", spiritusBlocked);
+        for (AthanorSides.Face face : AthanorSides.Face.values()) {
+            if (sideModes[face.ordinal()] != AthanorSides.Mode.DEFAULT) {
+                tag.putString("side_" + face.getName(), sideModes[face.ordinal()].getName());
+            }
+        }
         CompoundTag spiritusTag = new CompoundTag();
         for (SpiritusType type : SpiritusType.values()) {
             spiritusTag.putDouble(type.getSerializedName(), chunkSpiritus[type.ordinal()]);
@@ -265,11 +319,18 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider,
         return new AthanorMenu(containerId, playerInventory, this);
     }
 
-    public IFluidHandler getFluidHandler(Direction direction) {
-        if (direction == Direction.DOWN) {
-            return this.outputTank;
+    @Nullable
+    public IFluidHandler getFluidHandler(@Nullable Direction direction) {
+        if (direction == null) {
+            return this.inputTank;
         }
-        return this.inputTank;
+        return switch (getSideMode(direction)) {
+            case DEFAULT -> direction == Direction.DOWN ? this.outputTank : this.inputTank;
+            case INPUTS -> this.inputTank;
+            case OUTPUTS -> this.outputTank;
+            case BOTH -> new SplitFluidHandler(this.inputTank, this.outputTank);
+            case TOOL, OFF -> null;
+        };
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState state, AthanorBlockEntity athanorTile) {
