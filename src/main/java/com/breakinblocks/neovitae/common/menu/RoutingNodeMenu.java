@@ -19,7 +19,6 @@ import java.util.Set;
 import net.neoforged.neoforge.fluids.FluidStack;
 import com.breakinblocks.neovitae.common.blockentity.routing.FilteredRoutingNodeBlockEntity;
 import com.breakinblocks.neovitae.common.blockentity.routing.OutputRoutingNodeBlockEntity;
-import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.api.routing.ISpiritusExportNode;
 import com.breakinblocks.neovitae.common.blockentity.routing.OmniRoutingNodeBlockEntity;
 import com.breakinblocks.neovitae.common.routing.FaceDirection;
@@ -94,7 +93,7 @@ public class RoutingNodeMenu extends AbstractContainerMenu {
                     } else if (index >= DATA_SIDE_FLUID_MODE_START && index < DATA_SIDE_FLUID_MODE_START + 6) {
                         return tile.getSideFilter(index - DATA_SIDE_FLUID_MODE_START).getFluidMode().ordinal();
                     } else if (index == DATA_SPIRITUS_TYPE && tile instanceof ISpiritusExportNode output) {
-                        return output.getSpiritusExportType() == null ? 0 : output.getSpiritusExportType().ordinal() + 1;
+                        return output.getSpiritusExportIndex();
                     } else if (index == DATA_SPIRITUS_STOCK && tile instanceof ISpiritusExportNode output) {
                         return output.getSpiritusStockTarget();
                     } else if (index == DATA_ENERGY_RATE_LO) {
@@ -133,11 +132,9 @@ public class RoutingNodeMenu extends AbstractContainerMenu {
                         int idx = Math.max(0, Math.min(values.length - 1, value));
                         tile.getSideFilter(index - DATA_SIDE_FLUID_MODE_START).setFluidMode(values[idx]);
                     } else if (index == DATA_SPIRITUS_TYPE && tile instanceof ISpiritusExportNode output) {
-                        SpiritusType[] types = SpiritusType.values();
-                        int clamped = Math.max(0, Math.min(types.length, value));
-                        output.setSpiritusExport(clamped == 0 ? null : types[clamped - 1], output.getSpiritusStockTarget());
+                        output.setSpiritusExportIndex(value, output.getSpiritusStockTarget());
                     } else if (index == DATA_SPIRITUS_STOCK && tile instanceof ISpiritusExportNode output) {
-                        output.setSpiritusExport(output.getSpiritusExportType(), value);
+                        output.setSpiritusExportIndex(output.getSpiritusExportIndex(), value);
                     } else if (index >= DATA_ENERGY_RATE_LO && index <= DATA_ENERGY_CEILING_HI) {
                         energySync[index - DATA_ENERGY_RATE_LO] = value;
                     }

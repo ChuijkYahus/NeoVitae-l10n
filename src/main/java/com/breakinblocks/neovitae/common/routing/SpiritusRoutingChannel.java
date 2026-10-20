@@ -9,7 +9,6 @@ import com.breakinblocks.neovitae.api.spiritus.ISpiritusStorage;
 import com.breakinblocks.neovitae.common.blockentity.routing.FilteredRoutingNodeBlockEntity;
 import com.breakinblocks.neovitae.common.blockentity.routing.MasterRoutingNodeBlockEntity;
 import com.breakinblocks.neovitae.api.routing.ISpiritusExportNode;
-import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 
 import javax.annotation.Nullable;
 
@@ -49,7 +48,7 @@ public class SpiritusRoutingChannel implements RoutingChannel<ISpiritusFilter> {
     @Override
     public boolean isOutputSide(BlockEntity be, Direction side) {
         return be instanceof ISpiritusExportNode node
-                && node.getSpiritusExportType() != null
+                && node.exportsSpiritus()
                 && node.getSpiritusStockTarget() > 0;
     }
 
@@ -70,9 +69,9 @@ public class SpiritusRoutingChannel implements RoutingChannel<ISpiritusFilter> {
     @Nullable
     public ISpiritusFilter getOutputFilter(BlockEntity be, Direction side) {
         if (!(be instanceof ISpiritusExportNode node)) return null;
-        SpiritusType type = node.getSpiritusExportType();
-        if (type == null || node.getSpiritusStockTarget() <= 0) return null;
-        return new ChunkStockSpiritusFilter(be, type, node.getSpiritusStockTarget());
+        if (!node.exportsSpiritus() || node.getSpiritusStockTarget() <= 0) return null;
+        return new ChunkStockSpiritusFilter(be, node.isSpiritusExportAll() ? null : node.getSpiritusExportType(),
+                node.getSpiritusStockTarget());
     }
 
     @Override

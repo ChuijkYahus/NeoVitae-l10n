@@ -17,6 +17,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -33,9 +34,11 @@ import com.breakinblocks.neovitae.common.network.RoutingNodeSetAmountPayload;
 import com.breakinblocks.neovitae.common.network.RoutingNodeSetFluidGhostPayload;
 import com.breakinblocks.neovitae.common.network.RoutingNodeSetComponentsPayload;
 import com.breakinblocks.neovitae.common.network.RoutingNodeSetGhostPayload;
+import com.breakinblocks.neovitae.common.routing.FilterMatchRules;
 import com.breakinblocks.neovitae.common.routing.FilterMode;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -88,9 +91,13 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
     private static final int ENERGY_BOX_W = 56;
     private static final int ENERGY_BOX_H = 14;
 
-    private static final int PICKER_WIDTH = 174;
+    private static final int PICKER_WIDTH = 190;
+    private static final int PICKER_ROW = 12;
     private int componentPickerSlot = -1;
-    private final List<ResourceLocation> pickerTypes = new ArrayList<>();
+    private int pickerScroll = 0;
+    private final List<PickerRow> pickerRows = new ArrayList<>();
+
+    private record PickerRow(@Nullable ResourceLocation id, Component label) {}
 
     public RoutingNodeScreen(RoutingNodeMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -404,6 +411,8 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
             int typeOrdinal = menu.getSpiritusTypeOrdinal();
             if (typeOrdinal <= 0) {
                 spiritusTypeButton.setMessage(Component.translatable("gui.neovitae.routing.spiritus_off").withStyle(ChatFormatting.GRAY));
+            } else if (typeOrdinal > SpiritusType.values().length) {
+                spiritusTypeButton.setMessage(Component.translatable("gui.neovitae.routing.spiritus_all").withStyle(ChatFormatting.LIGHT_PURPLE));
             } else {
                 SpiritusType type = SpiritusType.values()[Math.min(typeOrdinal - 1, SpiritusType.values().length - 1)];
                 spiritusTypeButton.setMessage(Component.translatable("tooltip.neovitae.spiritus." + type.getSerializedName())
@@ -439,8 +448,12 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         pageNextButton.active = menu.getCurrentPage() < pageCount - 1;
     }
 
+    private int pickerVisibleRows() {
+        return Math.max(1, Math.min(pickerRows.size(), (this.height - 40) / PICKER_ROW));
+    }
+
     private int pickerHeight() {
-        return 16 + pickerTypes.size() * 12 + 4;
+        return 16 + pickerVisibleRows() * PICKER_ROW + 4;
     }
 
     private int pickerLeft() {
@@ -452,14 +465,53 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
     }
 
     private void openComponentPicker(int ghostSlot, ItemStack ghost) {
-        pickerTypes.clear();
+        pickerRows.clear();
+        pickerScroll = 0;
+        pickerRows.add(new PickerRow(null, Component.translatable("gui.neovitae.routing.match.header")));
+        pickerRows.add(new PickerRow(FilterMatchRules.ANY_ITEM, Component.translatable("gui.neovitae.routing.match.any_item")));
+        pickerRows.add(new PickerRow(FilterMatchRules.SAME_MOD, Component.translatable("gui.neovitae.routing.match.same_mod",
+                BuiltInRegistries.ITEM.getKey(ghost.getItem()).getNamespace())));
+        ghost.getTags()
+                .sorted(Comparator.comparing(tag -> tag.location().toString()))
+                .forEach(tag -> pickerRows.add(new PickerRow(FilterMatchRules.tagRule(tag),
+                        Component.translatable("gui.neovitae.routing.match.tag", tag.location().toString()))));
+
+        pickerRows.add(new PickerRow(null, Component.translatable("gui.neovitae.routing.match.properties")));
+        for (FilterMatchRules.ItemProperty property : FilterMatchRules.ItemProperty.values()) {
+            pickerRows.add(new PickerRow(property.id(),
+                    Component.translatable("gui.neovitae.routing.match.property." + property.getName())));
+        }
+
+        List<PickerRow> components = new ArrayList<>();
         for (var entry : ghost.getComponentsPatch().entrySet()) {
             ResourceLocation id = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(entry.getKey());
             if (id != null) {
-                pickerTypes.add(id);
+                components.add(new PickerRow(id, Component.literal(id.toString())));
             }
         }
-        componentPickerSlot = pickerTypes.isEmpty() ? -1 : ghostSlot;
+        if (!components.isEmpty()) {
+            pickerRows.add(new PickerRow(null, Component.translatable("gui.neovitae.routing.match.components")));
+            pickerRows.addAll(components);
+        }
+        componentPickerSlot = ghostSlot;
+    }
+
+    private Component ruleLabel(ResourceLocation id) {
+        if (id.equals(FilterMatchRules.ANY_ITEM)) {
+            return Component.translatable("gui.neovitae.routing.match.any_item");
+        }
+        if (id.equals(FilterMatchRules.SAME_MOD)) {
+            return Component.translatable("gui.neovitae.routing.match.same_mod_short");
+        }
+        var tag = FilterMatchRules.tagFromRule(id);
+        if (tag.isPresent()) {
+            return Component.translatable("gui.neovitae.routing.match.tag", tag.get().location().toString());
+        }
+        var property = FilterMatchRules.propertyFromRule(id);
+        if (property.isPresent()) {
+            return Component.translatable("gui.neovitae.routing.match.property." + property.get().getName());
+        }
+        return Component.literal(id.toString());
     }
 
     private void renderComponentPicker(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -473,18 +525,31 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
                 Component.translatable("gui.neovitae.routing.match_components"), x + 4, y + 4, 0xFFFFFF, false);
 
         Set<ResourceLocation> selected = menu.getCurrentItemComponents(componentPickerSlot);
-        for (int i = 0; i < pickerTypes.size(); i++) {
-            ResourceLocation id = pickerTypes.get(i);
-            int rowY = y + 16 + i * 12;
-            boolean on = selected.contains(id);
-            boolean hovered = mouseX >= x && mouseX < x + w && mouseY >= rowY && mouseY < rowY + 12;
+        int visible = pickerVisibleRows();
+        for (int i = 0; i < visible && pickerScroll + i < pickerRows.size(); i++) {
+            PickerRow row = pickerRows.get(pickerScroll + i);
+            int rowY = y + 16 + i * PICKER_ROW;
+            if (row.id() == null) {
+                guiGraphics.drawString(this.font, row.label().copy().withStyle(ChatFormatting.GOLD), x + 4, rowY + 2, 0xFFFFFF, false);
+                continue;
+            }
+            boolean on = selected.contains(row.id());
+            boolean hovered = mouseX >= x && mouseX < x + w && mouseY >= rowY && mouseY < rowY + PICKER_ROW;
             if (hovered) {
-                guiGraphics.fill(x + 1, rowY, x + w - 1, rowY + 12, 0x40FFFFFF);
+                guiGraphics.fill(x + 1, rowY, x + w - 1, rowY + PICKER_ROW, 0x40FFFFFF);
             }
             guiGraphics.fill(x + 4, rowY + 2, x + 12, rowY + 10, 0xFF000000);
             guiGraphics.fill(x + 5, rowY + 3, x + 11, rowY + 9, on ? 0xFF55FF55 : 0xFF555555);
-            String label = this.font.plainSubstrByWidth(id.toString(), w - 20);
+            String label = this.font.plainSubstrByWidth(row.label().getString(), w - 20);
             guiGraphics.drawString(this.font, label, x + 16, rowY + 2, on ? 0xFFFFFFFF : 0xFFAAAAAA, false);
+        }
+        if (pickerRows.size() > visible) {
+            int trackTop = y + 16;
+            int trackHeight = visible * PICKER_ROW;
+            int thumbHeight = Math.max(8, trackHeight * visible / pickerRows.size());
+            int thumbTop = trackTop + (trackHeight - thumbHeight) * pickerScroll / (pickerRows.size() - visible);
+            guiGraphics.fill(x + w - 3, trackTop, x + w - 1, trackTop + trackHeight, 0xFF101012);
+            guiGraphics.fill(x + w - 3, thumbTop, x + w - 1, thumbTop + thumbHeight, 0xFF808088);
         }
     }
 
@@ -607,7 +672,7 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
             if (!matched.isEmpty()) {
                 tooltip.add(Component.translatable("gui.neovitae.routing.matching_components").withStyle(ChatFormatting.GREEN));
                 for (ResourceLocation id : matched) {
-                    tooltip.add(Component.literal(" - " + id).withStyle(ChatFormatting.DARK_GREEN));
+                    tooltip.add(Component.literal(" - ").append(ruleLabel(id)).withStyle(ChatFormatting.DARK_GREEN));
                 }
             }
             tooltip.add(Component.translatable("gui.neovitae.routing.shift_match").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
@@ -848,9 +913,9 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
         }
         int rowsTop = y + 16;
         if (mouseY >= rowsTop) {
-            int row = (int) ((mouseY - rowsTop) / 12);
-            if (row >= 0 && row < pickerTypes.size()) {
-                ResourceLocation id = pickerTypes.get(row);
+            int index = pickerScroll + (int) ((mouseY - rowsTop) / PICKER_ROW);
+            if (index >= 0 && index < pickerRows.size() && pickerRows.get(index).id() != null) {
+                ResourceLocation id = pickerRows.get(index).id();
                 Set<ResourceLocation> current = new LinkedHashSet<>(menu.getCurrentItemComponents(componentPickerSlot));
                 if (!current.add(id)) {
                     current.remove(id);
@@ -879,6 +944,11 @@ public class RoutingNodeScreen extends AbstractContainerScreen<RoutingNodeMenu> 
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (componentPickerSlot >= 0) {
+            int maxScroll = Math.max(0, pickerRows.size() - pickerVisibleRows());
+            pickerScroll = Math.max(0, Math.min(maxScroll, pickerScroll - (int) Math.signum(scrollY)));
+            return true;
+        }
         if (scrollY != 0 && this.hoveredSlot != null && this.hoveredSlot.index < RoutingNodeMenu.GHOST_SLOT_COUNT) {
             int slotIdx = this.hoveredSlot.index;
             boolean items = activeTab == Tab.ITEMS;

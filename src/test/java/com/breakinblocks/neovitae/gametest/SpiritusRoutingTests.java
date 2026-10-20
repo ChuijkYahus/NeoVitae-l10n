@@ -68,7 +68,27 @@ public class SpiritusRoutingTests {
             helper.succeedWhen(() -> {
                 double chunkAmount = WorldSpiritusHandler.getCurrentSpiritus(helper.getLevel(), helper.absolutePos(OUTPUT_POS), SpiritusType.RUINA);
                 helper.assertTrue(!(Math.abs(chunkAmount - 25) > 0.0001), "Output chunk should be stocked to 25 ruina, has " + chunkAmount);
-                helper.assertTrue(!(Math.abs(net.accumulator().getStored() - 475) > 0.0001), "Accumulator should have paid 25, stored=" + net.accumulator().getStored());
+                helper.assertTrue(!(Math.abs(net.accumulator().getStored() - 475) > 0.0001), "Accumulator should have paid 25, stored=" + net.accumulator().getStored());
+
+            });
+        });
+    }
+
+    @GameTest(template = "empty_24x5x24", timeoutTicks = 300)
+    public void allAspectsExportsAnyType(GameTestHelper helper) {
+        helper.runAfterDelay(1, () -> {
+            Network net = buildNetwork(helper);
+            if (net == null) return;
+
+            net.accumulator().attuneTo(SpiritusType.NIHILUM);
+            net.accumulator().insertSpiritus(SpiritusType.NIHILUM, 500);
+            net.output().setSpiritusExportAll(25);
+
+            helper.succeedWhen(() -> {
+                double stored = net.accumulator().getStored();
+                helper.assertTrue(stored < 500, "An all-aspects export should take nihilum, stored=" + stored);
+                double chunkAmount = WorldSpiritusHandler.getCurrentSpiritus(helper.getLevel(), helper.absolutePos(OUTPUT_POS), SpiritusType.NIHILUM);
+                helper.assertTrue(chunkAmount >= 25 - 0.0001, "Output chunk should be stocked to at least 25 nihilum, has " + chunkAmount);
             });
         });
     }
@@ -112,7 +132,8 @@ public class SpiritusRoutingTests {
                 double chunkAmount = WorldSpiritusHandler.getCurrentSpiritus(helper.getLevel(), helper.absolutePos(OUTPUT_POS), SpiritusType.RUINA);
                 double chunkMax = WorldSpiritusHandler.getMaxSpiritus(helper.getLevel(), helper.absolutePos(OUTPUT_POS), SpiritusType.RUINA);
                 helper.assertTrue(!(chunkAmount > chunkMax + 0.0001), "Chunk exceeded its max: " + chunkAmount + " > " + chunkMax);
-                helper.assertTrue(!(net.accumulator().getStored() >= 500), "Accumulator should have delivered into the chunk, stored=" + net.accumulator().getStored());
+                helper.assertTrue(!(net.accumulator().getStored() >= 500), "Accumulator should have delivered into the chunk, stored=" + net.accumulator().getStored());
+
             });
         });
     }
@@ -129,7 +150,8 @@ public class SpiritusRoutingTests {
 
             helper.succeedWhen(() -> {
                 helper.assertTrue(!(net.accumulator().getStored() != 0), "Accumulator should be fully drained, stored=" + net.accumulator().getStored());
-                helper.assertTrue(!(net.accumulator().getAttunedType() != SpiritusType.RUINA), "Network drain must keep the attunement, type=" + net.accumulator().getAttunedType());
+                helper.assertTrue(!(net.accumulator().getAttunedType() != SpiritusType.RUINA), "Network drain must keep the attunement, type=" + net.accumulator().getAttunedType());
+
             });
         });
     }

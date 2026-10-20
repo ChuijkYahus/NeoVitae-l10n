@@ -103,6 +103,7 @@ public abstract class RoutingNodeBlockEntity extends BlockEntity implements IRou
                 masterPos = BlockPos.ZERO;
                 connectionList.clear();
                 setChanged();
+                syncToClient();
             }
         }
 
@@ -217,6 +218,14 @@ public abstract class RoutingNodeBlockEntity extends BlockEntity implements IRou
         }
 
         connectionList.clear();
+        setChanged();
+        syncToClient();
+    }
+
+    private void syncToClient() {
+        if (level == null || level.isClientSide()) return;
+        BlockState state = level.getBlockState(worldPosition);
+        level.sendBlockUpdated(worldPosition, state, state, 3);
     }
 
     @Override

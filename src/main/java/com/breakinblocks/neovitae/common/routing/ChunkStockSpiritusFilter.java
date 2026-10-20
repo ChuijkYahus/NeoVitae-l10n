@@ -6,14 +6,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import com.breakinblocks.neovitae.api.routing.ISpiritusFilter;
 import com.breakinblocks.neovitae.common.datacomponent.SpiritusType;
 import com.breakinblocks.neovitae.spiritus.WorldSpiritusHandler;
+import org.jetbrains.annotations.Nullable;
 
 public class ChunkStockSpiritusFilter implements ISpiritusFilter {
 
     private final BlockEntity tile;
+    @Nullable
     private final SpiritusType exportType;
     private final double stockTarget;
 
-    public ChunkStockSpiritusFilter(BlockEntity tile, SpiritusType exportType, double stockTarget) {
+    public ChunkStockSpiritusFilter(BlockEntity tile, @Nullable SpiritusType exportType, double stockTarget) {
         this.tile = tile;
         this.exportType = exportType;
         this.stockTarget = stockTarget;
@@ -26,7 +28,7 @@ public class ChunkStockSpiritusFilter implements ISpiritusFilter {
 
     @Override
     public int receiveSpiritus(SpiritusType type, int amount) {
-        if (type != exportType || tile == null) return 0;
+        if ((exportType != null && type != exportType) || tile == null) return 0;
         Level level = tile.getLevel();
         BlockPos pos = tile.getBlockPos();
 

@@ -32,10 +32,13 @@ Place an Input, Output, or Conduit within **16 blocks** of an existing network. 
 
 When auto-bind is insufficient (long runs, dense layouts), the **Node Router** performs manual linking.
 
-- **Shift-right-click a Master**: stores that Master's position.
+A right-click with the router in hand links rather than opening the node's screen, so there is no need to sneak.
+
+- **Right-click a Master**: stores that Master's position.
 - **Subsequent right-clicks on non-master nodes** within 16 blocks: binds each to the stored Master.
-- **Shift-right-click a non-master node** instead: stores *that* position. Every subsequent right-click links them, and the stored position advances to the just-clicked node. Walk down a chain and the router links step by step.
-- **Right-click empty air**: clears the stored position.
+- **Right-click a non-master node** instead: stores *that* position. Every subsequent right-click links them, and the stored position advances to the just-clicked node. Walk down a chain and the router links step by step.
+- **Shift-right-click the stored node**: cuts every link it has.
+- **Right-click any other block, or Shift-right-click empty air**: clears the stored position.
 
 Each successful link emits a violet arcane bolt.
 
@@ -61,6 +64,18 @@ With the **Items** tab selected, left-click a slot while holding an item to copy
 | --- | --- | --- |
 | **Whitelist** | Nothing passes | Only listed items pass |
 | **Blacklist** | Everything passes | Everything except listed items passes |
+
+#### Match Rules
+
+By default a ghost matches its exact item. **Shift-right-click** a ghost to open its match rules and widen or narrow what it stands for:
+
+- **Any item**: the ghost stops caring which item it is. Combine it with a property below for filters such as "every non-stackable item".
+- **Any item from the same mod** as the ghost.
+- **Tag**: any item carrying one of the ghost's tags, such as `#minecraft:logs`. Tick several and an item needs only one of them.
+- **Properties**: Stackable, Non-stackable, Damaged, Undamaged, Enchanted, Not enchanted, Renamed. An item must have every property you tick.
+- **Components**: when the ghost carries data components (enchantments, custom data and the like), tick the ones an item must share with it.
+
+Rules combine: an item must satisfy all of them. A ghost with rules set lists them in its tooltip.
 
 ### Fluids
 
@@ -95,7 +110,7 @@ The **Spiritus** tab is the odd one out: it has no ghost grid, no faces, and no 
 
 Two controls:
 
-- **Type**. Cycles through **Off** and the five Aspects (Raw, Ruina, Nihilum, Vindicta, Invictus). Off disables the channel for this node.
+- **Type**. Cycles through **Off**, the five Aspects (Raw, Ruina, Nihilum, Vindicta, Invictus) and **All Aspects**. Off disables the channel for this node; All Aspects stocks every Aspect the network can supply, each to the same Keep figure.
 - **Keep**. The amount of that Aspect to maintain in the node's chunk. Adjust in steps of **10**, or **100** with **Shift** held, up to **1000**. Zero disables the channel.
 
 The node tops its chunk up toward the Keep figure and stops, exactly like a Keep Amount on an Output face, and it never pushes past the chunk's own Aura ceiling (**100** per Aspect by default), so a Keep figure larger than the ceiling simply fills the chunk. Face **Enable** flags and Priority work as usual; the Spiritus channel reads the **Up** face's priority.
