@@ -216,7 +216,15 @@ public class DungeonRoom {
         StructurePlaceSettings rotatedSettings = settings.copy();
         rotatedSettings.setRotation(rotatedSettings.getRotation().getRotated(getRotationForDirectionFromNorth(dir)));
         AreaDescriptor desc = getDoorFillDescriptor(originalDoorPos);
-        return rotateDescriptor(desc, rotatedSettings);
+        if (desc instanceof AreaDescriptor.Rectangle rect) {
+            BlockPos min = StructureTemplate.calculateRelativePosition(rotatedSettings, rect.getMinimumOffset());
+            BlockPos max = StructureTemplate.calculateRelativePosition(rotatedSettings, rect.getMaximumOffset());
+            return new AreaDescriptor.Rectangle(
+                    new BlockPos(Math.min(min.getX(), max.getX()), Math.min(min.getY(), max.getY()), Math.min(min.getZ(), max.getZ())),
+                    new BlockPos(Math.max(min.getX(), max.getX()), Math.max(min.getY(), max.getY()), Math.max(min.getZ(), max.getZ()))
+            );
+        }
+        return desc.copy();
     }
 
     public Rotation getRotationForDirectionFromNorth(Direction dir) {

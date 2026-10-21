@@ -1,6 +1,7 @@
 package com.breakinblocks.neovitae.gametest;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -17,9 +18,11 @@ import com.breakinblocks.neovitae.structures.DungeonRoom;
 import com.breakinblocks.neovitae.structures.DungeonRoomRegistry;
 import com.breakinblocks.neovitae.structures.RoomBoundsProcessor;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @GameTestHolder("neovitae")
 @PrefixGameTestTemplate(false)
@@ -53,6 +56,29 @@ public class DungeonRoomBoundsTests {
             checked++;
         }
         helper.assertTrue(checked > 0, "No box-shaped dungeon rooms were checked");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty_5x5x7", timeoutTicks = 20)
+    public void doorFillCoversDoorwayInEveryFacing(GameTestHelper helper) {
+        DungeonRoom room = new DungeonRoom();
+        for (Rotation rotation : Rotation.values()) {
+            for (Direction facing : Direction.Plane.HORIZONTAL) {
+                StructurePlaceSettings settings = new StructurePlaceSettings().setMirror(Mirror.NONE).setRotation(rotation);
+                Direction worldFacing = rotation.rotate(facing);
+                Direction side = worldFacing.getClockWise();
+                Set<BlockPos> expected = new HashSet<>();
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        expected.add(BlockPos.ZERO.relative(side, i).above(j));
+                    }
+                }
+                Set<BlockPos> filled = new HashSet<>(room.getDoorFillDescriptor(settings, BlockPos.ZERO, BlockPos.ZERO, facing)
+                        .getContainedPositions(BlockPos.ZERO));
+                helper.assertTrue(filled.equals(expected),
+                        "Door facing " + worldFacing + " (rotation " + rotation + ") fills " + filled + " instead of " + expected);
+            }
+        }
         helper.succeed();
     }
 
