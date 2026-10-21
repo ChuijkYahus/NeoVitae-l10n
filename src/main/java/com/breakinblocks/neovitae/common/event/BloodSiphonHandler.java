@@ -110,9 +110,9 @@ public class BloodSiphonHandler {
 
         // 10% reduction per point, hard cap at 99%
         double reductionPercent = Math.min(shieldValue * 10.0, 99.0);
-        float originalDamage = event.getOriginalDamage();
-        float reducedDamage = originalDamage * (float) (1.0 - reductionPercent / 100.0);
-        float damagePrevented = originalDamage - reducedDamage;
+        float currentDamage = event.getNewDamage();
+        float reducedDamage = currentDamage * (float) (1.0 - reductionPercent / 100.0);
+        float damagePrevented = currentDamage - reducedDamage;
 
         if (damagePrevented <= 0) return;
 
@@ -133,7 +133,7 @@ public class BloodSiphonHandler {
         } else if (currentLP > 0) {
             // Partial shield — use whatever LP we have
             double affordableReduction = (double) currentLP / NeoVitae.SERVER_CONFIG.BLOOD_SHIELD_LP_COST_MULTIPLIER.get();
-            float partialReduced = originalDamage - (float) affordableReduction;
+            float partialReduced = currentDamage - (float) affordableReduction;
             network.syphon(AnimaTicket.create(currentLP));
             event.setNewDamage(Math.max(partialReduced, 0.1f));
             defender.level().playSound(null, defender.blockPosition(), NVSounds.BLOOD_SHIELD_ABSORB.get(), SoundSource.PLAYERS, 0.4f, 1.0f);
