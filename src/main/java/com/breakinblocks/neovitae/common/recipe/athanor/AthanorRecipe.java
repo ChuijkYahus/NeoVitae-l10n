@@ -215,35 +215,28 @@ public class AthanorRecipe implements Recipe<AthanorRecipeInput> {
     }
 
     private boolean matchInputs(AthanorRecipeInput recipeInput) {
-        boolean[] used = new boolean[MAX_INPUTS];
+        return getUsedInputSlots(recipeInput) != null;
+    }
+
+    public int[] getUsedInputSlots(AthanorRecipeInput recipeInput) {
+        int[] remaining = new int[MAX_INPUTS];
+        for (int slot = 0; slot < MAX_INPUTS; slot++) {
+            remaining[slot] = recipeInput.getItem(1 + slot).getCount();
+        }
+        int[] result = new int[inputs.size()];
+        int n = 0;
         for (Ingredient ingredient : inputs) {
             boolean found = false;
             for (int slot = 0; slot < MAX_INPUTS; slot++) {
-                if (used[slot]) continue;
+                if (remaining[slot] <= 0) continue;
                 if (ingredient.test(recipeInput.getItem(1 + slot))) {
-                    used[slot] = true;
+                    remaining[slot]--;
+                    result[n++] = slot;
                     found = true;
                     break;
                 }
             }
-            if (!found) return false;
-        }
-        return true;
-    }
-
-    public int[] getUsedInputSlots(AthanorRecipeInput recipeInput) {
-        boolean[] used = new boolean[MAX_INPUTS];
-        int[] result = new int[inputs.size()];
-        int n = 0;
-        for (Ingredient ingredient : inputs) {
-            for (int slot = 0; slot < MAX_INPUTS; slot++) {
-                if (used[slot]) continue;
-                if (ingredient.test(recipeInput.getItem(1 + slot))) {
-                    used[slot] = true;
-                    result[n++] = slot;
-                    break;
-                }
-            }
+            if (!found) return null;
         }
         return result;
     }
