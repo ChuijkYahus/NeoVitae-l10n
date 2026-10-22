@@ -74,6 +74,13 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider,
     public static final int OUTPUT_SLOT = OUTPUT_BUCKET_SLOT + 1;         // 9
 
     public static final int NUM_OUTPUTS = 5;
+    public static final int INVENTORY_SIZE = OUTPUT_SLOT + NUM_OUTPUTS;
+    private static final int LEGACY_TOOL_SLOT = 0;
+    private static final int LEGACY_INPUT_SLOT = 1;
+    private static final int LEGACY_INPUT_BUCKET_SLOT = 2;
+    private static final int LEGACY_OUTPUT_BUCKET_SLOT = 3;
+    private static final int LEGACY_OUTPUT_SLOT = 4;
+    private static final int LEGACY_INVENTORY_SIZE = LEGACY_OUTPUT_SLOT + NUM_OUTPUTS;
 
     public static final int GROUP_TOOL = 0;
     public static final int GROUP_INPUT = 1;
@@ -246,14 +253,35 @@ public class AthanorBlockEntity extends BaseBlockEntity implements MenuProvider,
         return Component.literal("Athanor");
     }
 
+    private void resizeLegacyInventory() {
+        int saved = athanorInv.getSlots();
+        if (saved == INVENTORY_SIZE) return;
+        ItemStack[] old = new ItemStack[saved];
+        for (int i = 0; i < saved; i++) {
+            old[i] = athanorInv.getStackInSlot(i);
+        }
+        athanorInv.setSize(INVENTORY_SIZE);
+        if (saved == LEGACY_INVENTORY_SIZE) {
+            athanorInv.setStackInSlot(TOOL_SLOT, old[LEGACY_TOOL_SLOT]);
+            athanorInv.setStackInSlot(INPUT_START, old[LEGACY_INPUT_SLOT]);
+            athanorInv.setStackInSlot(INPUT_BUCKET_SLOT, old[LEGACY_INPUT_BUCKET_SLOT]);
+            athanorInv.setStackInSlot(OUTPUT_BUCKET_SLOT, old[LEGACY_OUTPUT_BUCKET_SLOT]);
+            for (int i = 0; i < NUM_OUTPUTS; i++) {
+                athanorInv.setStackInSlot(OUTPUT_SLOT + i, old[LEGACY_OUTPUT_SLOT + i]);
+            }
+        } else {
+            for (int i = 0; i < Math.min(saved, INVENTORY_SIZE); i++) {
+                athanorInv.setStackInSlot(i, old[i]);
+            }
+        }
+    }
+
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         CompoundTag inv = tag.getCompound("arcinv");
         athanorInv.deserializeNBT(registries, inv);
-        if (athanorInv.getSlots() < OUTPUT_SLOT + NUM_OUTPUTS) {
-            athanorInv.setSize(OUTPUT_SLOT + NUM_OUTPUTS);
-        }
+        resizeLegacyInventory();
         inputTank.readFromNBT(registries, tag.getCompound("inputtank"));
         outputTank.readFromNBT(registries, tag.getCompound("outputtank"));
         progress = tag.getDouble("arcprogress");
